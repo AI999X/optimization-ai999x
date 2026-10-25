@@ -1,0 +1,19 @@
+{
+ "labels": [],
+ "ask_idioms": [],
+ "implied": [],
+ "context": [],
+ "kind_tags": {},
+ "relevance": {
+  "note": "algebra: procedures only, no quantity relations yet",
+  "conditioning_kinds": [],
+  "process_tags": [],
+  "process_parameters": [],
+  "never_derive": [],
+  "no_stand_in": []
+ },
+ "role_defaults": [],
+ "sign": [],
+ "unsupported_structure": [],
+ "target_refinements": []
+}
