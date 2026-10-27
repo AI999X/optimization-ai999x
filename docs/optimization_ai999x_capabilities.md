@@ -255,6 +255,10 @@ $$
 - **Assumes:** exactly two variables, both >= 0; a feasible region and a finite optimum
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![Maximise 3x + 5y subject to x ≤ 4; 2y ≤ 12; 3x + 2y ≤ 18, x, y ≥ 0: the feasible region with the corner points the package returns ((0, 0), (0, 6), (2, 6), (4, 0), (4, 3)) and the objective line through the optimum; marked: x = 2, y = 6, objective 36](https://huggingface.co/AI999X/optimization-ai999x/resolve/main/figures/lp-two-variable-graphical-region.svg)
+
+*Maximise 3x + 5y subject to x ≤ 4; 2y ≤ 12; 3x + 2y ≤ 18, x, y ≥ 0: the feasible region with the corner points the package returns ((0, 0), (0, 6), (2, 6), (4, 0), (4, 3)) and the objective line through the optimum; marked: x = 2, y = 6, objective 36.*
+
 ```python
 optimization_ai999x.solve('lp_two_variable_graphical', sense='maximize', c=[3, 5], A=[[1, 0], [0, 2], [3, 2]], b=[4, 12, 18])
 # -> optimal_value = 36, optimal_corners = [[2.0, 6.0]], corner_points = [[0.0, 0.0], [0.0, 6.0], [2.0, 6.0], [4.0, 0.0], [4.0, 3.0]], x = 2, y = 6, solution_unique = yes   (SOLVED)
@@ -1552,6 +1556,10 @@ $$
 - **Assumes:** same job order on both machines; all jobs available at time 0
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![A two-machine flow shop: processing times [5, 2, 6, 7] on machine 1 and [3, 4, 8, 2] on machine 2](https://huggingface.co/AI999X/optimization-ai999x/resolve/main/figures/johnson-two-machine-gantt.svg)
+
+*A two-machine flow shop: processing times [5, 2, 6, 7] on machine 1 and [3, 4, 8, 2] on machine 2. The package's Johnson order is job 2 → job 3 → job 1 → job 4, with makespan 22; each job starts on machine 2 as soon as it leaves machine 1 and machine 2 is free.*
+
 ```python
 optimization_ai999x.solve('johnson_two_machine', a=[5, 2, 6, 7], b=[3, 4, 8, 2])
 # -> makespan = 22, sequence = [2, 3, 1, 4]   (SOLVED)
@@ -1710,6 +1718,10 @@ $$
 - **Method:** Dijkstra's algorithm in exact arithmetic; shortest paths counted on the tight-edge subgraph
 - **Assumes:** weights >= 0; a path from source to target exists; parallel edges: the lightest counts
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![A weighted network (A-B 4, A-C 2, B-C 1, B-D 5, C-D 8, A-E 7, E-D 3, C-E 6): the shortest path from A to D the package finds, A → C → B → D of length 8, and its minimum spanning tree (B-C, A-C, E-D, B-D, total weight 11)](https://huggingface.co/AI999X/optimization-ai999x/resolve/main/figures/shortest-path-graph.svg)
+
+*A weighted network (A-B 4, A-C 2, B-C 1, B-D 5, C-D 8, A-E 7, E-D 3, C-E 6): the shortest path from A to D the package finds, A → C → B → D of length 8, and its minimum spanning tree (B-C, A-C, E-D, B-D, total weight 11).*
 
 ```python
 optimization_ai999x.solve('shortest_path', edges='A-B 4, A-C 2, B-C 1, B-D 5, C-D 8', source='A', target='D', directed=False)
@@ -1901,6 +1913,10 @@ $$
 - **Method:** the transportation LP solved exactly (rational simplex), certified by its dual $(u_i + v_j  \leq  c_ij)$
 - **Assumes:** total supply >= total demand (surplus stays at the sources at no cost); at most 60 routes
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![The optimal transportation plan the package computes for supplies [20, 30], demands [10, 25, 15] and unit costs [[2, 3, 1], [5, 4, 8]] (rows: sources, columns: destinations; left the unit costs, right the quantities shipped): minimum total cost 150](https://huggingface.co/AI999X/optimization-ai999x/resolve/main/figures/transportation-problem-heatmap.svg)
+
+*The optimal transportation plan the package computes for supplies [20, 30], demands [10, 25, 15] and unit costs [[2, 3, 1], [5, 4, 8]] (rows: sources, columns: destinations; left the unit costs, right the quantities shipped): minimum total cost 150.*
 
 ```python
 optimization_ai999x.solve('transportation_problem', supply=[20, 30], demand=[10, 25, 15], cost=[[2, 3, 1], [5, 4, 8]])
@@ -2825,6 +2841,10 @@ $$
 - **Method:** $g = Q$ $x_{0} + c$; $\alpha = g^{T}$ $g / g^{T}$ Q g in exact arithmetic; certified by $g^{T}$ grad f(x1) = 0
 - **Assumes:** Q symmetric positive definite; x0 is not the minimiser
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![Steepest descent with exact line search on f(x) = ½ xᵀQx, Q = [[2, 0], [0, 8]], from x₀ = (4, 1): six steps computed by the package, each perpendicular to the level set through its start (f = 20, 7](https://huggingface.co/AI999X/optimization-ai999x/resolve/main/figures/steepest-descent-step-iteration.svg)
+
+*Steepest descent with exact line search on f(x) = ½ xᵀQx, Q = [[2, 0], [0, 8]], from x₀ = (4, 1): six steps computed by the package, each perpendicular to the level set through its start (f = 20, 7.2, 2.592, 0.93312, 0.335923, 0.120932, 0.0435356); marked: x₆ = (0.186624, 0.046656).*
 
 ```python
 optimization_ai999x.solve('steepest_descent_step', Q=[[2, 0], [0, 8]], c=[0, 0], x0=[4, 1])

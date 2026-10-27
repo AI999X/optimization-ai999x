@@ -4,7 +4,9 @@
 
 **[Install](https://pypi.org/project/optimization-ai999x/)** · **[Capability guide](https://huggingface.co/AI999X/optimization-ai999x/tree/main/docs)** · **[Evaluation](https://huggingface.co/AI999X/optimization-ai999x/tree/main/evaluation)** · **[AI999X on Hugging Face](https://huggingface.co/AI999X)** · **[Website](https://ai999x.com)** · **[Support: Buy Me a Coffee](https://buymeacoffee.com/ibnuljaiffarabi)**
 
-License: Apache-2.0 · Author: Ibnul Jaif Farabi (creator and engineer) · Organization: AI999X · Version 1.0.0
+License: Apache-2.0 · Author: Ibnul Jaif Farabi (creator and engineer) · Organization: AI999X · Version 1.0.1
+
+Field: **Mathematics & Statistics** · Tasks: Question Answering, Sentence Similarity, Feature Extraction
 
 optimization-ai999x is an offline, deterministic Python solver that answers optimization questions with verified results from 72 certified capabilities, gives 240 documented answers identically on Windows and Linux, and refuses rather than guesses when an answer cannot be verified.
 
@@ -25,7 +27,7 @@ optimization-ai999x is an offline, deterministic Python solver that answers opti
 
 | Property | Value |
 |---|---|
-| Package | `optimization-ai999x` 1.0.0 (import `optimization_ai999x`) |
+| Package | `optimization-ai999x` 1.0.1 (import `optimization_ai999x`) |
 | Type | Deterministic neuro-symbolic optimization engine (rule-based reading + certified symbolic capabilities) |
 | Capabilities | 72 certified procedures |
 | Knowledge pack | version 1.0.1 |
@@ -59,7 +61,7 @@ optimization.ask("Who created you?").message
 # -> optimization-ai999x was created and engineered by Ibnul Jaif Farabi at AI999X.
 ```
 
-Command line: `optimization-ai999x "<question>"`, `optimization-ai999x --capabilities`. The outputs above were produced by running this exact code on optimization-ai999x 1.0.0.
+Command line: `optimization-ai999x "<question>"`, `optimization-ai999x --capabilities`. The outputs above were produced by running this exact code on optimization-ai999x 1.0.1.
 
 ## Find the right capability, and draw it
 
@@ -69,7 +71,7 @@ Command line: `optimization-ai999x "<question>"`, `optimization-ai999x --capabil
 import optimization_ai999x as optimization
 
 optimization.search("Solve x^2 - 5x + 6 = 0", k=2)
-# -> Roots of a quadratic equation (algebra-ai999x, 0.67); Solution of two linear equations in two unknowns (algebra-ai999x, 0.57)
+# -> Roots of a quadratic equation (math-foundations-ai999x, 0.63); Roots of a cubic equation (math-foundations-ai999x, 0.59)
 ```
 
 ## How every answer is verified
@@ -80,6 +82,116 @@ optimization.search("Solve x^2 - 5x + 6 = 0", k=2)
 4. **Checking** — dimensions, substitution back into the defining equation, and agreement between independent readings; any disagreement becomes a refusal, never a number.
 
 Capabilities are certified before they ship: each must reproduce hand-worked reference cases, reject a deliberately wrong variant (a control), and leave every benchmark answer unchanged.
+
+## Worked examples
+
+Each question was put to `optimization-ai999x`; the answer is the one it returned, with the steps it took.
+
+**Transportation problem (minimum shipping cost)** · _Network optimisation_
+
+> Solve the transportation problem with supply [20, 30], demand [10, 25, 15] and cost matrix [[2, 3, 1], [5, 4, 8]].
+
+→ **min_cost = 150, shipments = [[5, 0, 15], [5, 25, 0]], plan_unique = yes, dual = [-3, 0, 5, 4, 4]**
+
+<details><summary>Steps</summary>
+
+- Transportation problem (minimum shipping cost): supply = [20, 30], demand = [10, 25, 15], cost = [2 3 1; 5 4 8] → min_cost = 150, shipments = [[5, 0, 15], [5, 25, 0]], plan_unique = yes, dual = [-3, 0, 5, 4, 4]
+
+</details>
+
+**Shortest path (Dijkstra's algorithm)** · _Network optimisation_
+
+> Find the shortest path from A to D in the undirected graph with edges A-B 4, A-C 2, B-C 1, B-D 5, C-D 8.
+
+→ **distance = 8, path = [A, C, B, D], path_unique = yes**
+
+<details><summary>Steps</summary>
+
+- Shortest path (Dijkstra's algorithm): edges = A-B (4), A-C (2), B-C (1), B-D (5), C-D (8), source = A, target = D, directed = False → distance = 8, path = [A, C, B, D], path_unique = yes
+
+</details>
+
+**Economic order quantity (EOQ)** · _Inventory management_
+
+`m.solve("eoq", D=1200, S=50, H=3)`
+
+→ **Q = 200, total_cost = 600, orders_per_period = 6, cycle_time = 0.1666666667**
+
+<details><summary>Steps</summary>
+
+- Economic order quantity (EOQ): D = 1200, S = 50, H = 3 → Q = 200, total_cost = 600, orders_per_period = 6, cycle_time = 0.1666666667
+
+</details>
+
+**AHP consistency ratio** · _Multi-criteria decision analysis_
+
+> Find the AHP consistency ratio for the pairwise judgments [3, 5, 2].
+
+→ **CR = 0.003184998331, CI = 0.001847299032, lambda_max = 3.003694598, weights = [0.6483290138, 0.2296507941, 0.1220201921], acceptable = yes**
+
+<details><summary>Steps</summary>
+
+- AHP consistency ratio: judgments = [3, 5, 2] → CR = 0.003184998331, CI = 0.001847299032, lambda_max = 3.003694598, weights = [0.6483290138, 0.2296507941, 0.1220201921], acceptable = yes
+
+</details>
+
+**Pure-strategy Nash equilibria of a bimatrix game** · _Game theory_
+
+> Find the pure-strategy Nash equilibria of the bimatrix game with row payoffs [[3, 0], [5, 1]] and column payoffs [[3, 5], [0, 1]].
+
+→ **count = 1, equilibria = [[2, 2]]**
+
+<details><summary>Steps</summary>
+
+- Pure-strategy Nash equilibria of a bimatrix game: A = [3 0; 5 1], B = [3 5; 0 1] → count = 1, equilibria = [[2, 2]]
+
+</details>
+
+**Closed cylinder of least surface area for a given volume** · _Calculus optimisation_
+
+> A closed cylindrical can must hold 500 cm^3. Find the dimensions that minimize the surface area.
+
+→ **radius = 4.301270069, height = 8.602540138, min_area = 348.7342055**
+
+<details><summary>Steps</summary>
+
+- Closed cylinder of least surface area for a given volume: V = 500 → radius = 4.301270069, height = 8.602540138, min_area = 348.7342055
+
+</details>
+
+## Figures
+
+Every point was computed by `optimization-ai999x`.
+
+**A linear programme: feasible region and optimal corner**
+
+![A linear programme: feasible region and optimal corner — computed by optimization-ai999x](https://huggingface.co/AI999X/optimization-ai999x/resolve/main/figures/lp-two-variable-graphical-region.svg)
+
+_Maximise 3x + 5y subject to x ≤ 4; 2y ≤ 12; 3x + 2y ≤ 18, x, y ≥ 0: the feasible region with the corner points the package returns ((0, 0), (0, 6), (2, 6), (4, 0), (4, 3)) and the objective line through the optimum; marked: x = 2, y = 6, objective 36._
+
+**Steepest descent zig-zagging to the minimum**
+
+![Steepest descent zig-zagging to the minimum — computed by optimization-ai999x](https://huggingface.co/AI999X/optimization-ai999x/resolve/main/figures/steepest-descent-step-iteration.svg)
+
+_Steepest descent with exact line search on f(x) = ½ xᵀQx, Q = [[2, 0], [0, 8]], from x₀ = (4, 1): six steps computed by the package, each perpendicular to the level set through its start (f = 20, 7.2, 2.592, 0.93312, 0.335923, 0.120932, 0.0435356); marked: x₆ = (0.186624, 0.046656)._
+
+**Shortest path and minimum spanning tree**
+
+![Shortest path and minimum spanning tree — computed by optimization-ai999x](https://huggingface.co/AI999X/optimization-ai999x/resolve/main/figures/shortest-path-graph.svg)
+
+_A weighted network (A-B 4, A-C 2, B-C 1, B-D 5, C-D 8, A-E 7, E-D 3, C-E 6): the shortest path from A to D the package finds, A → C → B → D of length 8, and its minimum spanning tree (B-C, A-C, E-D, B-D, total weight 11)._
+
+**An optimal transportation plan**
+
+![An optimal transportation plan — computed by optimization-ai999x](https://huggingface.co/AI999X/optimization-ai999x/resolve/main/figures/transportation-problem-heatmap.svg)
+
+_The optimal transportation plan the package computes for supplies [20, 30], demands [10, 25, 15] and unit costs [[2, 3, 1], [5, 4, 8]] (rows: sources, columns: destinations; left the unit costs, right the quantities shipped): minimum total cost 150._
+
+**A two-machine schedule in Johnson's order**
+
+![A two-machine schedule in Johnson's order — computed by optimization-ai999x](https://huggingface.co/AI999X/optimization-ai999x/resolve/main/figures/johnson-two-machine-gantt.svg)
+
+_A two-machine flow shop: processing times [5, 2, 6, 7] on machine 1 and [3, 4, 8, 2] on machine 2. The package's Johnson order is job 2 → job 3 → job 1 → job 4, with makespan 22; each job starts on machine 2 as soon as it leaves machine 1 and machine 2 is free._
 
 ## Capabilities
 
@@ -104,10 +216,10 @@ Capabilities are certified before they ship: each must reproduce hand-worked ref
 ## Citation
 
 ```bibtex
-@software{optimization_ai999x_1_0_0,
+@software{optimization_ai999x_1_0_1,
   title  = {optimization-ai999x: an offline, verified optimization solver},
   author = {Farabi, Ibnul Jaif}, organization = {AI999X},
-  year   = {2026}, version = {1.0.0},
+  year   = {2026}, version = {1.0.1},
   url    = {https://huggingface.co/AI999X/optimization-ai999x}
 }
 ```

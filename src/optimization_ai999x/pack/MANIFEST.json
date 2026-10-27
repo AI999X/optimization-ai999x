@@ -1,5 +1,5 @@
 {
- "package": "1.0.0",
+ "package": "1.0.1",
  "pack": "1.0.1",
  "knowledge_db": null,
  "files": {
@@ -9,10 +9,10 @@
   "knowledge/reference_cases.json": "7414a14e2c4202a7fae8cdd14e1a2ef7267f35a9665b0633001349c698d4e4e7",
   "capabilities/procedures.py": "4f6da52008d37b87e4e5a0ebdabab7e71eb1221db1d2b9aa956d35215399eaf1",
   "capabilities/procedures_certified.json": "55697ecbc4b1d6babea042c54018de7a836b3619504ee837bf7e19eca157483b",
-  "optimization_knowledge_public.sqlite": "eb4d698db3ee04dd928dbe3bf1b6b48bc0f8b5d941ae74ad65da5b2fe89b9503",
-  "search/encoder.int8.onnx": "8dfdc64b74a689092588fa02d7b7c90a09c478de71f1a4003e18dce5cd0980bd",
-  "search/tokenizer.json": "22814b2533272c7a139d477e6d514d35989c4abe3a2195b40942bc527a1e1d15",
-  "search/index.json": "a4efb354b436ecd9ea3aaf36cbdaa1e2562e557336b3c68183b1ad3355d49f70"
+  "optimization_knowledge_public.sqlite": "9be7c0da8dfa1462117b930dc108d36c02ed70ab3eff494849e79e075a0a44c2",
+  "search/encoder.int8.onnx": "521452d928a72da4d241b1835ab0f46b0e81ff58ffff0367b9a7029bd129fbd9",
+  "search/tokenizer.json": "b2f2deb461e6ad672b8e42aac29773e7a9be77d582cdf58808113ea43fda565e",
+  "search/index.json": "d8f81d9706c9a0efa7d9643bcec3d39a6c3500766ce0f44937d85ad90f772507"
  },
  "engine": [
   "__init__.py",
