@@ -21,6 +21,40 @@ from .engine import ask as _ask
 from .pack import Pack
 
 
+_MUST = {"positive": "greater than zero", "nonnegative": "zero or more"}
+
+
+def _plain_refusal(rel, p, info: dict, sources: dict) -> str:
+    """Why these inputs have no answer, in plain words, with the quantity's meaning and unit (owner, 2026-10-28:
+    "no admissible real value for C" told a visitor nothing). "" when the reason is not known (the old text is used)."""
+    name = info.get("name")
+    if name not in getattr(rel, "symbols", {}):
+        return ""
+    s = rel.symbols[name]
+    what = s.desc or s.kind.replace("_", " ")
+    unit = p.kinds[s.kind].unit if s.kind in p.kinds and p.kinds[s.kind].unit not in ("", "1") else ""
+
+    def amount(v: float) -> str:
+        return f"{v:.4g}" + (f" {unit}" if unit else "")
+
+    check = "These inputs cannot all hold at once: check each value and its unit."
+    reason = info.get("reason")
+    if reason == "input_sign":
+        given = sources.get(name) or amount(info.get("value", 0.0))
+        return f"{what} ({name}) must be {_MUST.get(s.sign, 'valid')}, but it was given as {given}. Check this input."
+    if reason == "result_sign" and info.get("values"):
+        return (f"with these inputs, {what} ({name}) would come out as {amount(info['values'][0])}, which is impossible: "
+                f"it must be {_MUST.get(s.sign, 'valid')}. {check}")
+    if reason == "no_real":
+        return (f"with these inputs, no real value of {what} ({name}) satisfies the formula (it would need, for example, "
+                f"the square root or logarithm of a negative number, or a division by zero). {check}")
+    if reason == "branches" and info.get("values"):
+        vals = ", ".join(amount(v) for v in info["values"])
+        return (f"these inputs allow {len(info['values'])} values of {what} ({name}): {vals}. The formula alone cannot "
+                f"choose between them; use a capability or a condition that tells them apart.")
+    return ""
+
+
 class QuantityError(ValueError):
     """A quantity name, value or condition the domain's vocabulary does not know."""
 
@@ -297,9 +331,11 @@ class Product:
             value = rel.solve(tgt, values)
         except Exception as exc:                          # no admissible real value / several branches: the inputs
             text = str(exc)
-            outcome = "AMBIGUOUS" if "branch" in text else "INVALID_INPUT"
+            info = getattr(exc, "info", None) or {}
+            outcome = "AMBIGUOUS" if info.get("reason") == "branches" or "branch" in text else "INVALID_INPUT"
+            plain = _plain_refusal(rel, p, info, sources)
             return refuse(outcome, "multiple_branches" if outcome == "AMBIGUOUS" else "no_solution",
-                          f"{rel.name}: {text.split(': ', 1)[-1]}.")
+                          f"{rel.name}: {plain or text.split(': ', 1)[-1] + '.'}")
         residual = rel.residual({**values, tgt: value})
         dims = p.dimensions_consistent(rel)
         ok = residual <= 1e-9 and dims

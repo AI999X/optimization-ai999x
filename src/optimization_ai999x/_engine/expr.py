@@ -6,14 +6,35 @@ from __future__ import annotations
 import ast
 from fractions import Fraction
 
-import sympy as sp
+from collections.abc import Mapping
 
+from ._lazy import sp
 from .quantity import ONE, Dim
 
-FUNCS = {"sqrt": sp.sqrt, "sin": sp.sin, "cos": sp.cos, "tan": sp.tan, "exp": sp.exp, "log": sp.log,
-         "asin": sp.asin, "acos": sp.acos, "atan": sp.atan}
-CONSTS = {"pi": sp.pi}
-_DIMENSIONLESS_ARG = (sp.sin, sp.cos, sp.tan, sp.exp, sp.log, sp.asin, sp.acos, sp.atan)
+
+class _SympyNames(Mapping):
+    """{name: sympy.<attribute>} whose keys are known without importing SymPy (membership tests and iteration stay
+    free); a value is read from SymPy only when it is looked up (runtime/_lazy.py)."""
+
+    def __init__(self, names: dict):
+        self._names = dict(names)
+
+    def __getitem__(self, key):
+        return getattr(sp, self._names[key])
+
+    def __iter__(self):
+        return iter(self._names)
+
+    def __len__(self) -> int:
+        return len(self._names)
+
+    def __contains__(self, key) -> bool:
+        return key in self._names
+
+
+FUNCS = _SympyNames({n: n for n in ("sqrt", "sin", "cos", "tan", "exp", "log", "asin", "acos", "atan")})
+CONSTS = _SympyNames({"pi": "pi"})
+_DIMENSIONLESS_ARG = ("sin", "cos", "tan", "exp", "log", "asin", "acos", "atan")
 
 
 class ExpressionError(ValueError):
@@ -90,7 +111,7 @@ def dims(expr: sp.Expr, symbol_dims: dict) -> Dim:
         if len(seen) != 1:
             raise ExpressionError("a sum mixes different dimensions")
         return seen.pop()
-    if expr.func in _DIMENSIONLESS_ARG:
+    if expr.func in tuple(getattr(sp, n) for n in _DIMENSIONLESS_ARG):
         if not dims(expr.args[0], symbol_dims).dimensionless:
             raise ExpressionError(f"{expr.func.__name__} needs a dimensionless argument")
         return ONE

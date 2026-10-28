@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "optimization-ai999x"
-version = "1.0.2"
+version = "1.0.3"
 description = "Offline optimization solver: linear and integer programming, convex and nonlinear optimisation, assignment, transportation and shortest-route problems, scheduling, inventory, queueing, game theory and multi-criteria decisions, with steps, LaTeX and honest refusals"
 readme = "README.md"
 requires-python = ">=3.10"

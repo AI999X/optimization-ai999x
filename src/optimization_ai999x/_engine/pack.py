@@ -15,6 +15,19 @@ class PackError(ValueError):
     pass
 
 
+def _exec_or_forget(spec, mod, name: str) -> None:
+    """Run a domain module registered in sys.modules; if it fails, unregister it before re-raising, as Python's own
+    import does. Otherwise the half-run module (no PROCEDURES) stays cached and every later load sees an empty domain:
+    in the browser a first run before SymPy was downloaded left calculus with no capabilities at all (2026-10-28)."""
+    import sys
+    try:
+        spec.loader.exec_module(mod)
+    except BaseException:
+        if sys.modules.get(name) is mod:
+            del sys.modules[name]
+        raise
+
+
 @dataclass(frozen=True)
 class Kind:
     name: str
@@ -87,7 +100,7 @@ class Pack:
                 mod = importlib.util.module_from_spec(spec)
                 if cached:
                     sys.modules[name] = mod
-                spec.loader.exec_module(mod)
+                _exec_or_forget(spec, mod, name)
             out.update(getattr(mod, "PROCEDURES", {}))
         compiled = folder / "procedures_compiled.json"
         if compiled.exists():
@@ -133,7 +146,7 @@ class Pack:
             spec = importlib.util.spec_from_file_location(name, path)
             mod = importlib.util.module_from_spec(spec)
             sys.modules[name] = mod
-            spec.loader.exec_module(mod)
+            _exec_or_forget(spec, mod, name)
         Pack._DOMAIN_FAMILIES[self.domain] = mod
 
     def family_index(self) -> list:

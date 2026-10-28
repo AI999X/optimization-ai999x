@@ -4,10 +4,8 @@ from __future__ import annotations
 
 import re
 
-import mpmath as mp
-import sympy as sp
-
 from . import policy
+from ._lazy import mp, sp
 from .answer import Answer
 from .compiler import Given, Problem, Target, compile_problem
 from .pack import Pack

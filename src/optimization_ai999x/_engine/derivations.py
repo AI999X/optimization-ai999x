@@ -17,9 +17,8 @@ import re
 from functools import lru_cache
 from pathlib import Path
 
-import sympy as sp
-
 from . import expr as E
+from ._lazy import sp
 from .answer import Answer
 
 _FORM = re.compile(r"^\s*(?:(?:please\s+)?(?:prove|derive|show))(?:\s+that)?\s*:?\s*(?P<body>.+?)\s*[.?!]?\s*$", re.I | re.S)

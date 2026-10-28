@@ -10,8 +10,7 @@ from __future__ import annotations
 import re
 from dataclasses import asdict, dataclass, field, replace
 
-import sympy as sp
-
+from ._lazy import sp
 from .pack import Pack
 from .quantity import UnitError, parse_unit, to_si, words_to_unit
 

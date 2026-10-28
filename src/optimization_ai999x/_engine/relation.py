@@ -10,15 +10,19 @@ import math
 from dataclasses import dataclass, field
 from functools import cached_property
 
-import sympy as sp
-
 from . import expr as E
+from ._lazy import sp
 
 SIGNS = ("any", "nonnegative", "positive")
 
 
 class RelationError(ValueError):
-    pass
+    """`info` says why, for a plain-English message (product.py): reason = "input_sign" | "result_sign" | "no_real" |
+    "branches", with `name` (the symbol), `value` or `values` (SI)."""
+
+    def __init__(self, message: str = "", **info):
+        super().__init__(message)
+        self.info = info
 
 
 @dataclass(frozen=True)
@@ -134,9 +138,10 @@ class Relation:
             raise RelationError(f"{self.key}: missing {sorted(missing)}")
         for name, v in values.items():
             if not self._admissible(name, float(v)):
-                raise RelationError(f"{self.key}: {name} = {float(v):g} violates '{self.symbols[name].sign}'")
+                raise RelationError(f"{self.key}: {name} = {float(v):g} violates '{self.symbols[name].sign}'",
+                                    reason="input_sign", name=name, value=float(v))
         subs = {self.sp_symbols[n]: v for n, v in values.items()}
-        roots, terms = [], []
+        roots, terms, wrong_sign = [], [], []
         for form in self.solved_forms(target):
             try:
                 z = complex(sp.N(form.subs(subs), 17))
@@ -145,7 +150,10 @@ class Relation:
             if not (math.isfinite(z.real) and math.isfinite(z.imag)):
                 continue
             scale = max(1.0, abs(z.real))
-            if abs(z.imag) > 1e-9 * scale or not self._admissible(target, z.real):
+            if abs(z.imag) > 1e-9 * scale:
+                continue
+            if not self._admissible(target, z.real):
+                wrong_sign.append(z.real)                # a real value of the wrong sign: said so in the refusal
                 continue
             if not any(abs(z.real - r) <= 1e-9 * max(1.0, abs(r)) for r in roots):
                 roots.append(z.real)
@@ -158,10 +166,12 @@ class Relation:
                 except (TypeError, ValueError, ZeroDivisionError):
                     terms.append(abs(z.real))
         if not roots:
-            raise RelationError(f"{self.key}: no admissible real value for {target}")
+            raise RelationError(f"{self.key}: no admissible real value for {target}",
+                                reason="result_sign" if wrong_sign else "no_real", name=target, values=wrong_sign)
         if len(roots) > 1:
             raise RelationError(f"{self.key}: {len(roots)} admissible values for {target} "
-                                f"({', '.join(f'{r:g}' for r in roots)}); the branch is not determined")
+                                f"({', '.join(f'{r:g}' for r in roots)}); the branch is not determined",
+                                reason="branches", name=target, values=list(roots))
         value = roots[0]
         # floating-point noise left by a cancellation (0 = v0 + a*t) is set to zero: tiny relative to the TERMS that
         # produced it, never relative to unrelated inputs (a proton's force is 1e-13 N while its speed is 1e6 m/s)

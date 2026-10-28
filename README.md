@@ -4,7 +4,7 @@
 
 **[Install](https://pypi.org/project/optimization-ai999x/)** · **[Capability guide](https://huggingface.co/AI999X/optimization-ai999x/tree/main/docs)** · **[Evaluation](https://huggingface.co/AI999X/optimization-ai999x/tree/main/evaluation)** · **[AI999X on Hugging Face](https://huggingface.co/AI999X)** · **[Website](https://ai999x.com)** · **[Support: Buy Me a Coffee](https://buymeacoffee.com/ibnuljaiffarabi)**
 
-License: Apache-2.0 · Author: Ibnul Jaif Farabi (creator and engineer) · Organization: AI999X · Version 1.0.2
+License: Apache-2.0 · Author: Ibnul Jaif Farabi (creator and engineer) · Organization: AI999X · Version 1.0.3
 
 Field: **Mathematics & Statistics** · Tasks: Question Answering, Sentence Similarity, Feature Extraction
 
@@ -27,7 +27,7 @@ optimization-ai999x is an offline, deterministic Python solver that answers opti
 
 | Property | Value |
 |---|---|
-| Package | `optimization-ai999x` 1.0.2 (import `optimization_ai999x`) |
+| Package | `optimization-ai999x` 1.0.3 (import `optimization_ai999x`) |
 | Type | Deterministic neuro-symbolic optimization engine (rule-based reading + certified symbolic capabilities) |
 | Capabilities | 72 certified procedures |
 | Knowledge pack | version 1.0.1 |
@@ -61,7 +61,7 @@ optimization.ask("Who created you?").message
 # -> optimization-ai999x was created and engineered by Ibnul Jaif Farabi at AI999X.
 ```
 
-Command line: `optimization-ai999x "<question>"`, `optimization-ai999x --capabilities`. The outputs above were produced by running this exact code on optimization-ai999x 1.0.2.
+Command line: `optimization-ai999x "<question>"`, `optimization-ai999x --capabilities`. The outputs above were produced by running this exact code on optimization-ai999x 1.0.3.
 
 ## Find the right capability, and draw it
 
@@ -216,10 +216,10 @@ _A two-machine flow shop: processing times [5, 2, 6, 7] on machine 1 and [3, 4, 
 ## Citation
 
 ```bibtex
-@software{optimization_ai999x_1_0_2,
+@software{optimization_ai999x_1_0_3,
   title  = {optimization-ai999x: an offline, verified optimization solver},
   author = {Farabi, Ibnul Jaif}, organization = {AI999X},
-  year   = {2026}, version = {1.0.2},
+  year   = {2026}, version = {1.0.3},
   url    = {https://huggingface.co/AI999X/optimization-ai999x}
 }
 ```

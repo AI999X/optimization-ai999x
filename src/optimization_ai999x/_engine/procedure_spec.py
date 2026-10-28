@@ -21,9 +21,8 @@ import random
 import re
 from fractions import Fraction
 
-import sympy as sp
-
 from . import expr as E
+from ._lazy import sp
 
 _CFUN = {"sqrt": cmath.sqrt, "exp": cmath.exp, "log": cmath.log, "sin": cmath.sin, "cos": cmath.cos, "tan": cmath.tan,
          "asin": cmath.asin, "acos": cmath.acos, "atan": cmath.atan, "pi": math.pi}

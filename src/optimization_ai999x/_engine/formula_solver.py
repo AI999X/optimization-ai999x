@@ -16,8 +16,7 @@ from __future__ import annotations
 
 import re
 
-import sympy as sp
-
+from ._lazy import sp
 from .expr import FUNCS, ExpressionError, parse
 
 GREEK = {"alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa", "lambda", "lam",

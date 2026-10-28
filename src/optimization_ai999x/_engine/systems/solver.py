@@ -11,8 +11,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-import sympy as sp
-
+from .._lazy import sp
 from ..answer import Answer
 from .. import precision
 
