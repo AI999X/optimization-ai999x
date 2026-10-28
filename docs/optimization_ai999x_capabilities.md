@@ -199,6 +199,14 @@ $$
 - **Assumes:** all variables >= 0; the LP is feasible and bounded (otherwise INVALID_INPUT says which); at most 12 variables and constraints
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![change of the optimal value per unit increase of each right-hand side (only when unique; otherwise dual_one_optimal) (shadow_prices) returned by optimization-ai999x for the worked example, one value for each b (right-hand sides, one per constraint) (3 values, first 0, last 1, largest 1](https://www.ai999x.com/?ax_fig=optimization-ai999x/linear-program-series)
+
+*change of the optimal value per unit increase of each right-hand side (only when unique; otherwise dual_one_optimal) (shadow_prices) returned by optimization-ai999x for the worked example, one value for each b (right-hand sides, one per constraint) (3 values, first 0, last 1, largest 1.5). Inputs: sense = maximize, c = 3, 5, A = 1 0; 0 2; 3 2, b = 4, 12, 18.*
+
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): A (input); shadow_prices (returned)](https://www.ai999x.com/?ax_fig=optimization-ai999x/linear-program-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): A (input); shadow_prices (returned). Returned with them by optimization-ai999x: optimal_value = 36. Other inputs: sense = maximize, c = 3, 5, b = 4, 12, 18.*
+
 ```python
 optimization_ai999x.solve('linear_program', sense='maximize', c='3, 5', A='1 0; 0 2; 3 2', b='4, 12, 18')
 # -> optimal_value = 36, x = [2.0, 6.0], solution_unique = yes, shadow_prices = [0.0, 1.5, 1.0]   (SOLVED)
@@ -259,6 +267,10 @@ $$
 
 *Maximise 3x + 5y subject to x ≤ 4; 2y ≤ 12; 3x + 2y ≤ 18, x, y ≥ 0: the feasible region with the corner points the package returns ((0, 0), (0, 6), (2, 6), (4, 0), (4, 3)) and the objective line through the optimum; marked: x = 2, y = 6, objective 36.*
 
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): A (input); optimal_corners (returned); corner_points (returned)](https://www.ai999x.com/?ax_fig=optimization-ai999x/lp-two-variable-graphical-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): A (input); optimal_corners (returned); corner_points (returned). Returned with them by optimization-ai999x: optimal_value = 36, x = 2, y = 6. Other inputs: sense = maximize, c = [3, 5], b = [4, 12, 18].*
+
 ```python
 optimization_ai999x.solve('lp_two_variable_graphical', sense='maximize', c=[3, 5], A=[[1, 0], [0, 2], [3, 2]], b=[4, 12, 18])
 # -> optimal_value = 36, optimal_corners = [[2.0, 6.0]], corner_points = [[0.0, 0.0], [0.0, 6.0], [2.0, 6.0], [4.0, 0.0], [4.0, 3.0]], x = 2, y = 6, solution_unique = yes   (SOLVED)
@@ -304,6 +316,14 @@ $$
 - **Method:** LP-based branch and bound; every relaxation solved exactly (rational simplex), so pruning and integrality tests are exact
 - **Assumes:** all variables integer and >= 0; a bounded LP relaxation; at most 4000 branch-and-bound nodes
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![The plane vectors of the worked example as arrows from the origin: input c = (5, 4), b = (24, 6); returned by optimization-ai999x: x_one_optimal = (4, 0); also returned optimal_value = 20, nodes = 5](https://www.ai999x.com/?ax_fig=optimization-ai999x/integer-program-vectors)
+
+*The plane vectors of the worked example as arrows from the origin: input c = (5, 4), b = (24, 6); returned by optimization-ai999x: x_one_optimal = (4, 0); also returned optimal_value = 20, nodes = 5. Other inputs: sense = maximize, A = [[6, 4], [1, 2]]. Marked: the tip of each returned vector.*
+
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): A (input); x_one_optimal (returned)](https://www.ai999x.com/?ax_fig=optimization-ai999x/integer-program-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): A (input); x_one_optimal (returned). Returned with them by optimization-ai999x: optimal_value = 20, nodes = 5. Other inputs: sense = maximize, c = [5, 4], b = [24, 6].*
 
 ```python
 optimization_ai999x.solve('integer_program', sense='maximize', c=[5, 4], A=[[6, 4], [1, 2]], b=[24, 6])
@@ -352,6 +372,14 @@ $$
 - **Assumes:** all variables >= 0; a finite optimum; unique dual solution (otherwise INVALID_INPUT)
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![shadow price of each constraint, in order (shadow_prices) returned by optimization-ai999x for the worked example, one value for each b (right-hand sides, one per constraint) (3 values, first 0, last 1, largest 1](https://www.ai999x.com/?ax_fig=optimization-ai999x/lp-shadow-prices-series)
+
+*shadow price of each constraint, in order (shadow_prices) returned by optimization-ai999x for the worked example, one value for each b (right-hand sides, one per constraint) (3 values, first 0, last 1, largest 1.5). Inputs: sense = maximize, c = [3, 5], A = [[1, 0], [0, 2], [3, 2]], b = [4, 12, 18].*
+
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): A (input); shadow_prices (returned)](https://www.ai999x.com/?ax_fig=optimization-ai999x/lp-shadow-prices-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): A (input); shadow_prices (returned). Returned with them by optimization-ai999x: optimal_value = 36. Other inputs: sense = maximize, c = [3, 5], b = [4, 12, 18].*
+
 ```python
 optimization_ai999x.solve('lp_shadow_prices', sense='maximize', c=[3, 5], A=[[1, 0], [0, 2], [3, 2]], b=[4, 12, 18])
 # -> optimal_value = 36, x = [2.0, 6.0], solution_unique = yes, shadow_prices = [0.0, 1.5, 1.0]   (SOLVED)
@@ -390,6 +418,10 @@ $$
 - **Method:** first-order condition f'$(x) = 2ax + b = 0$, exact fractions
 - **Assumes:** $a  \neq  0$; a minimum asked needs $a > 0$, a maximum $a < 0$
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![f_opt (optimal value f(x*)) against a (coefficient of x^2) from 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/quadratic-optimum-curve)
+
+*f_opt (optimal value f(x*)) against a (coefficient of x^2) from 0.2 to 20 on a logarithmic axis. One curve for each value of c (constant term): 3, 6. Other inputs as in the worked example: b = -8. 41 points per curve computed by optimization-ai999x; marked: the worked example, a = 2, f_opt = -5.*
 
 ```python
 optimization_ai999x.solve('quadratic_optimum', a=2, b=-8, c=3)
@@ -434,6 +466,10 @@ $$
 - **Method:** solve p $Q = F + v$ Q
 - **Assumes:** fixed cost >= 0; price > variable cost
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![quantity (break-even quantity (units)) against p (selling price per unit) from 12](https://www.ai999x.com/?ax_fig=optimization-ai999x/break-even-point-curve)
+
+*quantity (break-even quantity (units)) against p (selling price per unit) from 12.5 to 37.5. One curve for each value of F_ (fixed cost (currency)): 5000, 2500, 10000. Other inputs as in the worked example: v = 15. 27 points per curve computed by optimization-ai999x; marked: the worked example, p = 25, quantity = 500.*
 
 ```python
 optimization_ai999x.solve('break_even_point', F_=5000, p=25, v=15)
@@ -481,6 +517,10 @@ $$
 - **Assumes:** $b > 0$; $a > c$
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![quantity (profit-maximising quantity) against b (demand slope (price drop per unit)) from 1 to 3](https://www.ai999x.com/?ax_fig=optimization-ai999x/profit-max-linear-demand-curve)
+
+*quantity (profit-maximising quantity) against b (demand slope (price drop per unit)) from 1 to 3. One curve for each value of a (demand intercept (price at zero quantity)): 100, 50, 200. Other inputs as in the worked example: cv = 20, F_ = 300. 31 points per curve computed by optimization-ai999x; marked: the worked example, b = 2, quantity = 20.*
+
 ```python
 optimization_ai999x.solve('profit_max_linear_demand', a=100, b=2, cv=20, F_=300)
 # -> quantity = 20, price = 60, profit = 500   (SOLVED)
@@ -524,6 +564,14 @@ $$
 - **Assumes:** $\alpha > 0$; $\beta > 0$
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![price (revenue-maximising price) against beta (drop in demand per unit increase in price) from 10 to 30](https://www.ai999x.com/?ax_fig=optimization-ai999x/revenue-max-linear-demand-curve)
+
+*price (revenue-maximising price) against beta (drop in demand per unit increase in price) from 10 to 30. One curve for each value of alpha (demand at a price of zero): 1000, 500, 2000. 31 points per curve computed by optimization-ai999x; marked: the worked example, beta = 20, price = 25.*
+
+![price (revenue-maximising price) over alpha (demand at a price of zero) from 500 to 1500 and beta (drop in demand per unit increase in price) from 10 to 30: each of the 21 × 15 cells is one run of optimization-ai999x, shaded by its value (light 8](https://www.ai999x.com/?ax_fig=optimization-ai999x/revenue-max-linear-demand-field)
+
+*price (revenue-maximising price) over alpha (demand at a price of zero) from 500 to 1500 and beta (drop in demand per unit increase in price) from 10 to 30: each of the 21 × 15 cells is one run of optimization-ai999x, shaded by its value (light 8.33333 to dark 75); iso-lines at price = 20, 40, 60. Marked: the worked example, alpha = 1000, beta = 20, price = 25.*
+
 ```python
 optimization_ai999x.solve('revenue_max_linear_demand', alpha=1000, beta=20)
 # -> price = 25, quantity = 500, revenue = 12500   (SOLVED)
@@ -560,6 +608,10 @@ $$
 - **Method:** area as a function of one side, derivative set to zero
 - **Assumes:** $L > 0$
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![max_area (maximum enclosed area (square of the length unit)) against L (total length of fencing (any length unit)) from 100 to 300](https://www.ai999x.com/?ax_fig=optimization-ai999x/fence-max-area-curve)
+
+*max_area (maximum enclosed area (square of the length unit)) against L (total length of fencing (any length unit)) from 100 to 300. One curve for each value of wall (true when one side lies along a wall or river and needs no fence): None, yes. 31 points per curve computed by optimization-ai999x; marked: the worked example, L = 200, max_area = 2500.*
 
 ```python
 optimization_ai999x.solve('fence_max_area', L=200)
@@ -605,6 +657,14 @@ $$
 - **Assumes:** $L > 0$ and $W > 0$
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![max_volume (maximum volume) against L (sheet length) from 1](https://www.ai999x.com/?ax_fig=optimization-ai999x/open-box-max-volume-curve)
+
+*max_volume (maximum volume) against L (sheet length) from 1.2 to 120 on a logarithmic axis. One curve for each value of W (sheet width): 12, 6, 24. 41 points per curve computed by optimization-ai999x; marked: the worked example, L = 12, max_volume = 128.*
+
+![max_volume (maximum volume) over L (sheet length) from 1](https://www.ai999x.com/?ax_fig=optimization-ai999x/open-box-max-volume-field)
+
+*max_volume (maximum volume) over L (sheet length) from 1.2 to 120 and W (sheet width) from 1.2 to 120 (logarithmic axes): each of the 21 × 15 cells is one run of optimization-ai999x, shaded by its value (light 0.128 to dark 128000, logarithmic shading); iso-lines at max_volume = 1, 10, 100, 1000, 10000. Marked: the worked example, L = 12, W = 12, max_volume = 128.*
+
 ```python
 optimization_ai999x.solve('open_box_max_volume', L=12, W=12)
 # -> cut = 2, max_volume = 128   (SOLVED)
@@ -646,6 +706,10 @@ $$
 - **Assumes:** $V > 0$; closed top and bottom
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![min_area (least total surface area) against V (volume (cube of the length unit)) from 3](https://www.ai999x.com/?ax_fig=optimization-ai999x/can-min-surface-curve)
+
+*min_area (least total surface area) against V (volume (cube of the length unit)) from 3.14159 to 9.42478. 31 points computed by optimization-ai999x; marked: the worked example, V = 6.28319, min_area = 18.8496.*
+
 ```python
 optimization_ai999x.solve('can_min_surface', V=6.283185307179586)
 # -> radius = 1, height = 2, min_area = 18.8496   (SOLVED)
@@ -684,6 +748,10 @@ $$
 - **Method:** minimise D S / Q + H $Q / 2$ (at the optimum ordering cost equals holding cost)
 - **Assumes:** D, S, $H > 0$; constant demand, instant replenishment, no shortages
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![Q (economic order quantity) against H (holding cost per unit per period) from 1](https://www.ai999x.com/?ax_fig=optimization-ai999x/eoq-curve)
+
+*Q (economic order quantity) against H (holding cost per unit per period) from 1.5 to 4.5. One curve for each value of D (demand per period (units, e.g. per year)): 1200, 600, 2400. Other inputs as in the worked example: S = 50. 31 points per curve computed by optimization-ai999x; marked: the worked example, H = 3, Q = 200.*
 
 ```python
 optimization_ai999x.solve('eoq', D=1200, S=50, H=3)
@@ -731,6 +799,10 @@ $$
 - **Assumes:** D, S, H, $B > 0$; backorders filled when the order arrives
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![Q (optimal order quantity) against H (holding cost per unit per period) from 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/eoq-planned-shortages-curve)
+
+*Q (optimal order quantity) against H (holding cost per unit per period) from 0.3 to 30 on a logarithmic axis. One curve for each value of D (demand per period): 1200, 600, 2400. Other inputs as in the worked example: S = 50, B = 6. 41 points per curve computed by optimization-ai999x; marked: the worked example, H = 3, Q = 244.949.*
+
 ```python
 optimization_ai999x.solve('eoq_planned_shortages', D=1200, S=50, H=3, B=6)
 # -> Q = 244.949, max_backorder = 81.6497, max_inventory = 163.299, total_cost = 489.898   (SOLVED)
@@ -769,6 +841,10 @@ $$
 - **Method:** minimise D S/Q + H Q $(1 - D/P)/2$
 - **Assumes:** $P > D > 0$; S, $H > 0$
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![Q (economic production quantity) against P (production rate per period (> D)) from 1000 to 3000](https://www.ai999x.com/?ax_fig=optimization-ai999x/epq-production-lot-curve)
+
+*Q (economic production quantity) against P (production rate per period (> D)) from 1000 to 3000. One curve for each value of S (setup cost per run): 100, 50, 200. Other inputs as in the worked example: D = 1000, H = 4. 30 points per curve computed by optimization-ai999x; marked: the worked example, P = 2000, Q = 316.228.*
 
 ```python
 optimization_ai999x.solve('epq_production_lot', D=1000, P=2000, S=100, H=4)
@@ -810,6 +886,10 @@ $$
 - **Assumes:** D, S, $i > 0$; breaks increasing from 0; ties broken toward the lower-quantity tier
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![total_cost (minimum total cost per period (purchase + ordering + holding)) against D (demand per period) from 2500 to 7500](https://www.ai999x.com/?ax_fig=optimization-ai999x/eoq-quantity-discount-curve)
+
+*total_cost (minimum total cost per period (purchase + ordering + holding)) against D (demand per period) from 2500 to 7500. One curve for each value of i_rate (holding cost as a fraction of the unit price per period (0.2 = 20%)): 0.2, 0.74. Other inputs as in the worked example: S = 49, breaks = 0, 1000, 2000, prices = 5, 4.8, 4.75. 31 points per curve computed by optimization-ai999x; marked: the worked example, D = 5000, total_cost = 24725.*
+
 ```python
 optimization_ai999x.solve('eoq_quantity_discount', D=5000, S=49, i_rate=0.2, breaks='0, 1000, 2000', prices='5, 4.8, 4.75')
 # -> order_quantity = 1000, total_cost = 24725, unit_price = 4.8   (SOLVED)
@@ -848,6 +928,10 @@ $$
 - **Method:** $z = Phi$^{-1}(SL); ROP = d L + z sigma sqrt(L)
 - **Assumes:** $0.5  \leq  SL < 1$; independent normal demand per period
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![reorder_point (reorder point) against SL (cycle service level (probability of no stockout per cycle, e](https://www.ai999x.com/?ax_fig=optimization-ai999x/reorder-point-curve)
+
+*reorder_point (reorder point) against SL (cycle service level (probability of no stockout per cycle, e.g. 0.95)) from 0.475 to 0.999. One curve for each value of L (lead time in periods): 9, 4.5, 18. Other inputs as in the worked example: d = 40, sigma = 8. 29 points per curve computed by optimization-ai999x; marked: the worked example, SL = 0.95, reorder_point = 399.476.*
 
 ```python
 optimization_ai999x.solve('reorder_point', d=40, L=9, sigma=8, SL=0.95)
@@ -894,6 +978,10 @@ $$
 - **Assumes:** $0.5  \leq  SL < 1$; independent normal demand per period
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![order_up_to_level (order-up-to level S) against d (average demand per period) from 10 to 30](https://www.ai999x.com/?ax_fig=optimization-ai999x/order-up-to-level-curve)
+
+*order_up_to_level (order-up-to level S) against d (average demand per period) from 10 to 30. One curve for each value of R (review period (periods)): 7, 3.5, 14. Other inputs as in the worked example: sigma = 4, L = 2, SL = 0.95. 31 points per curve computed by optimization-ai999x; marked: the worked example, d = 20, order_up_to_level = 199.738.*
+
 ```python
 optimization_ai999x.solve('order_up_to_level', d=20, sigma=4, R=7, L=2, SL=0.95)
 # -> order_up_to_level = 199.738, safety_stock = 19.7382, z = 1.64485   (SOLVED)
@@ -933,6 +1021,10 @@ $$
 - **Method:** critical fractile: F(Q) = (p - c)/(p - s); expected profit from the standard normal loss function
 - **Assumes:** salvage < cost < price; $\sigma > 0$; continuous normal demand
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![Q (optimal order quantity) against p (selling price per unit) from 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/newsvendor-normal-curve)
+
+*Q (optimal order quantity) against p (selling price per unit) from 0.2 to 20 on a logarithmic axis. One curve for each value of mu (mean demand): 100, 50, 200. Other inputs as in the worked example: c = 0.5, sigma = 20, s = 0.2. 33 points per curve computed by optimization-ai999x; marked: the worked example, p = 2, Q = 119.348.*
 
 ```python
 optimization_ai999x.solve('newsvendor_normal', p=2, c=0.5, s=0.2, mu=100, sigma=20)
@@ -979,6 +1071,10 @@ $$
 - **Assumes:** salvage < cost < price; $0  \leq  a < b$
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![expected_profit (expected profit at Q) against p (selling price per unit) from 5 to 15](https://www.ai999x.com/?ax_fig=optimization-ai999x/newsvendor-uniform-curve)
+
+*expected_profit (expected profit at Q) against p (selling price per unit) from 5 to 15. One curve for each value of hi (highest possible demand b): 300, 150, 600. Other inputs as in the worked example: c = 4, lo = 100. 31 points per curve computed by optimization-ai999x; marked: the worked example, p = 10, expected_profit = 960.*
+
 ```python
 optimization_ai999x.solve('newsvendor_uniform', p=10, c=4, lo=100, hi=300)
 # -> critical_ratio = 0.6, Q = 220, expected_profit = 960   (SOLVED)
@@ -1017,6 +1113,14 @@ $$
 - **Method:** cumulative distribution against the critical ratio, in exact fractions
 - **Assumes:** salvage < cost < price; probabilities sum to 1; order quantities restricted to the listed demand values
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![expected_profit (maximum expected profit) against p (selling price per unit) from 5 to 15](https://www.ai999x.com/?ax_fig=optimization-ai999x/newsvendor-discrete-curve)
+
+*expected_profit (maximum expected profit) against p (selling price per unit) from 5 to 15. One curve for each value of c (cost per unit): 4, 2, 8. Other inputs as in the worked example: demands = 10, 20, 30, 40, probs = 0.1, 0.3, 0.4, 0.2. 31 points per curve computed by optimization-ai999x; marked: the worked example, p = 10, expected_profit = 130.*
+
+![expected_profit (maximum expected profit) over p (selling price per unit) from 5 to 15 and c (cost per unit) from 2 to 6: each of the 21 × 15 cells is one run of optimization-ai999x, shaded by its value (light 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/newsvendor-discrete-field)
+
+*expected_profit (maximum expected profit) over p (selling price per unit) from 5 to 15 and c (cost per unit) from 2 to 6: each of the 21 × 15 cells is one run of optimization-ai999x, shaded by its value (light 0.714286 to dark 325); iso-lines at expected_profit = 100, 200, 300; blank cells: inputs the capability refuses. Other inputs as in the worked example: demands = 10, 20, 30, 40, probs = 0.1, 0.3, 0.4, 0.2. Marked: the worked example, p = 10, c = 4, expected_profit = 130.*
 
 ```python
 optimization_ai999x.solve('newsvendor_discrete', p=10, c=4, demands='10, 20, 30, 40', probs='0.1, 0.3, 0.4, 0.2')
@@ -1057,6 +1161,10 @@ $$
 - **Method:** protect y with P(D1 > y) = p2/p1
 - **Assumes:** $0 < p_{2} < p_{1}$; normally distributed full-fare demand; continuous approximation (no rounding)
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![protection_level (units protected for full-fare demand) against p1 (full fare) from 200 to 600](https://www.ai999x.com/?ax_fig=optimization-ai999x/littlewood-protection-curve)
+
+*protection_level (units protected for full-fare demand) against p1 (full fare) from 200 to 600. One curve for each value of mu (mean full-fare demand): 60, 30, 120. Other inputs as in the worked example: p2 = 150, sigma = 20. 31 points per curve computed by optimization-ai999x; marked: the worked example, p1 = 400, protection_level = 66.3728.*
 
 ```python
 optimization_ai999x.solve('littlewood_protection', p1=400, p2=150, mu=60, sigma=20)
@@ -1101,6 +1209,10 @@ $$
 - **Method:** geometric stationary distribution; Little's law
 - **Assumes:** $\lambda < mu$ (stable); Poisson arrivals, exponential service, one server, unlimited capacity
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![L (mean number in the system) against lam (arrival rate (customers per unit time)) from 4 to 12](https://www.ai999x.com/?ax_fig=optimization-ai999x/mm1-queue-curve)
+
+*L (mean number in the system) against lam (arrival rate (customers per unit time)) from 4 to 12. One curve for each value of mu (service rate (customers per unit time)): 10, 20. 23 points per curve computed by optimization-ai999x; marked: the worked example, lam = 8, L = 4.*
 
 ```python
 optimization_ai999x.solve('mm1_queue', lam=8, mu=10)
@@ -1149,6 +1261,10 @@ $$
 - **Method:** Erlang B by its stable recursion, then Erlang C = B / (1 - rho $(1 - B)$); Little's law
 - **Assumes:** $\lambda < c$ mu (stable); unlimited queue capacity
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![Lq (mean number waiting) against mu (service rate of each server) from 1](https://www.ai999x.com/?ax_fig=optimization-ai999x/mmc-queue-curve)
+
+*Lq (mean number waiting) against mu (service rate of each server) from 1.5 to 4.5. One curve for each value of c (number of servers): 2, 3, 4. Other inputs as in the worked example: lam = 2. 31 points per curve computed by optimization-ai999x; marked: the worked example, mu = 3, Lq = 0.0833333.*
 
 ```python
 optimization_ai999x.solve('mmc_queue', lam=2, mu=3, c=2)
@@ -1199,6 +1315,10 @@ $$
 - **Assumes:** $1  \leq  c  \leq  K$; any utilisation (finite capacity is always stable)
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![L (mean number in the system) against lam (arrival rate) from 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/mmck-finite-queue-curve)
+
+*L (mean number in the system) against lam (arrival rate) from 0.2 to 20 on a logarithmic axis. One curve for each value of K (system capacity (customers in service plus waiting)): 3, 4, 5. Other inputs as in the worked example: mu = 2, c = 1. 41 points per curve computed by optimization-ai999x; marked: the worked example, lam = 2, L = 1.5.*
+
 ```python
 optimization_ai999x.solve('mmck_finite_queue', lam=2, mu=2, c=1, K=3)
 # -> P_block = 0.25, lam_eff = 1.5, L = 1.5, Lq = 0.75, W = 1, Wq = 0.5, P0 = 0.25   (SOLVED)
@@ -1240,6 +1360,14 @@ $$
 - **Method:** stable recursion B(k) = A B($k-1) / (k + A$ B(k-1))
 - **Assumes:** blocked customers are lost (no waiting); $A > 0$
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![blocking_probability (Erlang B blocking probability) against A (offered traffic in erlangs (arrival rate x mean holding time)) from 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/erlang-b-curve)
+
+*blocking_probability (Erlang B blocking probability) against A (offered traffic in erlangs (arrival rate x mean holding time)) from 0.3 to 30 on a logarithmic axis, logarithmic output axis. One curve for each value of c (number of servers (lines, trunks)): 5, 2, 10. 41 points per curve computed by optimization-ai999x; marked: the worked example, A = 3, blocking_probability = 0.110054.*
+
+![blocking_probability (Erlang B blocking probability) over A (offered traffic in erlangs (arrival rate x mean holding time)) from 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/erlang-b-field)
+
+*blocking_probability (Erlang B blocking probability) over A (offered traffic in erlangs (arrival rate x mean holding time)) from 0.3 to 30 and c (number of servers (lines, trunks)) from 1 to 13 (logarithmic horizontal axis): each of the 21 × 13 cells is one run of optimization-ai999x, shaded by its value (light 1.8967e-17 to dark 0.967742, logarithmic shading); iso-lines at blocking_probability = 1.00e-15, 1.00e-14, 1.00e-13, 1.00e-12, 1.00e-11, 1.00e-10. Marked: the worked example, A = 3, c = 5, blocking_probability = 0.110054.*
 
 ```python
 optimization_ai999x.solve('erlang_b', A=3, c=5)
@@ -1288,6 +1416,10 @@ $$
 - **Assumes:** $1  \leq  c  \leq  N$; exponential failure and repair times
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![L (mean number of machines down) against N (number of machines) from 1 to 10](https://www.ai999x.com/?ax_fig=optimization-ai999x/machine-repair-queue-curve)
+
+*L (mean number of machines down) against N (number of machines) from 1 to 10. One curve for each value of lam (failure rate of one running machine): 1, 0.5, 2. Other inputs as in the worked example: mu = 1, c = 1. 10 points per curve computed by optimization-ai999x; marked: the worked example, N = 2, L = 1.2.*
+
 ```python
 optimization_ai999x.solve('machine_repair_queue', N=2, lam=1, mu=1, c=1)
 # -> L = 1.2, Lq = 0.4, lam_eff = 0.8, W = 1.5, Wq = 0.5, P0 = 0.2, working = 0.8   (SOLVED)
@@ -1331,6 +1463,10 @@ $$
 - **Method:** Pollaczek-Khinchine mean-value formula; Little's law
 - **Assumes:** lambda E[S] < 1; Poisson arrivals, one server, first come first served
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![Lq (mean number waiting) against sd (standard deviation of the service time) from 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/mg1-pollaczek-khinchine-curve)
+
+*Lq (mean number waiting) against sd (standard deviation of the service time) from 0.1 to 10 on a logarithmic axis. One curve for each value of lam (arrival rate): 0.5, 0.25. Other inputs as in the worked example: ES = 1. 41 points per curve computed by optimization-ai999x; marked: the worked example, sd = 1, Lq = 0.5.*
 
 ```python
 optimization_ai999x.solve('mg1_pollaczek_khinchine', lam=0.5, ES=1, sd=1)
@@ -1378,6 +1514,10 @@ $$
 - **Assumes:** Poisson arrivals, exponential service; target > 0
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![servers (minimum number of servers) against mu (service rate of each server) from 1 to 100 on a logarithmic axis](https://www.ai999x.com/?ax_fig=optimization-ai999x/mmc-staffing-curve)
+
+*servers (minimum number of servers) against mu (service rate of each server) from 1 to 100 on a logarithmic axis. One curve for each value of lam (arrival rate): 24, 12, 48. Other inputs as in the worked example: target = 0.2. 41 points per curve computed by optimization-ai999x; marked: the worked example, mu = 10, servers = 5.*
+
 ```python
 optimization_ai999x.solve('mmc_staffing', lam=24, mu=10, target=0.2)
 # -> servers = 5, P_wait = 0.113504, Wq = 0.00436553, utilisation = 0.48   (SOLVED)
@@ -1413,6 +1553,10 @@ $$
 - **Assumes:** all jobs available at time 0; processing times >= 0
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![optimal job order (shortest first; equal times in job-number order) (sequence) returned by optimization-ai999x for the worked example, one value for each position in the list (4 values, first 2, last 3, largest 4)](https://www.ai999x.com/?ax_fig=optimization-ai999x/spt-mean-flow-time-series)
+
+*optimal job order (shortest first; equal times in job-number order) (sequence) returned by optimization-ai999x for the worked example, one value for each position in the list (4 values, first 2, last 3, largest 4). Inputs: p = 4, 2, 6, 3.*
+
 ```python
 optimization_ai999x.solve('spt_mean_flow_time', p='4, 2, 6, 3')
 # -> sequence = [2, 4, 1, 3], total_completion_time = 31, mean_flow_time = 7.75   (SOLVED)
@@ -1447,6 +1591,10 @@ $$
 - **Method:** sort by p_j / w_j (Smith's ratio rule)
 - **Assumes:** weights > 0; all jobs available at time 0
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![optimal order (ratio p/w ascending; ties in job-number order) (sequence) returned by optimization-ai999x for the worked example, one value for each w (weight (importance) of each job) (3 values, first 2, last 1, largest 3)](https://www.ai999x.com/?ax_fig=optimization-ai999x/wspt-weighted-completion-series)
+
+*optimal order (ratio p/w ascending; ties in job-number order) (sequence) returned by optimization-ai999x for the worked example, one value for each w (weight (importance) of each job) (3 values, first 2, last 1, largest 3). Inputs: p = [3, 1, 4], w = [1, 2, 3].*
 
 ```python
 optimization_ai999x.solve('wspt_weighted_completion', p=[3, 1, 4], w=[1, 2, 3])
@@ -1485,6 +1633,10 @@ $$
 - **Assumes:** all jobs available at time 0
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![optimal order (earliest due date first; ties in job-number order) (sequence) returned by optimization-ai999x for the worked example, one value for each position in the list (4 values, first 3, last 4, largest 4)](https://www.ai999x.com/?ax_fig=optimization-ai999x/edd-max-lateness-series)
+
+*optimal order (earliest due date first; ties in job-number order) (sequence) returned by optimization-ai999x for the worked example, one value for each position in the list (4 values, first 3, last 4, largest 4). Inputs: p = [2, 4, 1, 3], d = [5, 6, 3, 9].*
+
 ```python
 optimization_ai999x.solve('edd_max_lateness', p=[2, 4, 1, 3], d=[5, 6, 3, 9])
 # -> sequence = [3, 1, 2, 4], max_lateness = 1, max_tardiness = 1, tardy_jobs_in_sequence = 2   (SOLVED)
@@ -1520,6 +1672,10 @@ $$
 - **Method:** EDD order; whenever a job is late remove the longest job scheduled so far
 - **Assumes:** all jobs available at time 0
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![on-time jobs in due-date order (on_time_sequence) returned by optimization-ai999x for the worked example, one value for each position in the list (3 values, first 2, last 4, largest 4)](https://www.ai999x.com/?ax_fig=optimization-ai999x/moore-hodgson-tardy-jobs-series)
+
+*on-time jobs in due-date order (on_time_sequence) returned by optimization-ai999x for the worked example, one value for each position in the list (3 values, first 2, last 4, largest 4). Inputs: p = [4, 3, 2, 5, 6], d = [5, 6, 8, 12, 15].*
 
 ```python
 optimization_ai999x.solve('moore_hodgson_tardy_jobs', p=[4, 3, 2, 5, 6], d=[5, 6, 8, 12, 15])
@@ -1560,6 +1716,10 @@ $$
 
 *A two-machine flow shop: processing times [5, 2, 6, 7] on machine 1 and [3, 4, 8, 2] on machine 2. The package's Johnson order is job 2 → job 3 → job 1 → job 4, with makespan 22; each job starts on machine 2 as soon as it leaves machine 1 and machine 2 is free.*
 
+![Johnson order (a < b by increasing a, then the rest by decreasing b; ties by job number) (sequence) returned by optimization-ai999x for the worked example, one value for each position in the list (4 values, first 2, last 4, largest 4)](https://www.ai999x.com/?ax_fig=optimization-ai999x/johnson-two-machine-series)
+
+*Johnson order (a < b by increasing a, then the rest by decreasing b; ties by job number) (sequence) returned by optimization-ai999x for the worked example, one value for each position in the list (4 values, first 2, last 4, largest 4). Inputs: a = [5, 2, 6, 7], b = [3, 4, 8, 2].*
+
 ```python
 optimization_ai999x.solve('johnson_two_machine', a=[5, 2, 6, 7], b=[3, 4, 8, 2])
 # -> makespan = 22, sequence = [2, 3, 1, 4]   (SOLVED)
@@ -1595,6 +1755,14 @@ $$
 - **Method:** exact depth-first branch and bound (longest job first, symmetric machines skipped), started from the LPT schedule
 - **Assumes:** at most 12 jobs and 6 machines; jobs are not split
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![one optimal assignment: machine number of each job (machine_of_job) returned by optimization-ai999x for the worked example, one value for each position in the list (6 values, first 1, last 1, largest 2)](https://www.ai999x.com/?ax_fig=optimization-ai999x/parallel-machine-makespan-series)
+
+*one optimal assignment: machine number of each job (machine_of_job) returned by optimization-ai999x for the worked example, one value for each position in the list (6 values, first 1, last 1, largest 2). Inputs: p = [7, 5, 4, 3, 3, 2], m = 2.*
+
+![makespan (minimum makespan) against m (number of identical machines) from 1 to 10](https://www.ai999x.com/?ax_fig=optimization-ai999x/parallel-machine-makespan-curve)
+
+*makespan (minimum makespan) against m (number of identical machines) from 1 to 10. Other inputs as in the worked example: p = [7, 5, 4, 3, 3, 2]. 6 points computed by optimization-ai999x; marked: the worked example, m = 2, makespan = 12.*
 
 ```python
 optimization_ai999x.solve('parallel_machine_makespan', p=[7, 5, 4, 3, 3, 2], m=2)
@@ -1639,6 +1807,14 @@ $$
 - **Assumes:** finish-to-start precedences without cycles; deterministic durations
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![total slack of each activity (slack) returned by optimization-ai999x for the worked example, one value for each position in the list (4 values, first 0, last 0, largest 2); with earliest_start (earliest start of each activity), latest_start (latest start of each activity)](https://www.ai999x.com/?ax_fig=optimization-ai999x/critical-path-method-series)
+
+*total slack of each activity (slack) returned by optimization-ai999x for the worked example, one value for each position in the list (4 values, first 0, last 0, largest 2); with earliest_start (earliest start of each activity), latest_start (latest start of each activity). Inputs: durations = 3, 4, 2, 5, precedences = A-B, A-C, B-D, C-D.*
+
+![The network precedences (precedence pairs 'A-B' meaning A must finish before B starts (none if omitted)) of the worked example (4 nodes, 4 edges, laid out on a circle); highlighted: the returned path A → B → D](https://www.ai999x.com/?ax_fig=optimization-ai999x/critical-path-method-graph)
+
+*The network precedences (precedence pairs 'A-B' meaning A must finish before B starts (none if omitted)) of the worked example (4 nodes, 4 edges, laid out on a circle); highlighted: the returned path A → B → D. Returned: project_duration = 12. Other inputs: durations = 3, 4, 2, 5.*
+
 ```python
 optimization_ai999x.solve('critical_path_method', durations='3, 4, 2, 5', precedences='A-B, A-C, B-D, C-D')
 # -> project_duration = 12, critical_activities = ['A', 'B', 'D'], slack = [0.0, 0.0, 2.0, 0.0], earliest_start = [0.0, 3.0, 3.0, 7.0], latest_start = [0.0, 3.0, 5.0, 7.0]   (SOLVED)
@@ -1679,6 +1855,14 @@ $$
 - **Method:** beta-PERT expected times, longest path in exact fractions with a count of longest paths, variance summed along it
 - **Assumes:** a unique critical path (otherwise INVALID_INPUT); independent activity times; normal approximation
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![expected time of each activity (a + 4m + b)/6 (expected_times) returned by optimization-ai999x for the worked example, one value for each position in the list (3 values, first 4, last 2, largest 6)](https://www.ai999x.com/?ax_fig=optimization-ai999x/pert-project-series)
+
+*expected time of each activity (a + 4m + b)/6 (expected_times) returned by optimization-ai999x for the worked example, one value for each position in the list (3 values, first 4, last 2, largest 6). Inputs: times = 2 4 6; 3 5 13; 1 2 3, precedences = A-B, A-C, deadline = 10.*
+
+![The network precedences (precedence pairs 'A-B' (A before B)) of the worked example (3 nodes, 2 edges, laid out on a circle); highlighted: the returned path A → B](https://www.ai999x.com/?ax_fig=optimization-ai999x/pert-project-graph)
+
+*The network precedences (precedence pairs 'A-B' (A before B)) of the worked example (3 nodes, 2 edges, laid out on a circle); highlighted: the returned path A → B. Returned: expected_duration = 10, variance = 3.22222, std_dev = 1.79505, probability = 0.5. Other inputs: times = 2 4 6; 3 5 13; 1 2 3, deadline = 10.*
 
 ```python
 optimization_ai999x.solve('pert_project', times='2 4 6; 3 5 13; 1 2 3', precedences='A-B, A-C', deadline=10)
@@ -1723,6 +1907,10 @@ $$
 
 *A weighted network (A-B 4, A-C 2, B-C 1, B-D 5, C-D 8, A-E 7, E-D 3, C-E 6): the shortest path from A to D the package finds, A → C → B → D of length 8, and its minimum spanning tree (B-C, A-C, E-D, B-D, total weight 11).*
 
+![The network edges (weighted edges 'A-B 4, B-C 1, ](https://www.ai999x.com/?ax_fig=optimization-ai999x/shortest-path-graph-2)
+
+*The network edges (weighted edges 'A-B 4, B-C 1, ...') of the worked example (4 nodes, 5 edges, laid out on a circle); on each edge its stated weight; highlighted: the returned path A → C → B → D. Returned: distance = 8. Other inputs: source = A, target = D, directed = False.*
+
 ```python
 optimization_ai999x.solve('shortest_path', edges='A-B 4, A-C 2, B-C 1, B-D 5, C-D 8', source='A', target='D', directed=False)
 # -> distance = 8, path = ['A', 'C', 'B', 'D'], path_unique = yes   (SOLVED)
@@ -1766,6 +1954,14 @@ $$
 - **Assumes:** directed graph; no negative cycle reachable from the source (otherwise INVALID_INPUT)
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![shortest distance to every reachable node (distances_from_source) returned by optimization-ai999x for the worked example (edges = [["S", "A", 4], ["S", "B", 5], ["A", "T", 3]…, source = S, target = T), one bar per entry: S = 0, A = 2, B = 5, T = 5](https://www.ai999x.com/?ax_fig=optimization-ai999x/bellman-ford-shortest-path-bars)
+
+*shortest distance to every reachable node (distances_from_source) returned by optimization-ai999x for the worked example (edges = [["S", "A", 4], ["S", "B", 5], ["A", "T", 3]…, source = S, target = T), one bar per entry: S = 0, A = 2, B = 5, T = 5.*
+
+![The network edges (directed weighted edges 'A-B 4, B-C -2, ](https://www.ai999x.com/?ax_fig=optimization-ai999x/bellman-ford-shortest-path-graph)
+
+*The network edges (directed weighted edges 'A-B 4, B-C -2, ...') of the worked example (4 nodes, 5 edges, laid out on a circle); on each edge its stated weight. Returned: distance = 5. Other inputs: source = S, target = T.*
+
 ```python
 optimization_ai999x.solve('bellman_ford_shortest_path', edges=[['S', 'A', 4], ['S', 'B', 5], ['A', 'T', 3], ['B', 'A', -3], ['B', 'T', 6]], source='S', target='T')
 # -> distance = 5, distances_from_source = {'S': 0.0, 'A': 2.0, 'B': 5.0, 'T': 5.0}   (SOLVED)
@@ -1803,6 +1999,14 @@ $$
 - **Assumes:** every node reaches every other; no negative cycle; at most 40 nodes
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![The network edges (weighted edges 'A-B 4, ](https://www.ai999x.com/?ax_fig=optimization-ai999x/all-pairs-shortest-paths-graph)
+
+*The network edges (weighted edges 'A-B 4, ...') of the worked example (4 nodes, 4 edges, laid out on a circle); on each edge its stated weight; highlighted: the returned path A → B → C → D. Returned: diameter = 9. Other inputs: directed = False.*
+
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): distances (returned)](https://www.ai999x.com/?ax_fig=optimization-ai999x/all-pairs-shortest-paths-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): distances (returned). Returned with them by optimization-ai999x: diameter = 9. Other inputs: edges = A-B 3, B-C 4, A-C 9, C-D 2, directed = False.*
+
 ```python
 optimization_ai999x.solve('all_pairs_shortest_paths', edges='A-B 3, B-C 4, A-C 9, C-D 2', directed=False)
 # -> nodes = ['A', 'B', 'C', 'D'], distances = [[0.0, 3.0, 7.0, 9.0], [3.0, 0.0, 4.0, 6.0], [7.0, 4.0, 0.0, 2.0], [9.0, 6.0, 2.0, 0.0]], diameter = 9   (SOLVED)
@@ -1837,6 +2041,10 @@ $$
 - **Method:** Kruskal (edges by weight, union-find); uniqueness by the cycle property; total re-checked by Prim
 - **Assumes:** connected undirected graph
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![The network edges (undirected weighted edges 'A-B 4, ](https://www.ai999x.com/?ax_fig=optimization-ai999x/minimum-spanning-tree-graph)
+
+*The network edges (undirected weighted edges 'A-B 4, ...') of the worked example (4 nodes, 5 edges, laid out on a circle); on each edge its stated weight. Returned: total_weight = 8.*
 
 ```python
 optimization_ai999x.solve('minimum_spanning_tree', edges='A-B 4, A-C 1, B-C 2, B-D 5, C-D 8')
@@ -1875,6 +2083,14 @@ $$
 - **Method:** Edmonds-Karp (breadth-first augmenting paths) in exact arithmetic; certified by the max-flow min-cut theorem
 - **Assumes:** directed arcs; capacities >= 0
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![flow on each arc, in input order (one maximum flow) (edge_flows) returned by optimization-ai999x for the worked example, one value for each position in the list (5 values, first 10, last 10, largest 10)](https://www.ai999x.com/?ax_fig=optimization-ai999x/max-flow-series)
+
+*flow on each arc, in input order (one maximum flow) (edge_flows) returned by optimization-ai999x for the worked example, one value for each position in the list (5 values, first 10, last 10, largest 10). Inputs: edges = S-A 10, S-B 5, A-B 15, A-T 5, B-T 10, source = S, target = T.*
+
+![The network edges (directed arcs with capacities 'S-A 10, A-T 5, ](https://www.ai999x.com/?ax_fig=optimization-ai999x/max-flow-graph)
+
+*The network edges (directed arcs with capacities 'S-A 10, A-T 5, ...') of the worked example (4 nodes, 5 edges, laid out on a circle); on each edge the edge_flows returned by optimization-ai999x. Returned: max_flow = 15. Other inputs: source = S, target = T.*
 
 ```python
 optimization_ai999x.solve('max_flow', edges='S-A 10, S-B 5, A-B 15, A-T 5, B-T 10', source='S', target='T')
@@ -1918,6 +2134,14 @@ $$
 
 *The optimal transportation plan the package computes for supplies [20, 30], demands [10, 25, 15] and unit costs [[2, 3, 1], [5, 4, 8]] (rows: sources, columns: destinations; left the unit costs, right the quantities shipped): minimum total cost 150.*
 
+![dual values (u for sources, v for destinations): the optimality certificate (dual) returned by optimization-ai999x for the worked example, one value for each position in the list (5 values, first -3, last 4, largest 5)](https://www.ai999x.com/?ax_fig=optimization-ai999x/transportation-problem-series)
+
+*dual values (u for sources, v for destinations): the optimality certificate (dual) returned by optimization-ai999x for the worked example, one value for each position in the list (5 values, first -3, last 4, largest 5). Inputs: supply = [20, 30], demand = [10, 25, 15], cost = [[2, 3, 1], [5, 4, 8]].*
+
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): cost (input); shipments (returned)](https://www.ai999x.com/?ax_fig=optimization-ai999x/transportation-problem-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): cost (input); shipments (returned). Returned with them by optimization-ai999x: min_cost = 150. Other inputs: supply = [20, 30], demand = [10, 25, 15].*
+
 ```python
 optimization_ai999x.solve('transportation_problem', supply=[20, 30], demand=[10, 25, 15], cost=[[2, 3, 1], [5, 4, 8]])
 # -> min_cost = 150, shipments = [[5.0, 0.0, 15.0], [5.0, 25.0, 0.0]], plan_unique = yes, dual = [-3.0, 0.0, 5.0, 4.0, 4.0]   (SOLVED)
@@ -1957,6 +2181,14 @@ $$
 - **Assumes:** supplies sum to 0; a feasible flow exists; at most 60 arcs
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![dual values: node potentials then arc-capacity prices (dual) returned by optimization-ai999x for the worked example, one value for each position in the list (6 values, first 3, last 0, largest 3)](https://www.ai999x.com/?ax_fig=optimization-ai999x/min-cost-flow-series)
+
+*dual values: node potentials then arc-capacity prices (dual) returned by optimization-ai999x for the worked example, one value for each position in the list (6 values, first 3, last 0, largest 3). Inputs: capacity = [[0, 10, 5], [0, 0, 10], [0, 0, 0]], cost = [[0, 1, 4], [0, 0, 2], [0, 0, 0]], supply = [8, 0, -8].*
+
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): capacity (input); cost (input); flows (returned)](https://www.ai999x.com/?ax_fig=optimization-ai999x/min-cost-flow-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): capacity (input); cost (input); flows (returned). Returned with them by optimization-ai999x: min_cost = 24. Other inputs: supply = [8, 0, -8].*
+
 ```python
 optimization_ai999x.solve('min_cost_flow', capacity=[[0, 10, 5], [0, 0, 10], [0, 0, 0]], cost=[[0, 1, 4], [0, 0, 2], [0, 0, 0]], supply=[8, 0, -8])
 # -> min_cost = 24, flows = [[0.0, 8.0, 0.0], [0.0, 0.0, 8.0], [0.0, 0.0, 0.0]], flow_unique = yes, dual = [3.0, 2.0, 0.0, 0.0, 0.0, 0.0]   (SOLVED)
@@ -1993,6 +2225,14 @@ $$
 - **Method:** Hungarian method (shortest augmenting paths with potentials) in exact arithmetic; uniqueness by forbidding each chosen cell
 - **Assumes:** square matrix, at most 12 x 12 (pad with zeros for unbalanced problems)
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![column assigned to each row, 1-based (only when unique; otherwise assignment_example) (assignment) returned by optimization-ai999x for the worked example, one value for each position in the list (3 values, first 2, last 3, largest 3); with dual_u (row potentials), dual_v (column potentials (u_i + v_j bounds every cell: the optimality certificate))](https://www.ai999x.com/?ax_fig=optimization-ai999x/assignment-min-cost-series)
+
+*column assigned to each row, 1-based (only when unique; otherwise assignment_example) (assignment) returned by optimization-ai999x for the worked example, one value for each position in the list (3 values, first 2, last 3, largest 3); with dual_u (row potentials), dual_v (column potentials (u_i + v_j bounds every cell: the optimality certificate)). Inputs: C = 9 2 7; 6 4 3; 5 8 1.*
+
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): C (input); assignment (returned)](https://www.ai999x.com/?ax_fig=optimization-ai999x/assignment-min-cost-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): C (input); assignment (returned). Returned with them by optimization-ai999x: min_cost = 9.*
 
 ```python
 optimization_ai999x.solve('assignment_min_cost', C='9 2 7; 6 4 3; 5 8 1')
@@ -2032,6 +2272,14 @@ $$
 - **Assumes:** square matrix, at most 12 x 12 (pad with zeros for unbalanced problems)
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![column assigned to each row, 1-based (only when unique; otherwise assignment_example) (assignment) returned by optimization-ai999x for the worked example, one value for each position in the list (3 values, first 3, last 2, largest 3); with dual_u (row potentials), dual_v (column potentials (u_i + v_j bounds every cell: the optimality certificate))](https://www.ai999x.com/?ax_fig=optimization-ai999x/assignment-max-profit-series)
+
+*column assigned to each row, 1-based (only when unique; otherwise assignment_example) (assignment) returned by optimization-ai999x for the worked example, one value for each position in the list (3 values, first 3, last 2, largest 3); with dual_u (row potentials), dual_v (column potentials (u_i + v_j bounds every cell: the optimality certificate)). Inputs: C = 9 2 7; 6 4 3; 5 8 1.*
+
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): C (input); assignment (returned)](https://www.ai999x.com/?ax_fig=optimization-ai999x/assignment-max-profit-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): C (input); assignment (returned). Returned with them by optimization-ai999x: max_value = 21.*
+
 ```python
 optimization_ai999x.solve('assignment_max_profit', C='9 2 7; 6 4 3; 5 8 1')
 # -> max_value = 21, assignment = [3, 1, 2], assignment_unique = yes, dual_u = [7.0, 4.0, 8.0], dual_v = [2.0, 0.0, 0.0]   (SOLVED)
@@ -2067,6 +2315,10 @@ $$
 - **Method:** augmenting paths (Kuhn); minimum vertex cover from alternating reachability (Konig)
 - **Assumes:** bipartite: the first node of each pair is on the left, the second on the right
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![The network edges (allowed pairs 'left-right', e](https://www.ai999x.com/?ax_fig=optimization-ai999x/bipartite-matching-graph)
+
+*The network edges (allowed pairs 'left-right', e.g. 'W1-J1, W1-J2, W2-J1') of the worked example (6 nodes, 5 edges, laid out on a circle); highlighted: the returned path W1 → W2 → W3. Returned: max_matching = 3.*
 
 ```python
 optimization_ai999x.solve('bipartite_matching', edges='W1-J1, W1-J2, W2-J1, W3-J2, W3-J3')
@@ -2107,6 +2359,10 @@ $$
 - **Assumes:** at most 16 nodes; edges of weight <= 0 are never worth choosing
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![The network edges (undirected weighted edges 'A-B 4, ](https://www.ai999x.com/?ax_fig=optimization-ai999x/max-weight-matching-graph)
+
+*The network edges (undirected weighted edges 'A-B 4, ...') of the worked example (4 nodes, 5 edges, laid out on a circle); on each edge its stated weight. Returned: max_weight = 12.*
+
 ```python
 optimization_ai999x.solve('max_weight_matching', edges='A-B 6, B-C 5, C-D 6, A-D 2, A-C 4')
 # -> max_weight = 12, matching_example = ['A-B', 'C-D']   (SOLVED)
@@ -2140,6 +2396,14 @@ $$
 - **Method:** Held-Karp dynamic programming over city subsets, exact arithmetic
 - **Assumes:** 2 to 11 cities
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![one optimal tour starting and ending at city 1 (tour_example) returned by optimization-ai999x for the worked example, one value for each position in the list (5 values, first 1, last 1, largest 4)](https://www.ai999x.com/?ax_fig=optimization-ai999x/traveling-salesman-series)
+
+*one optimal tour starting and ending at city 1 (tour_example) returned by optimization-ai999x for the worked example, one value for each position in the list (5 values, first 1, last 1, largest 4). Inputs: D = [[0, 10, 15, 20], [10, 0, 35, 25], [15, 35, 0….*
+
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): D (input)](https://www.ai999x.com/?ax_fig=optimization-ai999x/traveling-salesman-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): D (input). Returned with them by optimization-ai999x: min_tour_length = 80.*
 
 ```python
 optimization_ai999x.solve('traveling_salesman', D=[[0, 10, 15, 20], [10, 0, 35, 25], [15, 35, 0, 30], [20, 25, 30, 0]])
@@ -2178,6 +2442,10 @@ $$
 - **Assumes:** values, weights, capacity >= 0; at most 40 items
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![max_value (maximum total value) against capacity (knapsack capacity) from 5 to 500 on a logarithmic axis](https://www.ai999x.com/?ax_fig=optimization-ai999x/knapsack-01-curve)
+
+*max_value (maximum total value) against capacity (knapsack capacity) from 5 to 500 on a logarithmic axis. Other inputs as in the worked example: values = 60, 100, 120, weights = 10, 20, 30. 41 points computed by optimization-ai999x; marked: the worked example, capacity = 50, max_value = 220.*
+
 ```python
 optimization_ai999x.solve('knapsack_01', values='60, 100, 120', weights='10, 20, 30', capacity=50)
 # -> max_value = 220, items_example = [2, 3], total_weight = 50   (SOLVED)
@@ -2215,6 +2483,14 @@ $$
 - **Assumes:** positive whole-number weights; capacity a whole number <= 100000
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![number of copies of each type in one optimal choice (copies_example) returned by optimization-ai999x for the worked example, one value for each values (value of each item type) (4 values, first 0, last 1, largest 1)](https://www.ai999x.com/?ax_fig=optimization-ai999x/knapsack-unbounded-series)
+
+*number of copies of each type in one optimal choice (copies_example) returned by optimization-ai999x for the worked example, one value for each values (value of each item type) (4 values, first 0, last 1, largest 1). Inputs: values = [10, 40, 50, 70], weights = [1, 3, 4, 5], capacity = 8.*
+
+![max_value (maximum total value) against capacity (capacity (a whole number)) from 1 to 16](https://www.ai999x.com/?ax_fig=optimization-ai999x/knapsack-unbounded-curve)
+
+*max_value (maximum total value) against capacity (capacity (a whole number)) from 1 to 16. Other inputs as in the worked example: values = [10, 40, 50, 70], weights = [1, 3, 4, 5]. 16 points computed by optimization-ai999x; marked: the worked example, capacity = 8, max_value = 110.*
+
 ```python
 optimization_ai999x.solve('knapsack_unbounded', values=[10, 40, 50, 70], weights=[1, 3, 4, 5], capacity=8)
 # -> max_value = 110, copies_example = [0.0, 1.0, 0.0, 1.0]   (SOLVED)
@@ -2249,6 +2525,10 @@ $$
 - **Method:** exhaustive enumeration of set combinations (exact)
 - **Assumes:** at most 18 sets; every element in some set
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): sets (input)](https://www.ai999x.com/?ax_fig=optimization-ai999x/set-cover-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): sets (input). Returned with them by optimization-ai999x: min_cost = 4. Other inputs: costs = [3, 2, 3, 2].*
 
 ```python
 optimization_ai999x.solve('set_cover', sets=[[1, 1, 0, 0], [0, 1, 1, 0], [0, 0, 1, 1], [1, 0, 0, 1]], costs=[3, 2, 3, 2])
@@ -2285,6 +2565,10 @@ $$
 - **Assumes:** at most 15 facilities; unlimited capacity
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): cost (input)](https://www.ai999x.com/?ax_fig=optimization-ai999x/facility-location-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): cost (input). Returned with them by optimization-ai999x: min_cost = 31. Other inputs: fixed = [10, 15, 12].*
+
 ```python
 optimization_ai999x.solve('facility_location', fixed=[10, 15, 12], cost=[[3, 8, 6, 9], [7, 2, 4, 3], [5, 6, 2, 8]])
 # -> min_cost = 31, open_example = [2]   (SOLVED)
@@ -2320,6 +2604,14 @@ $$
 - **Method:** exact depth-first search (largest item first, symmetric bins skipped) with the volume bound
 - **Assumes:** at most 14 items; every item fits in a bin
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![one optimal packing: bin number of each item (bin_of_item) returned by optimization-ai999x for the worked example, one value for each position in the list (6 values, first 2, last 2, largest 2)](https://www.ai999x.com/?ax_fig=optimization-ai999x/bin-packing-series)
+
+*one optimal packing: bin number of each item (bin_of_item) returned by optimization-ai999x for the worked example, one value for each position in the list (6 values, first 2, last 2, largest 2). Inputs: sizes = [4, 8, 1, 4, 2, 1], capacity = 10.*
+
+![min_bins (minimum number of bins) against capacity (capacity of each bin) from 5 to 15](https://www.ai999x.com/?ax_fig=optimization-ai999x/bin-packing-curve)
+
+*min_bins (minimum number of bins) against capacity (capacity of each bin) from 5 to 15. Other inputs as in the worked example: sizes = [4, 8, 1, 4, 2, 1]. 22 points computed by optimization-ai999x; marked: the worked example, capacity = 10, min_bins = 2.*
 
 ```python
 optimization_ai999x.solve('bin_packing', sizes=[4, 8, 1, 4, 2, 1], capacity=10)
@@ -2360,6 +2652,14 @@ $$
 - **Method:** the game as a pair of dual linear programs on the shifted matrix, solved exactly (rational simplex); the pair of strategies is the certificate (each guarantees the value)
 - **Assumes:** at most 12 strategies per player
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![one optimal mixed strategy of the row player (row_strategy_example) returned by optimization-ai999x for the worked example, one value for each position in the list (3 values, first 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/zero-sum-game-series)
+
+*one optimal mixed strategy of the row player (row_strategy_example) returned by optimization-ai999x for the worked example, one value for each position in the list (3 values, first 0.6, last 0, largest 0.6); with col_strategy_example (one optimal mixed strategy of the column player). Inputs: A = [[3, -1, 2], [-2, 4, 1], [0, 1, -1]].*
+
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): A (input); row_strategy_example (returned)](https://www.ai999x.com/?ax_fig=optimization-ai999x/zero-sum-game-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): A (input); row_strategy_example (returned). Returned with them by optimization-ai999x: value = 1.*
 
 ```python
 optimization_ai999x.solve('zero_sum_game', A=[[3, -1, 2], [-2, 4, 1], [0, 1, -1]])
@@ -2402,6 +2702,10 @@ $$
 - **Method:** maximin = minimax gives a saddle point; otherwise the indifference formulas in exact arithmetic
 - **Assumes:** a 2 x 2 matrix
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): A (input)](https://www.ai999x.com/?ax_fig=optimization-ai999x/zero-sum-2x2-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): A (input). Returned with them by optimization-ai999x: value = 1, p_row1 = 0.6, q_col1 = 0.5.*
 
 ```python
 optimization_ai999x.solve('zero_sum_2x2', A=[[3, -1], [-2, 4]])
@@ -2449,6 +2753,10 @@ $$
 - **Assumes:** at most 8 strategies per player; weak best replies count (ties are equilibria)
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): A (input); B (input); equilibria (returned)](https://www.ai999x.com/?ax_fig=optimization-ai999x/pure-nash-equilibria-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): A (input); B (input); equilibria (returned). Returned with them by optimization-ai999x: count = 1.*
+
 ```python
 optimization_ai999x.solve('pure_nash_equilibria', A=[[3, 0], [5, 1]], B=[[3, 5], [0, 1]])
 # -> count = 1, equilibria = [[2.0, 2.0]]   (SOLVED)
@@ -2492,6 +2800,10 @@ $$
 - **Assumes:** 2 x 2 matrices; no pure-strategy equilibrium (then the mixed one is unique)
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): A (input); B (input)](https://www.ai999x.com/?ax_fig=optimization-ai999x/mixed-nash-2x2-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): A (input); B (input). Returned with them by optimization-ai999x: p_row1 = 0.4, q_col1 = 0.285714, row_payoff = 0.142857, col_payoff = 0.2.*
+
 ```python
 optimization_ai999x.solve('mixed_nash_2x2', A=[[3, -1], [-2, 1]], B=[[-1, 2], [1, -1]])
 # -> p_row1 = 0.4, q_col1 = 0.285714, row_payoff = 0.142857, col_payoff = 0.2   (SOLVED)
@@ -2529,6 +2841,14 @@ $$
 - **Method:** vector normalisation $r = x$ / ||x_col||, weighted; ideal = best per criterion, anti-ideal = worst; $C = D$- / (D+ + D-)
 - **Assumes:** values > 0; weights > 0 (normalised to sum 1); types 1 $or -1$
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![score of each alternative (scores) returned by optimization-ai999x for the worked example, one value for each position in the list (5 values, first 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/topsis-series)
+
+*score of each alternative (scores) returned by optimization-ai999x for the worked example, one value for each position in the list (5 values, first 0.534277, last 0.401046, largest 0.691632). Inputs: X = [[250, 16, 12, 5], [200, 16, 8, 3], [300, 32…, w = [0.25, 0.25, 0.25, 0.25], types = [-1, 1, 1, 1].*
+
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): X (input); scores (returned)](https://www.ai999x.com/?ax_fig=optimization-ai999x/topsis-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): X (input); scores (returned). Returned with them by optimization-ai999x: best_score = 0.691632, best = 3. Other inputs: w = [0.25, 0.25, 0.25, 0.25], types = [-1, 1, 1, 1].*
 
 ```python
 optimization_ai999x.solve('topsis', X=[[250, 16, 12, 5], [200, 16, 8, 3], [300, 32, 16, 4], [275, 32, 8, 4], [225, 16, 16, 2]], w=[0.25, 0.25, 0.25, 0.25], types=[-1, 1, 1, 1])
@@ -2573,6 +2893,14 @@ $$
 - **Assumes:** values > 0; weights > 0 (normalised to sum 1); types 1 $or -1$
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![score of each alternative (scores) returned by optimization-ai999x for the worked example, one value for each position in the list (3 values, first 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/weighted-sum-model-series)
+
+*score of each alternative (scores) returned by optimization-ai999x for the worked example, one value for each position in the list (3 values, first 0.695, last 0.866667, largest 0.866667). Inputs: X = [[250, 16, 12], [200, 16, 8], [300, 32, 16]], w = [0.4, 0.3, 0.3], types = [-1, 1, 1].*
+
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): X (input); scores (returned)](https://www.ai999x.com/?ax_fig=optimization-ai999x/weighted-sum-model-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): X (input); scores (returned). Returned with them by optimization-ai999x: best_score = 0.866667, best = 3. Other inputs: w = [0.4, 0.3, 0.3], types = [-1, 1, 1].*
+
 ```python
 optimization_ai999x.solve('weighted_sum_model', X=[[250, 16, 12], [200, 16, 8], [300, 32, 16]], w=[0.4, 0.3, 0.3], types=[-1, 1, 1])
 # -> scores = [0.6950000000000001, 0.7, 0.8666666666666667], best_score = 0.866667, best = 3   (SOLVED)
@@ -2610,6 +2938,14 @@ $$
 - **Assumes:** values > 0; weights > 0 (normalised to sum 1); types 1 $or -1$
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![The plane vectors of the worked example as arrows from the origin: input w = (0](https://www.ai999x.com/?ax_fig=optimization-ai999x/weighted-product-model-vectors)
+
+*The plane vectors of the worked example as arrows from the origin: input w = (0.5, 0.5), types = (1, 1); returned by optimization-ai999x: scores = (0.707107, 0.707107); also returned best_score = 0.707107, best = 1. Other inputs: X = [[4, 2], [2, 4]]. Marked: the tip of each returned vector.*
+
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): X (input); scores (returned)](https://www.ai999x.com/?ax_fig=optimization-ai999x/weighted-product-model-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): X (input); scores (returned). Returned with them by optimization-ai999x: best_score = 0.707107, best = 1. Other inputs: w = [0.5, 0.5], types = [1, 1].*
+
 ```python
 optimization_ai999x.solve('weighted_product_model', X=[[4, 2], [2, 4]], w=[0.5, 0.5], types=[1, 1])
 # -> scores = [0.7071067811865476, 0.7071067811865476], best_score = 0.707107, best = 1   (SOLVED)
@@ -2644,6 +2980,10 @@ $$
 - **Method:** power iteration on the positive reciprocal matrix; certified as an eigenpair (P $w = \lambda$ w, $w > 0$: the Perron vector)
 - **Assumes:** judgments > 0; 2 to 10 criteria
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![priority weights (sum 1) (weights) returned by optimization-ai999x for the worked example, one value for each position in the list (3 values, first 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/ahp-priority-vector-series)
+
+*priority weights (sum 1) (weights) returned by optimization-ai999x for the worked example, one value for each position in the list (3 values, first 0.571429, last 0.142857, largest 0.571429). Inputs: judgments = [2, 4, 2].*
 
 ```python
 optimization_ai999x.solve('ahp_priority_vector', judgments=[2, 4, 2])
@@ -2688,6 +3028,10 @@ $$
 - **Assumes:** 3 to 10 criteria; $RI = 0.58$, 0.90, 1.12, 1.24, 1.32, 1.41, 1.45, 1.49 for $n = 3..10$ (Saaty)
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![priority weights (weights) returned by optimization-ai999x for the worked example, one value for each position in the list (3 values, first 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/ahp-consistency-ratio-series)
+
+*priority weights (weights) returned by optimization-ai999x for the worked example, one value for each position in the list (3 values, first 0.571429, last 0.142857, largest 0.571429). Inputs: judgments = [2, 4, 2].*
+
 ```python
 optimization_ai999x.solve('ahp_consistency_ratio', judgments=[2, 4, 2])
 # -> CR = 0, CI = 0, lambda_max = 3, weights = [0.5714285714285714, 0.2857142857142857, 0.14285714285714285], acceptable = yes   (SOLVED)
@@ -2724,6 +3068,10 @@ $$
 - **Assumes:** judgments > 0; 2 to 10 criteria
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![priority weights (sum 1) (weights) returned by optimization-ai999x for the worked example, one value for each position in the list (3 values, first 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/ahp-geometric-mean-series)
+
+*priority weights (sum 1) (weights) returned by optimization-ai999x for the worked example, one value for each position in the list (3 values, first 0.571429, last 0.142857, largest 0.571429). Inputs: judgments = [2, 4, 2].*
+
 ```python
 optimization_ai999x.solve('ahp_geometric_mean', judgments=[2, 4, 2])
 # -> weights = [0.5714285714285714, 0.2857142857142857, 0.14285714285714285], max_weight = 0.571429, best = 1   (SOLVED)
@@ -2758,6 +3106,14 @@ $$
 - **Method:** positive definiteness by symmetric elimination, then Q $x = -c$ solved exactly; certified by the gradient
 - **Assumes:** Q symmetric positive definite (convention: $f = 1/2$ $x^{T}$ Q $x + c^{T}$ x); $n  \leq  10$
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![The plane vectors of the worked example as arrows from the origin: input c = (-1, -2); returned by optimization-ai999x: x_star = (0](https://www.ai999x.com/?ax_fig=optimization-ai999x/unconstrained-quadratic-min-vectors)
+
+*The plane vectors of the worked example as arrows from the origin: input c = (-1, -2); returned by optimization-ai999x: x_star = (0.0909091, 0.636364); also returned f_min = -0.681818. Other inputs: Q = [[4, 1], [1, 3]]. Marked: the tip of each returned vector.*
+
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): Q (input); x_star (returned)](https://www.ai999x.com/?ax_fig=optimization-ai999x/unconstrained-quadratic-min-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): Q (input); x_star (returned). Returned with them by optimization-ai999x: f_min = -0.681818. Other inputs: c = [-1, -2].*
 
 ```python
 optimization_ai999x.solve('unconstrained_quadratic_min', Q=[[4, 1], [1, 3]], c=[-1, -2])
@@ -2803,6 +3159,14 @@ $$
 - **Assumes:** Q symmetric positive definite; rows of A linearly independent
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![The plane vectors of the worked example as arrows from the origin: input c = (0, 0); returned by optimization-ai999x: x_star = (1, 1); also returned f_min = 2](https://www.ai999x.com/?ax_fig=optimization-ai999x/equality-constrained-qp-vectors)
+
+*The plane vectors of the worked example as arrows from the origin: input c = (0, 0); returned by optimization-ai999x: x_star = (1, 1); also returned f_min = 2. Other inputs: Q = [[2, 0], [0, 2]], A = [[1, 1]], b = [2]. Marked: the tip of each returned vector.*
+
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): Q (input); A (input); x_star (returned)](https://www.ai999x.com/?ax_fig=optimization-ai999x/equality-constrained-qp-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): Q (input); A (input); x_star (returned). Returned with them by optimization-ai999x: f_min = 2. Other inputs: c = [0, 0], b = [2].*
+
 ```python
 optimization_ai999x.solve('equality_constrained_qp', Q=[[2, 0], [0, 2]], c=[0, 0], A=[[1, 1]], b=[2])
 # -> f_min = 2, x_star = [1.0, 1.0], multipliers = [-2.0]   (SOLVED)
@@ -2846,6 +3210,14 @@ $$
 
 *Steepest descent with exact line search on f(x) = ½ xᵀQx, Q = [[2, 0], [0, 8]], from x₀ = (4, 1): six steps computed by the package, each perpendicular to the level set through its start (f = 20, 7.2, 2.592, 0.93312, 0.335923, 0.120932, 0.0435356); marked: x₆ = (0.186624, 0.046656).*
 
+![The plane vectors of the worked example as arrows from the origin: input c = (0, 0), x0 = (4, 1); returned by optimization-ai999x: x1 = (2](https://www.ai999x.com/?ax_fig=optimization-ai999x/steepest-descent-step-vectors)
+
+*The plane vectors of the worked example as arrows from the origin: input c = (0, 0), x0 = (4, 1); returned by optimization-ai999x: x1 = (2.4, -0.6), gradient = (8, 8); also returned alpha = 0.2, f1 = 7.2. Other inputs: Q = [[2, 0], [0, 8]]. Marked: the tip of each returned vector.*
+
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): Q (input); x1 (returned)](https://www.ai999x.com/?ax_fig=optimization-ai999x/steepest-descent-step-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): Q (input); x1 (returned). Returned with them by optimization-ai999x: alpha = 0.2, f1 = 7.2. Other inputs: c = [0, 0], x0 = [4, 1].*
+
 ```python
 optimization_ai999x.solve('steepest_descent_step', Q=[[2, 0], [0, 8]], c=[0, 0], x0=[4, 1])
 # -> alpha = 0.2, x1 = [2.4, -0.6], f1 = 7.2, gradient = [8.0, 8.0]   (SOLVED)
@@ -2887,6 +3259,14 @@ $$
 - **Method:** grad $f = 0$ solved exactly; $D = f_xx$ $f_yy - f_xy^{2} = 4ac - b^{2}$ classifies it
 - **Assumes:** $4ac - b^{2}  \neq  0$ (an isolated critical point)
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![local minimum, local maximum or saddle point (type) over a (coefficient of x^2) from 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/critical-point-two-variables-decision)
+
+*local minimum, local maximum or saddle point (type) over a (coefficient of x^2) from 0.3 to 30 and b (coefficient of xy) from 0.2 to 20 (logarithmic axes): each of the 31 × 21 cells is one run of optimization-ai999x, coloured by the verdict it returned — local minimum: 403 cells, saddle point: 248 cells. Other inputs as in the worked example: c = 1, d = -4, e = 6, f0 = 1. Marked: the worked example, a = 3, b = 2 → local minimum.*
+
+![f_value (value of f at the critical point) against a (coefficient of x^2) from 1](https://www.ai999x.com/?ax_fig=optimization-ai999x/critical-point-two-variables-curve)
+
+*f_value (value of f at the critical point) against a (coefficient of x^2) from 1.06444 to 30 on a logarithmic axis. One curve for each value of e (coefficient of y): 6, 3, 12. Other inputs as in the worked example: b = 2, c = 1, d = -4, f0 = 1. 30 points per curve computed by optimization-ai999x; marked: the worked example, a = 3, f_value = -20.5.*
 
 ```python
 optimization_ai999x.solve('critical_point_two_variables', a=3, b=2, c=1, d=-4, e=6, f0=1)
@@ -2932,6 +3312,10 @@ $$
 - **Assumes:** $lo < hi$; degree 1 to 5
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![min_value (absolute minimum) against lo (left end of the interval) from -1](https://www.ai999x.com/?ax_fig=optimization-ai999x/polynomial-extrema-interval-curve)
+
+*min_value (absolute minimum) against lo (left end of the interval) from -1.5 to -0.5. Other inputs as in the worked example: coefficients = [1, -3, 0, 2], hi = 3. 31 points computed by optimization-ai999x; marked: the worked example, lo = -1, min_value = -2.*
+
 ```python
 optimization_ai999x.solve('polynomial_extrema_interval', coefficients=[1, -3, 0, 2], lo=-1, hi=3)
 # -> min_value = -2, max_value = 2, argmin_example = -1, argmax_example = 0   (SOLVED)
@@ -2969,6 +3353,14 @@ $$
 - **Method:** Wagner-Whitin dynamic programme (each order covers whole periods) in exact arithmetic
 - **Assumes:** demands, K, $h  \geq  0$; no initial stock, no shortages, holding charged on end-of-period stock
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![one optimal plan: quantity ordered in each period (order_quantities_example) returned by optimization-ai999x for the worked example, one value for each position in the list (4 values, first 80, last 50, largest 80)](https://www.ai999x.com/?ax_fig=optimization-ai999x/wagner-whitin-lot-sizing-series)
+
+*one optimal plan: quantity ordered in each period (order_quantities_example) returned by optimization-ai999x for the worked example, one value for each position in the list (4 values, first 80, last 50, largest 80). Inputs: demand = [20, 50, 10, 50], K = 100, h = 1.*
+
+![min_cost (minimum total setup plus holding cost) against K (setup (ordering) cost per order) from 10 to 1000 on a logarithmic axis](https://www.ai999x.com/?ax_fig=optimization-ai999x/wagner-whitin-lot-sizing-curve)
+
+*min_cost (minimum total setup plus holding cost) against K (setup (ordering) cost per order) from 10 to 1000 on a logarithmic axis. One curve for each value of h (holding cost per unit per period): 1, 0.5, 2. Other inputs as in the worked example: demand = [20, 50, 10, 50]. 41 points per curve computed by optimization-ai999x; marked: the worked example, K = 100, min_cost = 270.*
 
 ```python
 optimization_ai999x.solve('wagner_whitin_lot_sizing', demand=[20, 50, 10, 50], K=100, h=1)
@@ -3013,6 +3405,14 @@ $$
 - **Assumes:** $0 < \gamma < 1$; rows of T sum to 1; at most 10 states and 5 actions
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
+![optimal action in each state, 1-based (the lowest-numbered one on a tie) (policy) at each optimal value of every state (values), both returned by optimization-ai999x for the worked example (R = [[1, 0], [0, 2]], T = [[1, 0], [0, 1], [0, 1], [1, 0]], gamma = 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/mdp-discounted-series)
+
+*optimal action in each state, 1-based (the lowest-numbered one on a tie) (policy) at each optimal value of every state (values), both returned by optimization-ai999x for the worked example (R = [[1, 0], [0, 2]], T = [[1, 0], [0, 1], [0, 1], [1, 0]], gamma = 0.9): 10 → 1; 11 → 2.*
+
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): R (input); T (input); values (returned)](https://www.ai999x.com/?ax_fig=optimization-ai999x/mdp-discounted-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): R (input); T (input); values (returned). Returned with them by optimization-ai999x: value_state_1 = 10. Other inputs: gamma = 0.9.*
+
 ```python
 optimization_ai999x.solve('mdp_discounted', R=[[1, 0], [0, 2]], T=[[1, 0], [0, 1], [0, 1], [1, 0]], gamma=0.9)
 # -> value_state_1 = 10, values = [10.0, 11.0], policy = [1.0, 2.0]   (SOLVED)
@@ -3048,6 +3448,14 @@ $$
 - **Method:** exact backtracking for $k = 1$, 2, ... colours (largest degree first, symmetric colours skipped)
 - **Assumes:** at most 14 nodes; no self-loops
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![one optimal colouring, in the order of 'nodes' (coloring_example) returned by optimization-ai999x for the worked example, one value for each position in the list (4 values, first 2, last 2, largest 3)](https://www.ai999x.com/?ax_fig=optimization-ai999x/graph-coloring-series)
+
+*one optimal colouring, in the order of 'nodes' (coloring_example) returned by optimization-ai999x for the worked example, one value for each position in the list (4 values, first 2, last 2, largest 3). Inputs: edges = A-B, B-C, C-A, C-D.*
+
+![The network edges (edges 'A-B, B-C, ](https://www.ai999x.com/?ax_fig=optimization-ai999x/graph-coloring-graph)
+
+*The network edges (edges 'A-B, B-C, ...' (undirected)) of the worked example (4 nodes, 4 edges, laid out on a circle); highlighted: the returned path A → B → C → D. Returned: chromatic_number = 3.*
 
 ```python
 optimization_ai999x.solve('graph_coloring', edges='A-B, B-C, C-A, C-D')
@@ -3089,6 +3497,10 @@ $$
 - **Method:** exact branch and bound (a node of largest degree in the cover, or all its neighbours)
 - **Assumes:** at most 30 nodes; no self-loops; only nodes that appear in an edge count
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![The network edges (edges 'A-B, B-C, ](https://www.ai999x.com/?ax_fig=optimization-ai999x/minimum-vertex-cover-graph)
+
+*The network edges (edges 'A-B, B-C, ...' (undirected)) of the worked example (5 nodes, 5 edges, laid out on a circle); highlighted: the returned path A → C → E. Returned: min_cover_size = 3, max_independent_set_size = 2.*
 
 ```python
 optimization_ai999x.solve('minimum_vertex_cover', edges='A-B, A-C, A-D, B-C, D-E')
