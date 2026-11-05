@@ -21,7 +21,7 @@ figcaption{font-size:9pt;color:#555}
 .pb{page-break-after:always}
 </style></head><body>
 <h1>optimization: the Optimization program — user guide</h1>
-<p><strong>optimization-ai999x 1.0.3</strong>, Rust build: command line, desktop app and browser. <strong>Creator / engineer:</strong> Ibnul Jaif Farabi · <strong>Company:</strong> AI999X · support@ai999x.com</p>
+<p><strong>optimization-ai999x 1.1.0</strong>, Rust build: command line, desktop app and browser. <strong>Creator / engineer:</strong> Ibnul Jaif Farabi · <strong>Company:</strong> AI999X · support@ai999x.com</p>
 <p>Optimization covers linear and integer programming, convex and nonlinear optimisation, assignment, transportation and shortest-route problems, scheduling, inventory, queueing, game theory and multi-criteria decisions. This guide is about <code>optimization</code>, the model as a self-contained program for Windows and Linux: 72 capabilities in 16 topics, answered on your own computer with no network, no Python and nothing else to install. The same compiled model runs in the AI999X desktop app and in the browser on the model&#x27;s page (https://www.ai999x.com/models/optimization-ai999x/); the Python package (<code>pip install optimization-ai999x</code>) has its own guide. Every command output printed here is what the program printed.</p>
 <h2>Contents</h2>
 <ul><li>1. Get it: desktop app, command line, browser, Python</li><li>2. Quick start</li><li>3. Writing inputs</li><li>4. Outcomes and exit codes</li><li>5. Scripts and agents: batch and JSON</li><li>6. Figures</li><li>7. In a web page or Node.js: WebAssembly</li><li>8. Every capability</li></ul>
@@ -452,8 +452,8 @@ optimal_value = 20
 x_one_optimal = [4.0,0.0]
 nodes = 5
   by: Integer linear program (branch and bound)  (LP-based branch and bound; every relaxation solved exactly (rational simplex), so pruning and integrality tests are exact)
-  sense = maximize
   relations = &lt;=,&lt;=
+  sense = maximize
   assumes: all variables integer and &gt;= 0; a bounded LP relaxation; at most 4000 branch-and-bound nodes</code></pre>
 <p><strong>What the worked example means:</strong> This calculation determines the best possible outcome for a linear objective function when all decision variables must be whole numbers. It takes the coefficients defining the goal and constraints, then systematically searches through potential solutions using branch and bound to ensure exactness. The result provides the maximum or minimum achievable value, represented here as 20, along with one specific set of variable values that achieves it.</p>
 <h4 id="minimum_vertex_cover">Minimum vertex cover (and maximum independent set) — <code>minimum_vertex_cover</code></h4>
@@ -662,8 +662,8 @@ x = [2.0,6.0]
 solution_unique = yes
 shadow_prices = [0.0,1.5,1.0]
   by: Linear program (simplex method)  (two-phase simplex in exact rational arithmetic with Bland&#x27;s anti-cycling rule; optimality certified by a dual solution (primal feasibility, dual feasibility, equal objective values); uniqueness proved by an auxiliary LP over the optimal face)
-  sense = maximize
   relations = &lt;=,&lt;=,&lt;=
+  sense = maximize
   assumes: all variables &gt;= 0; the LP is feasible and bounded (otherwise INVALID_INPUT says which); at most 12 variables and constraints</code></pre>
 <p>In the worked example, sense = maximize, c = [3, 5], A = [1 0; 0 2; 3 2], b = [4, 12, 18], relations = &lt;=,&lt;=,&lt;= go through the equation above and give optimal_value = 36, x = [2, 6], solution_unique = yes, shadow_prices = [0, 1.5, 1]. It applies only when all variables &gt;= 0; the LP is feasible and bounded (otherwise INVALID_INPUT says which); at most 12 variables and constraints: outside that it says what is wrong instead of returning a number.</p>
 <h4 id="lp_shadow_prices">Shadow prices of a linear program — <code>lp_shadow_prices</code></h4>
@@ -677,8 +677,8 @@ x = [2.0,6.0]
 solution_unique = yes
 shadow_prices = [0.0,1.5,1.0]
   by: Shadow prices of a linear program  (exact simplex; the dual solution y = c_B B^{-1}; uniqueness of the dual proved by an auxiliary LP over the dual optimal face)
-  sense = maximize
   relations = &lt;=,&lt;=,&lt;=
+  sense = maximize
   assumes: all variables &gt;= 0; a finite optimum; unique dual solution (otherwise INVALID_INPUT)</code></pre>
 <p><strong>What the worked example means:</strong> This calculation determines the shadow prices for each constraint, represented as [0, 1.5, 1]. These values indicate the rate of change in the optimal objective value, 36, with respect to a one-unit increase in the corresponding right-hand side parameters. The result is derived from the dual solution associated with the optimal basis, providing insight into the marginal worth of resources defined by the constraints.</p>
 <h4 id="lp_two_variable_graphical">Two-variable linear program (graphical corner-point method) — <code>lp_two_variable_graphical</code></h4>
@@ -694,8 +694,8 @@ x = 2
 y = 6
 solution_unique = yes
   by: Two-variable linear program (graphical corner-point method)  (intersect every pair of boundary lines (exact fractions), keep the feasible corners, evaluate the objective; unboundedness detected from the extreme rays of the recession cone)
-  sense = maximize
   relations = &lt;=,&lt;=,&lt;=
+  sense = maximize
   assumes: exactly two variables, both &gt;= 0; a feasible region and a finite optimum</code></pre>
 <p><strong>What the worked example means:</strong> This calculation determines the best outcome for a two-variable linear program by checking every corner of the feasible region. It uses objective coefficients [3, 5] and constraint data [1 0; 0 2; 3 2], [4, 12, 18], and &lt;=,&lt;=,&lt;= to find valid corners [[0, 0], [0, 6], [2, 6], [4, 0], [4, 3]]. The final result shows that the maximum or minimum value 36 occurs at specific points, indicating whether the solution is unique based on yes.</p>
 <h3>Multi-criteria decision analysis (6)</h3>

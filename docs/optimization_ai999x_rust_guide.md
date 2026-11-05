@@ -1,6 +1,6 @@
 # optimization: the Optimization program — user guide
 
-**optimization-ai999x 1.0.3**, Rust build: command line, desktop app and browser. **Creator / engineer:** Ibnul Jaif Farabi · **Company:** AI999X · support@ai999x.com
+**optimization-ai999x 1.1.0**, Rust build: command line, desktop app and browser. **Creator / engineer:** Ibnul Jaif Farabi · **Company:** AI999X · support@ai999x.com
 
 Optimization covers linear and integer programming, convex and nonlinear optimisation, assignment, transportation and shortest-route problems, scheduling, inventory, queueing, game theory and multi-criteria decisions. This guide is about `optimization`, the model as a self-contained program for Windows and Linux: 72 capabilities in 16 topics, answered on your own computer with no network, no Python and nothing else to install. The same compiled model runs in the AI999X desktop app and in the browser on the model's page (https://www.ai999x.com/models/optimization-ai999x/); the Python package (`pip install optimization-ai999x`) has its own guide. Every command output printed here is what the program printed.
 
@@ -937,8 +937,8 @@ optimal_value = 20
 x_one_optimal = [4.0,0.0]
 nodes = 5
   by: Integer linear program (branch and bound)  (LP-based branch and bound; every relaxation solved exactly (rational simplex), so pruning and integrality tests are exact)
-  sense = maximize
   relations = <=,<=
+  sense = maximize
   assumes: all variables integer and >= 0; a bounded LP relaxation; at most 4000 branch-and-bound nodes
 ```
 
@@ -1443,8 +1443,8 @@ x = [2.0,6.0]
 solution_unique = yes
 shadow_prices = [0.0,1.5,1.0]
   by: Linear program (simplex method)  (two-phase simplex in exact rational arithmetic with Bland's anti-cycling rule; optimality certified by a dual solution (primal feasibility, dual feasibility, equal objective values); uniqueness proved by an auxiliary LP over the optimal face)
-  sense = maximize
   relations = <=,<=,<=
+  sense = maximize
   assumes: all variables >= 0; the LP is feasible and bounded (otherwise INVALID_INPUT says which); at most 12 variables and constraints
 ```
 
@@ -1481,8 +1481,8 @@ x = [2.0,6.0]
 solution_unique = yes
 shadow_prices = [0.0,1.5,1.0]
   by: Shadow prices of a linear program  (exact simplex; the dual solution y = c_B B^{-1}; uniqueness of the dual proved by an auxiliary LP over the dual optimal face)
-  sense = maximize
   relations = <=,<=,<=
+  sense = maximize
   assumes: all variables >= 0; a finite optimum; unique dual solution (otherwise INVALID_INPUT)
 ```
 
@@ -1523,8 +1523,8 @@ x = 2
 y = 6
 solution_unique = yes
   by: Two-variable linear program (graphical corner-point method)  (intersect every pair of boundary lines (exact fractions), keep the feasible corners, evaluate the objective; unboundedness detected from the extreme rays of the recession cone)
-  sense = maximize
   relations = <=,<=,<=
+  sense = maximize
   assumes: exactly two variables, both >= 0; a feasible region and a finite optimum
 ```
 
