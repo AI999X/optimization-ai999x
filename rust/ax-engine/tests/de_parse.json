@@ -1,0 +1,3354 @@
+[
+{
+"text": "y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.3,
+-0.6
+]
+},
+{
+"text": "t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.37,
+1.7
+]
+},
+{
+"text": "2t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.74,
+3.4
+]
+},
+{
+"text": "ty",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.481,
+-1.02
+]
+},
+{
+"text": "y(1-y)",
+"names": [
+"t"
+],
+"err": "cannot read the expression 'y(1-y)': unsupported syntax"
+},
+{
+"text": "3(y+1)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+6.9,
+1.2
+]
+},
+{
+"text": "(t+1)(t-1)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-0.8631,
+1.89
+]
+},
+{
+"text": "t^2 + y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.4369,
+2.29
+]
+},
+{
+"text": "-2y",
+"names": [
+"x",
+"y"
+],
+"ok": [
+-2.6,
+1.2
+]
+},
+{
+"text": "0.5*y*(1 - y/10)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.5655,
+-0.318
+]
+},
+{
+"text": "e^t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.4477346146633245,
+5.4739473917272
+]
+},
+{
+"text": "e^(-t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.6907343306373547,
+0.18268352405273466
+]
+},
+{
+"text": "exp(-t)*y",
+"names": [
+"t",
+"x"
+],
+"err": "cannot read the expression 'exp(-t)*y': unknown name: y"
+},
+{
+"text": "sin(t) - y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-0.938384568035038,
+1.5916648104524687
+]
+},
+{
+"text": "cos(2t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.7384685587295879,
+-0.966798192579461
+]
+},
+{
+"text": "ln(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-0.9942522733438669,
+0.5306282510621704
+]
+},
+{
+"text": "log(y)",
+"names": [
+"s"
+],
+"err": "cannot read the expression 'log(y)': unknown name: y"
+},
+{
+"text": "sqrt(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.608276253029822,
+1.3038404810405297
+]
+},
+{
+"text": "sqrt(y^2+1)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.6401219466856725,
+1.1661903789690602
+]
+},
+{
+"text": "y^2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.69,
+0.36
+]
+},
+{
+"text": "y^0.5",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.140175425099138,
+"notreal"
+]
+},
+{
+"text": "t^(1/3)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.7179054352068319,
+1.193483191927337
+]
+},
+{
+"text": "y^9",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 'y^9': only small rational exponents are allowed"
+},
+{
+"text": "y^(-8)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.12258947398402567,
+59.53741807651273
+]
+},
+{
+"text": "y^t",
+"names": [
+"t"
+],
+"err": "cannot read the expression 'y^t': unknown name: y"
+},
+{
+"text": "2^t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.2923528306374923,
+3.249009585424942
+]
+},
+{
+"text": "t^y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.27457578966804486,
+0.7273285697664938
+]
+},
+{
+"text": "pi*t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.1623892818282235,
+5.340707511102648
+]
+},
+{
+"text": "πt",
+"names": [
+"x",
+"y"
+],
+"err": "cannot read the expression 'πt': unknown name: pit"
+},
+{
+"text": "t²",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.1369,
+2.89
+]
+},
+{
+"text": "y³",
+"names": [
+"t",
+"y"
+],
+"ok": [
+2.197,
+-0.216
+]
+},
+{
+"text": "sinh(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.3785001420129849,
+2.6456319338372327
+]
+},
+{
+"text": "cosh(y)",
+"names": [
+"t",
+"x"
+],
+"err": "cannot read the expression 'cosh(y)': unknown name: y"
+},
+{
+"text": "tanh(t-y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-0.7305938960959438,
+0.9800963962661914
+]
+},
+{
+"text": "sinh(cosh(t))",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 'sinh(cosh(t))': unsupported syntax"
+},
+{
+"text": "sinh t",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 'sinh t': cannot parse: sinh t"
+},
+{
+"text": "sinh(t",
+"names": [
+"s"
+],
+"err": "cannot read the expression 'sinh(t': unbalanced parentheses"
+},
+{
+"text": "sinh()",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 'sinh()': expression missing or too long"
+},
+{
+"text": "tanh(2t)*y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.8178887098382461,
+-0.5986649567605676
+]
+},
+{
+"text": "cosh(t)^2 - sinh(t)^2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.0,
+1.0
+]
+},
+{
+"text": "asin(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.3790090206959508,
+"notreal"
+]
+},
+{
+"text": "acos(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+"notreal",
+2.214297435588181
+]
+},
+{
+"text": "atan(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.3543799191234378,
+1.039072259536091
+]
+},
+{
+"text": "tan(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.38786316165584905,
+-7.696602139459158
+]
+},
+{
+"text": "sec(t)",
+"names": [
+"t"
+],
+"err": "cannot read the expression 'sec(t)': unsupported syntax"
+},
+{
+"text": "abs(t)",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 'abs(t)': unsupported syntax"
+},
+{
+"text": "foo(t)",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 'foo(t)': unsupported syntax"
+},
+{
+"text": "x",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 'x': unknown name: x"
+},
+{
+"text": "t + x",
+"names": [
+"x",
+"y"
+],
+"err": "cannot read the expression 't + x': unknown name: t"
+},
+{
+"text": "",
+"names": [
+"t",
+"y"
+],
+"err": "the expression is missing"
+},
+{
+"text": "   ",
+"names": [
+"t",
+"y"
+],
+"err": "the expression is missing"
+},
+{
+"text": "t +",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 't +': cannot parse: t +"
+},
+{
+"text": "t // 2",
+"names": [
+"t",
+"x"
+],
+"err": "cannot read the expression 't // 2': unsupported syntax"
+},
+{
+"text": "t % 2",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 't % 2': unsupported syntax"
+},
+{
+"text": "[t+1]",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.37,
+2.7
+]
+},
+{
+"text": "1/0",
+"names": [
+"t",
+"y"
+],
+"err": "the expression is undefined"
+},
+{
+"text": "y/(t-t)",
+"names": [
+"s"
+],
+"err": "cannot read the expression 'y/(t-t)': unknown name: y"
+},
+{
+"text": "0/0",
+"names": [
+"t",
+"y"
+],
+"err": "the expression is undefined"
+},
+{
+"text": "t/0",
+"names": [
+"t",
+"y"
+],
+"err": "the expression is undefined"
+},
+{
+"text": "1e-3*t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.00037,
+0.0017
+]
+},
+{
+"text": "1e3t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+370.0,
+1700.0
+]
+},
+{
+"text": ".5t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.185,
+0.85
+]
+},
+{
+"text": "2.5",
+"names": [
+"t",
+"y"
+],
+"ok": [
+2.5,
+2.5
+]
+},
+{
+"text": "e",
+"names": [
+"t",
+"y"
+],
+"ok": [
+2.718281828459045,
+2.718281828459045
+]
+},
+{
+"text": "ee",
+"names": [
+"t"
+],
+"err": "cannot read the expression 'ee': unknown name: ee"
+},
+{
+"text": "te",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 'te': unknown name: te"
+},
+{
+"text": "et",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 'et': unknown name: et"
+},
+{
+"text": "pie",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 'pie': unknown name: pie"
+},
+{
+"text": "t^(2/3)",
+"names": [
+"x",
+"y"
+],
+"err": "cannot read the expression 't^(2/3)': unknown name: t"
+},
+{
+"text": "t^pi",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 't^pi': only small rational exponents are allowed"
+},
+{
+"text": "t^(1/2)^2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.7799206709850829,
+1.1418583454354265
+]
+},
+{
+"text": "(-1)^(1/2)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+"notreal",
+"notreal"
+]
+},
+{
+"text": "log(0)",
+"names": [
+"t",
+"x"
+],
+"err": "the expression is undefined"
+},
+{
+"text": "1/(y-1)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+3.3333333333333335,
+-0.625
+]
+},
+{
+"text": "y - y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.0,
+0.0
+]
+},
+{
+"text": "t·y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.481,
+-1.02
+]
+},
+{
+"text": "t×y",
+"names": [
+"s"
+],
+"err": "cannot read the expression 't×y': unknown name: t"
+},
+{
+"text": "t−y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-0.93,
+2.3
+]
+},
+{
+"text": "3.0*t**2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.4107,
+8.67
+]
+},
+{
+"text": "t**2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.1369,
+2.89
+]
+},
+{
+"text": "t^2^2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.01874161,
+8.3521
+]
+},
+{
+"text": "lambda: 1",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 'lambda: 1': unsupported syntax"
+},
+{
+"text": "t if y else 1",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 't if y else 1': unsupported syntax"
+},
+{
+"text": "t.real",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 't.real': unsupported syntax"
+},
+{
+"text": "t[0]",
+"names": [
+"t"
+],
+"ok": [
+0.0,
+0.0
+]
+},
+{
+"text": "'t'",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression \"'t'\": unsupported syntax"
+},
+{
+"text": "1j",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression '1j': unknown name: j"
+},
+{
+"text": "True",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 'True': unsupported syntax"
+},
+{
+"text": "t; y",
+"names": [
+"x",
+"y"
+],
+"err": "cannot read the expression 't; y': cannot parse: t; y"
+},
+{
+"text": "t\ny",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 't\\ny': cannot parse: t\ny"
+},
+{
+"text": "sin(t, y)",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 'sin(t, y)': unsupported syntax"
+},
+{
+"text": "sin(t=1)",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 'sin(t=1)': unsupported syntax"
+},
+{
+"text": "exp(log(t))",
+"names": [
+"t",
+"x"
+],
+"ok": [
+0.37,
+1.7
+]
+},
+{
+"text": "-(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-0.37,
+-1.7
+]
+},
+{
+"text": "+t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.37,
+1.7
+]
+},
+{
+"text": "--t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.37,
+1.7
+]
+},
+{
+"text": "~t",
+"names": [
+"s"
+],
+"err": "cannot read the expression '~t': unsupported syntax"
+},
+{
+"text": "t2",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 't2': unknown name: t2"
+},
+{
+"text": "2 t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.74,
+3.4
+]
+},
+{
+"text": "t 2",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 't 2': cannot parse: t 2"
+},
+{
+"text": "sin t",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 'sin t': cannot parse: sin t"
+},
+{
+"text": "(t",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression '(t': cannot parse: (t"
+},
+{
+"text": "t)",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 't)': cannot parse: t)"
+},
+{
+"text": "y'",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression \"y'\": cannot parse: y'"
+},
+{
+"text": "dy/dt",
+"names": [
+"t"
+],
+"err": "cannot read the expression 'dy/dt': unknown name: dy"
+},
+{
+"text": "k*y",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 'k*y': unknown name: k"
+},
+{
+"text": "r*y*(1-y/K)",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 'r*y*(1-y/K)': unknown name: r"
+},
+{
+"text": "0.1y - 0.02y^2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.0962,
+-0.0672
+]
+},
+{
+"text": "y*(2 - y) - 0.5",
+"names": [
+"x",
+"y"
+],
+"ok": [
+0.41,
+-2.06
+]
+},
+{
+"text": "sqrt(1 + t^2)*y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.3861316676275743,
+-1.1833849753989611
+]
+},
+{
+"text": "exp(0.5t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.2032184401276953,
+2.3396468519259908
+]
+},
+{
+"text": "t*exp(-t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.2555717023358212,
+0.3105619908896489
+]
+},
+{
+"text": "1/(1+t^2)",
+"names": [
+"t",
+"x"
+],
+"ok": [
+0.8795848359574281,
+0.2570694087403599
+]
+},
+{
+"text": "y^2 - t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.32,
+-1.34
+]
+},
+{
+"text": "cos(t)*y + sin(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.5736409812528067,
+1.0689715070297834
+]
+},
+{
+"text": "1/t/tanh(y)^exp(t)-tanh(y)/cos(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.13108946355755283,
+"notreal"
+]
+},
+{
+"text": "3t*sin(t)+y^e/cos(y)",
+"names": [
+"s"
+],
+"err": "cannot read the expression '3t*sin(t)+y^e/cos(y)': unknown name: t"
+},
+{
+"text": "t+y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.67,
+1.1
+]
+},
+{
+"text": "exp(t)^t/(y+1)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.4985710745389112,
+44.983274003875785
+]
+},
+{
+"text": "1/t^ln(t)*sinh(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.14084765778327904,
+1.9963961144509093
+]
+},
+{
+"text": "t/sqrt(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.3245114671436008,
+"notreal"
+]
+},
+{
+"text": "0.5*(y+1)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.15,
+0.2
+]
+},
+{
+"text": "ln(t)+2^3t/3t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-0.6291856066772002,
+8.237294917728837
+]
+},
+{
+"text": "t^2+t+exp(t)-y/e",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.4763913411404495,
+10.284675056430066
+]
+},
+{
+"text": "e+exp(t)*(y+1)+t^2*t",
+"names": [
+"t"
+],
+"err": "cannot read the expression 'e+exp(t)*(y+1)+t^2*t': unknown name: y"
+},
+{
+"text": "0.5-ln(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.494252273343867,
+-0.030628251062170396
+]
+},
+{
+"text": "3t+1/t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+3.8127027027027025,
+5.688235294117647
+]
+},
+{
+"text": "sinh(t)^exp(t)/tanh(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.28430457332216774,
+-382.72732317067937
+]
+},
+{
+"text": "exp(t)/e+e",
+"names": [
+"x",
+"y"
+],
+"err": "cannot read the expression 'exp(t)/e+e': unknown name: t"
+},
+{
+"text": "0.5+sqrt(y)^t^2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.518121063456444,
+"notreal"
+]
+},
+{
+"text": "t-e^3t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-7.061648661579437,
+-32.445412769419036
+]
+},
+{
+"text": "y-1/t*t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.3,
+-1.6
+]
+},
+{
+"text": "(y+1)/2+2-ln(t)",
+"names": [
+"t",
+"x"
+],
+"err": "cannot read the expression '(y+1)/2+2-ln(t)': unknown name: y"
+},
+{
+"text": "t*1/t-sinh(t)^sin(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.2962439016140934,
+-1.6242642322722998
+]
+},
+{
+"text": "e-t^2-ln(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+3.5756341018029123,
+-0.7023464226031252
+]
+},
+{
+"text": "exp(t)^exp(t)/sinh(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+4.514076557797414,
+4158.046338504616
+]
+},
+{
+"text": "2+3t+y^sqrt(y)-e",
+"names": [
+"s"
+],
+"err": "cannot read the expression '2+3t+y^sqrt(y)-e': unknown name: t"
+},
+{
+"text": "sqrt(y)^sinh(t)*tanh(y)-2-ln(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-0.10015786350347786,
+"notreal"
+]
+},
+{
+"text": "sinh(t)*exp(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.5479677572471823,
+14.482050023698507
+]
+},
+{
+"text": "exp(t)+sqrt(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+2.5879100397624626,
+"notreal"
+]
+},
+{
+"text": "0.5-y+cos(y)*pi^sin(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-0.3953319183910902,
+3.668246000560996
+]
+},
+{
+"text": "2-1/t*tanh(y)^sin(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-0.5610983854823343,
+"notreal"
+]
+},
+{
+"text": "y/pi",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.41380285203892786,
+-0.1909859317102744
+]
+},
+{
+"text": "t^2+2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+2.1369,
+4.89
+]
+},
+{
+"text": "sinh(t)*(y+1)",
+"names": [
+"t"
+],
+"err": "cannot read the expression 'sinh(t)*(y+1)': unknown name: y"
+},
+{
+"text": "sin(t)+1/t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+3.0643181346676647,
+1.5799001045701158
+]
+},
+{
+"text": "pi-(y+1)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.8415926535897933,
+2.741592653589793
+]
+},
+{
+"text": "pi/2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.5707963267948966,
+1.5707963267948966
+]
+},
+{
+"text": "0.5/t",
+"names": [
+"x",
+"y"
+],
+"err": "cannot read the expression '0.5/t': unknown name: t"
+},
+{
+"text": "e^t^2+2+sqrt(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+4.286888896538634,
+"notreal"
+]
+},
+{
+"text": "0.5/1/t/1/t^2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+9.871083647562829,
+0.1017708121310808
+]
+},
+{
+"text": "tanh(y)*2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.7234463186266127,
+-1.0740991339960706
+]
+},
+{
+"text": "sinh(t)-3t",
+"names": [
+"t",
+"x"
+],
+"ok": [
+-0.7314998579870151,
+-2.4543680661627674
+]
+},
+{
+"text": "sinh(t)*t*t^2-exp(t)^cos(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-1.08486605205293,
+8.930318912412282
+]
+},
+{
+"text": "(y+1)/ln(t)*e*exp(t)/exp(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-6.2881910085344135,
+2.0491044892674295
+]
+},
+{
+"text": "exp(t)-(y+1)-sin(t)-sinh(t)*y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-1.7059310019185179,
+5.6696617415770705
+]
+},
+{
+"text": "2-3t/sinh(t)*exp(t)",
+"names": [
+"s"
+],
+"err": "cannot read the expression '2-3t/sinh(t)*exp(t)': unknown name: t"
+},
+{
+"text": "0.5^sinh(t)*1/t*2+sqrt(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+5.298212673420627,
+"notreal"
+]
+},
+{
+"text": "y^pi*t-e",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 'y^pi*t-e': only small rational exponents are allowed"
+},
+{
+"text": "1/t+sqrt(y)-sin(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+3.481262695836879,
+"notreal"
+]
+},
+{
+"text": "y/3t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.16033333333333333,
+-0.34
+]
+},
+{
+"text": "pi-exp(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.6938580389264688,
+-2.3323547381374063
+]
+},
+{
+"text": "sinh(t)-t/y-ln(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.0881370307414673,
+4.948337016108396
+]
+},
+{
+"text": "sqrt(y)^tanh(y)^cos(y)/ln(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-1.1409106142562915,
+"notreal"
+]
+},
+{
+"text": "2/sin(t)/1/t-t/tanh(y)",
+"names": [
+"t"
+],
+"err": "cannot read the expression '2/sin(t)/1/t-t/tanh(y)': unknown name: y"
+},
+{
+"text": "(y+1)*exp(t)+3t-ln(t)/2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+4.93691575039758,
+7.024264831159795
+]
+},
+{
+"text": "t^2*t*tanh(y)+y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.343648863188697,
+-3.2385245226613475
+]
+},
+{
+"text": "1/t^0.5*sinh(t)+exp(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+2.0699850150820107,
+7.50305445835692
+]
+},
+{
+"text": "2+cos(y)^(y+1)-sinh(t)-tanh(y)",
+"names": [
+"x",
+"y"
+],
+"err": "cannot read the expression '2+cos(y)^(y+1)-sinh(t)-tanh(y)': unknown name: t"
+},
+{
+"text": "tanh(y)/2-1/t^t^2^cos(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-0.9195679266730289,
+-0.5255113047978948
+]
+},
+{
+"text": "tanh(y)*e^exp(t)*sin(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.3254332927693002,
+-126.96511771165159
+]
+},
+{
+"text": "tanh(y)^sinh(t)-0.5^3t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.8989782434378705,
+"notreal"
+]
+},
+{
+"text": "tanh(y)^e",
+"names": [
+"t",
+"x"
+],
+"err": "cannot read the expression 'tanh(y)^e': unknown name: y"
+},
+{
+"text": "t^e",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 't^e': only small rational exponents are allowed"
+},
+{
+"text": "3t+cos(y)+1/t/e*ln(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.3889448537565391,
+6.040163394009991
+]
+},
+{
+"text": "sinh(t)-(y+1)/sinh(t)^(y+1)+exp(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-19.66077239681214,
+7.8485300682029875
+]
+},
+{
+"text": "0.5*sin(t)",
+"names": [
+"s"
+],
+"err": "cannot read the expression '0.5*sin(t)': unknown name: t"
+},
+{
+"text": "t-sin(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.008384568035038021,
+0.7083351895475314
+]
+},
+{
+"text": "ln(t)*(y+1)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-2.286780228690894,
+0.21225130042486817
+]
+},
+{
+"text": "pi^sinh(t)+sinh(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.9208088029973478,
+23.31254340366396
+]
+},
+{
+"text": "3t-tanh(y)/t/0.5",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-3.5479630233151696,
+5.731823019997688
+]
+},
+{
+"text": "tanh(y)^exp(t)^exp(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.7754802564787884,
+-0.0
+]
+},
+{
+"text": "tanh(y)^sin(t)-pi",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-2.1939862509613297,
+"notreal"
+]
+},
+{
+"text": "cos(y)^(y+1)-exp(t)-3t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-2.5095575501307876,
+-9.647859439248416
+]
+},
+{
+"text": "sin(t)-2*e",
+"names": [
+"t"
+],
+"ok": [
+-5.074948224953128,
+-4.444898846465622
+]
+},
+{
+"text": "3t/sin(t)-e+3t-pi",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-1.6803152158183219,
+4.382992287291312
+]
+},
+{
+"text": "pi^(y+1)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+13.91376638523571,
+1.5807382019317313
+]
+},
+{
+"text": "tanh(y)+sinh(t)+t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.6102233013262912,
+3.808582366839197
+]
+},
+{
+"text": "y-exp(t)-3t-cos(y)-t^2",
+"names": [
+"x",
+"y"
+],
+"err": "cannot read the expression 'y-exp(t)-3t-cos(y)-t^2': unknown name: t"
+},
+{
+"text": "3t-1/t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-1.5927027027027028,
+4.511764705882353
+]
+},
+{
+"text": "2*e",
+"names": [
+"t",
+"y"
+],
+"ok": [
+5.43656365691809,
+5.43656365691809
+]
+},
+{
+"text": "1/t^pi/exp(t)^pi+y",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression '1/t^pi/exp(t)^pi+y': only small rational exponents are allowed"
+},
+{
+"text": "exp(t)/1/t*pi",
+"names": [
+"t",
+"x"
+],
+"ok": [
+12.292411972362029,
+10.115831124698342
+]
+},
+{
+"text": "e^cos(y)+tanh(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+2.168415258521501,
+1.7455971600651203
+]
+},
+{
+"text": "t+e^exp(t)^(y+1)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+10.771891545573883,
+8.898536433472788
+]
+},
+{
+"text": "sqrt(y)+cos(y)/sin(t)*pi",
+"names": [
+"t",
+"y"
+],
+"ok": [
+3.464114838537404,
+"notreal"
+]
+},
+{
+"text": "0.5/exp(t)-2",
+"names": [
+"s"
+],
+"err": "cannot read the expression '0.5/exp(t)-2': unknown name: t"
+},
+{
+"text": "(y+1)/3t+pi^y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+4.712556061138899,
+0.729831263809926
+]
+},
+{
+"text": "ln(t)*(y+1)-e^cos(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-3.5934723278990885,
+-2.0703954266382874
+]
+},
+{
+"text": "2^sinh(t)-3t/t+3t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-0.590010345605381,
+8.357697561246997
+]
+},
+{
+"text": "ln(t)/e^y-e",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-2.9892471832415923,
+-1.7514141161803294
+]
+},
+{
+"text": "t*sqrt(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.4218649072866811,
+"notreal"
+]
+},
+{
+"text": "sqrt(y)^tanh(y)/tanh(y)^3t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.6474291388046964,
+"notreal"
+]
+},
+{
+"text": "1/t^y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+3.6419816955055455,
+1.3748944308911808
+]
+},
+{
+"text": "e/sinh(t)-sinh(t)",
+"names": [
+"t"
+],
+"ok": [
+6.803219299365168,
+-1.6181716156831343
+]
+},
+{
+"text": "y/0.5*tanh(y)/t^2*tanh(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+14.102802692271407,
+-0.11976009857969987
+]
+},
+{
+"text": "t^2*t^2*t+ln(t)^y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+"notreal",
+15.661170706719366
+]
+},
+{
+"text": "cos(y)/y*e+(y+1)+ln(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.865084038182515,
+-2.808529756252914
+]
+},
+{
+"text": "0.5*ln(t)+tanh(y)+1/t-ln(t)",
+"names": [
+"x",
+"y"
+],
+"err": "cannot read the expression '0.5*ln(t)+tanh(y)+1/t-ln(t)': unknown name: t"
+},
+{
+"text": "3t^0.5",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.8248287590894658,
+3.9115214431215892
+]
+},
+{
+"text": "1/t-y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.4027027027027028,
+1.188235294117647
+]
+},
+{
+"text": "pi+pi/sin(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+11.829254672101746,
+6.309591175344713
+]
+},
+{
+"text": "0.5^sqrt(y)^0.5*tanh(y)-t^2",
+"names": [
+"t",
+"x"
+],
+"err": "cannot read the expression '0.5^sqrt(y)^0.5*tanh(y)-t^2': unknown name: y"
+},
+{
+"text": "sin(t)/3t^t^2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.1051992193462188,
+1.5319374406758732
+]
+},
+{
+"text": "tanh(y)*sqrt(y)^exp(t)*ln(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-1.0359629539509128,
+"notreal"
+]
+},
+{
+"text": "exp(t)^exp(t)+y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+3.0085786181838072,
+11000.060175522793
+]
+},
+{
+"text": "t*0.5+y+ln(t)",
+"names": [
+"s"
+],
+"err": "cannot read the expression 't*0.5+y+ln(t)': unknown name: t"
+},
+{
+"text": "sqrt(y)+cos(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.4076742537237255,
+"notreal"
+]
+},
+{
+"text": "ln(t)/sinh(t)*exp(t)*(y+1)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-8.746762618361037,
+0.43915876486502
+]
+},
+{
+"text": "sinh(t)+3t/exp(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.1452152490204486,
+3.5773179065061793
+]
+},
+{
+"text": "1/t*e-pi-(y+1)*cos(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+3.5898676850575617,
+-1.8727375886954027
+]
+},
+{
+"text": "0.5^3t/(y+1)+2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+2.020108695652174,
+2.53125
+]
+},
+{
+"text": "0.5/t^2+2*exp(t)^2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+7.844171978586976,
+60.10121047541686
+]
+},
+{
+"text": "t^2*t^2-ln(t)*(y+1)*3t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+2.557067663846892,
+7.269618367833172
+]
+},
+{
+"text": "(y+1)^sqrt(y)/tanh(y)*1/t*ln(t)",
+"names": [
+"t"
+],
+"err": "cannot read the expression '(y+1)^sqrt(y)/tanh(y)*1/t*ln(t)': unknown name: y"
+},
+{
+"text": "e+pi*t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+3.8806711102872686,
+8.058989339561693
+]
+},
+{
+"text": "pi^e-pi/sin(t)^cos(y)",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 'pi^e-pi/sin(t)^cos(y)': only small rational exponents are allowed"
+},
+{
+"text": "cos(y)/t^2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.9539724516039987,
+0.28558325775421395
+]
+},
+{
+"text": "t^y^cos(y)",
+"names": [
+"x",
+"y"
+],
+"err": "cannot read the expression 't^y^cos(y)': unknown name: t"
+},
+{
+"text": "t^2/2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.06845,
+1.445
+]
+},
+{
+"text": "t^2*2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.2738,
+5.78
+]
+},
+{
+"text": "sqrt(y)*2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+2.280350850198276,
+"notreal"
+]
+},
+{
+"text": "t+0.5-ln(t)",
+"names": [
+"t",
+"x"
+],
+"ok": [
+1.864252273343867,
+1.6693717489378297
+]
+},
+{
+"text": "sinh(t)/e*(y+1)*sin(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.11581007867383478,
+0.3860644709798861
+]
+},
+{
+"text": "sinh(t)^2^y/pi+e",
+"names": [
+"t",
+"y"
+],
+"ok": [
+2.7473840986654228,
+3.3230871253804097
+]
+},
+{
+"text": "2^t^pi+3t/0.5",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression '2^t^pi+3t/0.5': only small rational exponents are allowed"
+},
+{
+"text": "sin(t)-e-(y+1)",
+"names": [
+"s"
+],
+"err": "cannot read the expression 'sin(t)-e-(y+1)': unknown name: t"
+},
+{
+"text": "exp(t)/tanh(y)*sqrt(y)+sinh(t)*3t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+2.335682409515037,
+"notreal"
+]
+},
+{
+"text": "t^2-y/t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-3.3766135135135134,
+3.2429411764705884
+]
+},
+{
+"text": "sinh(t)*3t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.4201351576344132,
+13.492722862569886
+]
+},
+{
+"text": "exp(t)*exp(t)^ln(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.0021289218056133,
+13.491610216438536
+]
+},
+{
+"text": "sinh(t)/cos(y)*e",
+"names": [
+"t",
+"y"
+],
+"ok": [
+3.8462600505327793,
+8.713513727779373
+]
+},
+{
+"text": "cos(y)^sinh(t)*sinh(t)/(y+1)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.09990321458812405,
+3.980197744590122
+]
+},
+{
+"text": "2-e+exp(t)-e^tanh(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-1.6377835203163351,
+4.171195412294398
+]
+},
+{
+"text": "sqrt(y)-t",
+"names": [
+"t"
+],
+"err": "cannot read the expression 'sqrt(y)-t': unknown name: y"
+},
+{
+"text": "sinh(t)/ln(t)/cos(y)/cos(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-5.320172144181099,
+7.319440474036566
+]
+},
+{
+"text": "(y+1)*tanh(y)-sqrt(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.8417878413214667,
+"notreal"
+]
+},
+{
+"text": "tanh(y)-cos(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.5942243306887189,
+-1.3623851819077135
+]
+},
+{
+"text": "t-sin(t)+pi",
+"names": [
+"x",
+"y"
+],
+"err": "cannot read the expression 't-sin(t)+pi': unknown name: t"
+},
+{
+"text": "sqrt(y)/1/t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+3.0815552029706432,
+"notreal"
+]
+},
+{
+"text": "2+exp(t)/exp(t)+1/t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+5.702702702702703,
+3.588235294117647
+]
+},
+{
+"text": "exp(t)^0.5",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.2032184401276953,
+2.3396468519259908
+]
+},
+{
+"text": "tanh(y)-t^2*t^2/2^t^2",
+"names": [
+"t",
+"x"
+],
+"err": "cannot read the expression 'tanh(y)-t^2*t^2/2^t^2': unknown name: y"
+},
+{
+"text": "1/t*2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+5.405405405405405,
+1.1764705882352942
+]
+},
+{
+"text": "sin(t)/1/t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.977339005310708,
+0.5833322414426286
+]
+},
+{
+"text": "3t+e/ln(t)*3t/t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-7.091988272001409,
+20.468283669505723
+]
+},
+{
+"text": "exp(t)*e^t^2",
+"names": [
+"s"
+],
+"err": "cannot read the expression 'exp(t)*e^t^2': unknown name: t"
+},
+{
+"text": "(y+1)^2*exp(t)-e+(y+1)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+7.240234283109941,
+-1.4424502457826933
+]
+},
+{
+"text": "t^2^sinh(t)*1/t/2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.3710521810919487,
+8.139556389934729
+]
+},
+{
+"text": "3t^3t-cos(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-0.2112739986245874,
+24.23096438509032
+]
+},
+{
+"text": "cos(y)/y/2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.10288416485561054,
+-0.6877796790913986
+]
+},
+{
+"text": "3t+cos(y)+0.5",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.8774988286245875,
+6.425335614909678
+]
+},
+{
+"text": "0.5*0.5",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.25,
+0.25
+]
+},
+{
+"text": "tanh(y)-sin(t)/sinh(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-0.09366731964867069,
+-0.9118805469878161
+]
+},
+{
+"text": "(y+1)^t/(y+1)-tanh(y)+sqrt(y)",
+"names": [
+"t"
+],
+"err": "cannot read the expression '(y+1)^t/(y+1)-tanh(y)+sqrt(y)': unknown name: y"
+},
+{
+"text": "(y+1)*t^2/3t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.038833966666666664,
+0.6550666666666667
+]
+},
+{
+"text": "e^(y+1)*3t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+11.07134252484434,
+7.608305957970479
+]
+},
+{
+"text": "cos(y)^t^2^ln(t)*tanh(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.3870008143150827,
+-0.35528824410341114
+]
+},
+{
+"text": "tanh(y)^exp(t)^exp(t)",
+"names": [
+"x",
+"y"
+],
+"err": "cannot read the expression 'tanh(y)^exp(t)^exp(t)': unknown name: t"
+},
+{
+"text": "t+sin(t)-sinh(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.35311528995197705,
+0.04603287661523606
+]
+},
+{
+"text": "0.5*2*sqrt(y)/3t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.14062163576222703,
+"notreal"
+]
+},
+{
+"text": "1/t-2^sqrt(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.49862448144165367,
+"notreal"
+]
+},
+{
+"text": "cos(y)^sin(t)+t*pi",
+"names": [
+"t",
+"x"
+],
+"err": "cannot read the expression 'cos(y)^sin(t)+t*pi': unknown name: y"
+},
+{
+"text": "ln(t)-cos(y)^2/y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-1.0492950605096565,
+1.6659263797927317
+]
+},
+{
+"text": "e-t^2/t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+2.3482818284590454,
+1.0182818284590451
+]
+},
+{
+"text": "cos(y)/1/t+sin(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.0845852390584414,
+1.4771563486346324
+]
+},
+{
+"text": "tanh(y)+e-(y+1)^sin(t)*ln(t)",
+"names": [
+"s"
+],
+"err": "cannot read the expression 'tanh(y)+e-(y+1)^sin(t)*ln(t)': unknown name: y"
+},
+{
+"text": "(y+1)+sin(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+2.661615431964962,
+1.3916648104524687
+]
+},
+{
+"text": "e^3t/pi/0.5*sinh(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.7907350722788595,
+57.509807526195004
+]
+},
+{
+"text": "1/t/3t^3t^(y+1)^tanh(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.005945476168256587,
+2.2947239217608204
+]
+},
+{
+"text": "0.5+(y+1)+t^2^0.5/(y+1)",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression '0.5+(y+1)+t^2^0.5/(y+1)': only small rational exponents are allowed"
+},
+{
+"text": "t^2-3t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-0.9731,
+-2.21
+]
+},
+{
+"text": "1/t^e+sinh(t)",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression '1/t^e+sinh(t)': only small rational exponents are allowed"
+},
+{
+"text": "3t^t^2/ln(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-2.6333675406825106,
+26.201627556600105
+]
+},
+{
+"text": "2^0.5^cos(y)-0.5",
+"names": [
+"t"
+],
+"err": "cannot read the expression '2^0.5^cos(y)-0.5': unknown name: y"
+},
+{
+"text": "3t+tanh(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.9717231593133064,
+4.562950433001965
+]
+},
+{
+"text": "sin(t)^1/t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.977339005310708,
+0.5833322414426286
+]
+},
+{
+"text": "t-t^2+(y+1)-2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.5331,
+-2.79
+]
+},
+{
+"text": "1/t^e-pi^ln(t)+t^2",
+"names": [
+"x",
+"y"
+],
+"err": "cannot read the expression '1/t^e-pi^ln(t)+t^2': unknown name: t"
+},
+{
+"text": "t*t^2*sinh(t)-sinh(t)-exp(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-1.8070625889829257,
+4.878410365377891
+]
+},
+{
+"text": "t^2-(y+1)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-2.1631,
+2.49
+]
+},
+{
+"text": "pi+cos(y)^exp(t)^ln(t)-y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+2.2430038029383086,
+4.3646382502907075
+]
+},
+{
+"text": "3t*sqrt(y)/sin(t)*1/t",
+"names": [
+"t",
+"x"
+],
+"err": "cannot read the expression '3t*sqrt(y)/sin(t)*1/t': unknown name: y"
+},
+{
+"text": "0.5-ln(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.494252273343867,
+-0.030628251062170396
+]
+},
+{
+"text": "t^2-sqrt(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-1.003275425099138,
+"notreal"
+]
+},
+{
+"text": "cos(y)^t^2*pi",
+"names": [
+"t",
+"y"
+],
+"ok": [
+2.6227097979461065,
+1.8038992035706223
+]
+},
+{
+"text": "tanh(y)^tanh(y)",
+"names": [
+"s"
+],
+"err": "cannot read the expression 'tanh(y)^tanh(y)': unknown name: y"
+},
+{
+"text": "ln(t)-ln(t)*sin(t)+1/t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+2.0679873946662237,
+0.5926581811695253
+]
+},
+{
+"text": "2^2^y+t^2^sqrt(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+5.622662436229402,
+"notreal"
+]
+},
+{
+"text": "0.5-t^2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.3631,
+-2.39
+]
+},
+{
+"text": "exp(t)-sqrt(y)^t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.3979999951261994,
+"notreal"
+]
+},
+{
+"text": "cos(y)+1/t^e",
+"names": [
+"t",
+"y"
+],
+"err": "cannot read the expression 'cos(y)+1/t^e': only small rational exponents are allowed"
+},
+{
+"text": "t+cos(y)+pi*sinh(t)+tanh(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+2.6883152534685806,
+10.299783895357251
+]
+},
+{
+"text": "t^2^cos(y)+0.5",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.8021594244656609,
+3.0606093136774017
+]
+},
+{
+"text": "ln(t)^sqrt(y)-sqrt(y)/ln(t)^sinh(t)",
+"names": [
+"t"
+],
+"err": "cannot read the expression 'ln(t)^sqrt(y)-sqrt(y)/ln(t)^sinh(t)': unknown name: y"
+},
+{
+"text": "sqrt(y)-y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-0.15982457490086202,
+"notreal"
+]
+},
+{
+"text": "1/t*sin(t)^t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.8550244986397741,
+0.5799244412780775
+]
+},
+{
+"text": "sinh(t)^1/t*t+3t-ln(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+2.4827524153568516,
+7.2150036827750625
+]
+},
+{
+"text": "sin(t)*0.5",
+"names": [
+"x",
+"y"
+],
+"err": "cannot read the expression 'sin(t)*0.5': unknown name: t"
+},
+{
+"text": "y^tanh(y)*sinh(t)+tanh(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.3362422312251263,
+"notreal"
+]
+},
+{
+"text": "cos(y)*ln(t)-sinh(t)^1/t+(y+1)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.0110653247313315,
+-0.7183076848489403
+]
+},
+{
+"text": "0.5*exp(t)+sin(t)/sin(t)-1/t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-0.9788353953710405,
+3.1487384017459528
+]
+},
+{
+"text": "tanh(y)+ln(t)",
+"names": [
+"t",
+"x"
+],
+"err": "cannot read the expression 'tanh(y)+ln(t)': unknown name: y"
+},
+{
+"text": "0.5+e^t^2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.6467134714394958,
+18.493309601550315
+]
+},
+{
+"text": "sinh(t)+y^ln(t)*sqrt(y)+ln(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.2626294875241958,
+"notreal"
+]
+},
+{
+"text": "0.5+ln(t)*t^2*exp(t)+cos(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.5704431298073865,
+9.71971958314864
+]
+},
+{
+"text": "e*cos(y)",
+"names": [
+"s"
+],
+"err": "cannot read the expression 'e*cos(y)': unknown name: y"
+},
+{
+"text": "1/t-e/y-0.5*ln(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.108842817483063,
+4.8533908826849705
+]
+},
+{
+"text": "cos(y)/exp(t)/exp(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.12762741352236706,
+0.02754414828425242
+]
+},
+{
+"text": "1/t/1/t/cos(y)/exp(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+18.861911767452405,
+0.07658980288483916
+]
+},
+{
+"text": "e+y*pi*t^cos(y)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+5.84859430346703,
+-0.20249803153472584
+]
+},
+{
+"text": "sqrt(y)^exp(t)*3t*y-pi",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-1.3967904594211296,
+"notreal"
+]
+},
+{
+"text": "sin(t)+t*e",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.3673797084948087,
+5.612743918832845
+]
+},
+{
+"text": "1/t/(y+1)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.1750881316098707,
+1.4705882352941178
+]
+},
+{
+"text": "sqrt(y)*e",
+"names": [
+"t"
+],
+"err": "cannot read the expression 'sqrt(y)*e': unknown name: y"
+},
+{
+"text": "ln(t)+exp(t)-tanh(y)^sin(t)+exp(t)",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.9536105533543183,
+"notreal"
+]
+},
+{
+"text": "t^2/sinh(t)^sin(t)^sqrt(y)*1/t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.5017696208820297,
+"notreal"
+]
+},
+{
+"text": "e-sqrt(y)^1/t",
+"names": [
+"t",
+"y"
+],
+"ok": [
+-0.36327337451159797,
+"notreal"
+]
+},
+{
+"text": "e/tanh(y)*ln(t)",
+"names": [
+"x",
+"y"
+],
+"err": "cannot read the expression 'e/tanh(y)*ln(t)': unknown name: t"
+},
+{
+"text": "3t*pi^exp(t)-y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+4.52189083959802,
+2685.5884697347838
+]
+},
+{
+"text": "t^t*2-pi+pi",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.3844097000314686,
+4.92938979896974
+]
+},
+{
+"text": "ln(t)+0.5+e/y",
+"names": [
+"t",
+"y"
+],
+"ok": [
+1.5967337485477064,
+-3.499841463036238
+]
+},
+{
+"text": "sinh(t)*t^2/sqrt(y)-cos(y)/exp(t)",
+"names": [
+"t",
+"x"
+],
+"err": "cannot read the expression 'sinh(t)*t^2/sqrt(y)-cos(y)/exp(t)': unknown name: y"
+},
+{
+"text": "sinh(t)*ln(t)^2",
+"names": [
+"t",
+"y"
+],
+"ok": [
+0.3741616155693887,
+0.7449209027811058
+]
+},
+{
+"text": "(y+1)-sinh(t)^sqrt(y)^t^2+e",
+"names": [
+"t",
+"y"
+],
+"ok": [
+4.6463869865496035,
+"notreal"
+]
+}
+]

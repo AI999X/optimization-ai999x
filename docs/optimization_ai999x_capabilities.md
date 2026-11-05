@@ -172,7 +172,7 @@ Call `solve("<id>", **inputs)` with plain numbers; the result's `values` holds e
 
 <a id="linear_program"></a>
 
-### Linear program (simplex method) — `linear_program`
+### Linear program (simplex method): `linear_program`
 
 Optimise a linear objective subject to linear constraints with non-negative variables: the optimal value, an optimal solution (stated as unique only when it is) and the shadow prices.
 
@@ -234,7 +234,7 @@ optimization_ai999x.solve('linear_program', sense='maximize', c=[2, 4], A=[[1, 2
 
 <a id="lp_two_variable_graphical"></a>
 
-### Two-variable linear program (graphical corner-point method) — `lp_two_variable_graphical`
+### Two-variable linear program (graphical corner-point method), `lp_two_variable_graphical`
 
 Solve a linear program in two variables by evaluating the objective at every corner point of the feasible region.
 
@@ -291,7 +291,7 @@ optimization_ai999x.solve('lp_two_variable_graphical', sense='minimize', c=[2, 3
 
 <a id="integer_program"></a>
 
-### Integer linear program (branch and bound) — `integer_program`
+### Integer linear program (branch and bound): `integer_program`
 
 Optimise a linear objective over non-negative INTEGER points satisfying linear constraints: the optimal value and one optimal integer solution.
 
@@ -345,7 +345,7 @@ optimization_ai999x.solve('integer_program', sense='minimize', c=[3, 2], A=[[1, 
 
 <a id="lp_shadow_prices"></a>
 
-### Shadow prices of a linear program — `lp_shadow_prices`
+### Shadow prices of a linear program: `lp_shadow_prices`
 
 The shadow price (dual value) of each constraint: the change of the optimal value per unit increase of its right-hand side, when it is uniquely defined.
 
@@ -394,7 +394,7 @@ optimization_ai999x.solve('lp_shadow_prices', sense='maximize', c=[3, 5], A=[[1,
 
 <a id="quadratic_optimum"></a>
 
-### Optimum of a quadratic function — `quadratic_optimum`
+### Optimum of a quadratic function: `quadratic_optimum`
 
 The minimum or maximum of f(x) = a $x^{2} + b$ x + c: where it occurs and its value.
 
@@ -443,7 +443,7 @@ optimization_ai999x.solve('quadratic_optimum', a=-1, b=6, c=1)
 
 <a id="break_even_point"></a>
 
-### Break-even quantity — `break_even_point`
+### Break-even quantity: `break_even_point`
 
 The number of units at which revenue equals total cost (fixed plus variable), and the revenue there.
 
@@ -492,7 +492,7 @@ optimization_ai999x.solve('break_even_point', F_=1200, p=7.5, v=4.5)
 
 <a id="profit_max_linear_demand"></a>
 
-### Profit-maximising output with linear demand — `profit_max_linear_demand`
+### Profit-maximising output with linear demand, `profit_max_linear_demand`
 
 With inverse demand $p = a - b$ q and cost $C = F + c$ q, the output, price and profit at the profit maximum.
 
@@ -541,7 +541,7 @@ optimization_ai999x.solve('profit_max_linear_demand', a=50, b=0.5, cv=10)
 
 <a id="revenue_max_linear_demand"></a>
 
-### Revenue-maximising price with linear demand — `revenue_max_linear_demand`
+### Revenue-maximising price with linear demand, `revenue_max_linear_demand`
 
 With demand $q = \alpha - \beta$ p, the price that maximises revenue p q, the quantity sold and the revenue.
 
@@ -586,7 +586,7 @@ optimization_ai999x.solve('revenue_max_linear_demand', alpha=1000, beta=20)
 
 <a id="fence_max_area"></a>
 
-### Largest rectangle for a given length of fencing — `fence_max_area`
+### Largest rectangle for a given length of fencing, `fence_max_area`
 
 The dimensions and maximum area of a rectangle enclosed by a fence of length L, on four sides or on three sides with a wall or river as the fourth.
 
@@ -635,7 +635,7 @@ optimization_ai999x.solve('fence_max_area', L=200, wall=True)
 
 <a id="open_box_max_volume"></a>
 
-### Open box of maximum volume from a rectangular sheet — `open_box_max_volume`
+### Open box of maximum volume from a rectangular sheet, `open_box_max_volume`
 
 Squares of side x are cut from the corners of an L by W sheet and the sides folded up: the cut that maximises the volume, and that volume.
 
@@ -684,7 +684,7 @@ optimization_ai999x.solve('open_box_max_volume', L=8, W=5)
 
 <a id="can_min_surface"></a>
 
-### Closed cylinder of least surface area for a given volume — `can_min_surface`
+### Closed cylinder of least surface area for a given volume, `can_min_surface`
 
 The radius, height and surface area of the closed cylindrical can that holds a volume V with the least material.
 
@@ -724,7 +724,7 @@ optimization_ai999x.solve('can_min_surface', V=6.283185307179586)
 
 <a id="eoq"></a>
 
-### Economic order quantity (EOQ) — `eoq`
+### Economic order quantity (EOQ): `eoq`
 
 The order size that minimises ordering plus holding cost for a steady demand, the minimum cost, the number of orders per period and the time between orders.
 
@@ -773,7 +773,7 @@ optimization_ai999x.solve('eoq', D=1000, S=10, H=0.5)
 
 <a id="eoq_planned_shortages"></a>
 
-### EOQ with planned backorders — `eoq_planned_shortages`
+### EOQ with planned backorders: `eoq_planned_shortages`
 
 The order quantity and the planned maximum backorder that minimise ordering, holding and shortage cost when unmet demand is backordered.
 
@@ -816,7 +816,7 @@ optimization_ai999x.solve('eoq_planned_shortages', D=1200, S=50, H=3, B=6)
 
 <a id="epq_production_lot"></a>
 
-### Economic production quantity (EPQ) — `epq_production_lot`
+### Economic production quantity (EPQ): `epq_production_lot`
 
 The production lot size that minimises setup plus holding cost when stock builds up gradually at a finite production rate.
 
@@ -860,7 +860,7 @@ optimization_ai999x.solve('epq_production_lot', D=1000, P=2000, S=100, H=4)
 
 <a id="eoq_quantity_discount"></a>
 
-### Order quantity with quantity discounts (all-units) — `eoq_quantity_discount`
+### Order quantity with quantity discounts (all-units), `eoq_quantity_discount`
 
 With all-units price breaks, the order quantity that minimises purchase + ordering + holding cost, the price paid and the minimum total cost per period.
 
@@ -903,7 +903,7 @@ optimization_ai999x.solve('eoq_quantity_discount', D=5000, S=49, i_rate=0.2, bre
 
 <a id="reorder_point"></a>
 
-### Reorder point with safety stock — `reorder_point`
+### Reorder point with safety stock: `reorder_point`
 
 The stock level at which to reorder so that demand during the lead time is covered with a given cycle service level, for normally distributed demand per period.
 
@@ -952,7 +952,7 @@ optimization_ai999x.solve('reorder_point', d=100, L=4, sigma=0, SL=0.9)
 
 <a id="order_up_to_level"></a>
 
-### Periodic-review order-up-to level — `order_up_to_level`
+### Periodic-review order-up-to level: `order_up_to_level`
 
 The target inventory position S of a periodic-review system that covers demand over the review period plus the lead time with a given cycle service level.
 
@@ -995,7 +995,7 @@ optimization_ai999x.solve('order_up_to_level', d=20, sigma=4, R=7, L=2, SL=0.95)
 
 <a id="newsvendor_normal"></a>
 
-### Newsvendor order quantity (normal demand) — `newsvendor_normal`
+### Newsvendor order quantity (normal demand): `newsvendor_normal`
 
 The single-period order quantity that maximises expected profit for normally distributed demand: the critical ratio, the optimal quantity and the expected profit.
 
@@ -1045,7 +1045,7 @@ optimization_ai999x.solve('newsvendor_normal', p=10, c=5, mu=500, sigma=50)
 
 <a id="newsvendor_uniform"></a>
 
-### Newsvendor order quantity (uniform demand) — `newsvendor_uniform`
+### Newsvendor order quantity (uniform demand), `newsvendor_uniform`
 
 The single-period order quantity that maximises expected profit when demand is uniform on [a, b].
 
@@ -1088,7 +1088,7 @@ optimization_ai999x.solve('newsvendor_uniform', p=10, c=4, lo=100, hi=300)
 
 <a id="newsvendor_discrete"></a>
 
-### Newsvendor order quantity (discrete demand) — `newsvendor_discrete`
+### Newsvendor order quantity (discrete demand), `newsvendor_discrete`
 
 For demand taking listed values with given probabilities, the order quantity that maximises expected profit (the smallest demand value whose cumulative probability reaches the critical ratio) and that profit.
 
@@ -1136,7 +1136,7 @@ optimization_ai999x.solve('newsvendor_discrete', p=10, c=4, demands='10, 20, 30,
 
 <a id="littlewood_protection"></a>
 
-### Littlewood's rule (two-fare protection level) — `littlewood_protection`
+### Littlewood's rule (two-fare protection level), `littlewood_protection`
 
 How many seats (units) to protect for full-fare demand when a discount fare is also sold: the protection level and, with a capacity, the booking limit for the discount class.
 
@@ -1184,7 +1184,7 @@ optimization_ai999x.solve('littlewood_protection', p1=200, p2=100, mu=50, sigma=
 
 <a id="mm1_queue"></a>
 
-### M/M/1 queue — `mm1_queue`
+### M/M/1 queue: `mm1_queue`
 
 Steady-state measures of a single-server queue with Poisson arrivals and exponential service: utilisation, mean numbers in system and in queue, mean times in system and in queue, probability of an empty system.
 
@@ -1234,7 +1234,7 @@ optimization_ai999x.solve('mm1_queue', lam=2, mu=3)
 
 <a id="mmc_queue"></a>
 
-### M/M/c queue (Erlang C) — `mmc_queue`
+### M/M/c queue (Erlang C): `mmc_queue`
 
 Steady-state measures of a queue with c parallel identical servers, Poisson arrivals and exponential service: probability of waiting (Erlang C), mean queue length and waiting times.
 
@@ -1286,7 +1286,7 @@ optimization_ai999x.solve('mmc_queue', lam=2, mu=3, c=1)
 
 <a id="mmck_finite_queue"></a>
 
-### M/M/c/K queue (finite capacity) — `mmck_finite_queue`
+### M/M/c/K queue (finite capacity): `mmck_finite_queue`
 
 Steady-state measures of a queue with c servers and room for at most K customers in the system (arrivals finding it full are lost): blocking probability, effective arrival rate, mean numbers and times.
 
@@ -1338,7 +1338,7 @@ optimization_ai999x.solve('mmck_finite_queue', lam=3, mu=1, c=2, K=2)
 
 <a id="erlang_b"></a>
 
-### Erlang B blocking probability (M/M/c/c loss system) — `erlang_b`
+### Erlang B blocking probability (M/M/c/c loss system), `erlang_b`
 
 The probability that a call (customer) is blocked in a loss system with c servers and no waiting room, for an offered traffic of A erlangs, with the carried and lost traffic.
 
@@ -1387,7 +1387,7 @@ optimization_ai999x.solve('erlang_b', A=1, c=1)
 
 <a id="machine_repair_queue"></a>
 
-### Machine-repair (finite-source) queue — `machine_repair_queue`
+### Machine-repair (finite-source) queue: `machine_repair_queue`
 
 N machines each fail at rate lambda while running and c repairers fix them at rate mu each: mean number of machines down and waiting, failure rate, downtime and the mean number working.
 
@@ -1438,7 +1438,7 @@ optimization_ai999x.solve('machine_repair_queue', N=5, lam=0.2, mu=1, c=1)
 
 <a id="mg1_pollaczek_khinchine"></a>
 
-### M/G/1 queue (Pollaczek-Khinchine formula) — `mg1_pollaczek_khinchine`
+### M/G/1 queue (Pollaczek-Khinchine formula): `mg1_pollaczek_khinchine`
 
 Mean queue length and waiting times of a single-server queue with Poisson arrivals and a GENERAL service time distribution given by its mean and standard deviation (M/D/1 when the standard deviation is 0).
 
@@ -1488,7 +1488,7 @@ optimization_ai999x.solve('mg1_pollaczek_khinchine', lam=0.5, ES=1, sd=0)
 
 <a id="mmc_staffing"></a>
 
-### Minimum number of servers for a service target (Erlang C) — `mmc_staffing`
+### Minimum number of servers for a service target (Erlang C), `mmc_staffing`
 
 The smallest number of servers c of an M/M/c queue for which the probability of waiting, or the mean waiting time, meets a target.
 
@@ -1531,7 +1531,7 @@ optimization_ai999x.solve('mmc_staffing', lam=24, mu=10, target=0.2)
 
 <a id="spt_mean_flow_time"></a>
 
-### Shortest processing time rule (minimum mean flow time) — `spt_mean_flow_time`
+### Shortest processing time rule (minimum mean flow time), `spt_mean_flow_time`
 
 The job order that minimises the mean flow (completion) time on one machine, and that minimum.
 
@@ -1570,7 +1570,7 @@ optimization_ai999x.solve('spt_mean_flow_time', p='4, 2, 6, 3')
 
 <a id="wspt_weighted_completion"></a>
 
-### Weighted shortest processing time (Smith's rule) — `wspt_weighted_completion`
+### Weighted shortest processing time (Smith's rule), `wspt_weighted_completion`
 
 The job order that minimises the total weighted completion time on one machine, and that minimum.
 
@@ -1609,7 +1609,7 @@ optimization_ai999x.solve('wspt_weighted_completion', p=[3, 1, 4], w=[1, 2, 3])
 
 <a id="edd_max_lateness"></a>
 
-### Earliest due date rule (minimum maximum lateness) — `edd_max_lateness`
+### Earliest due date rule (minimum maximum lateness), `edd_max_lateness`
 
 The job order that minimises the maximum lateness (and so the maximum tardiness) on one machine.
 
@@ -1650,7 +1650,7 @@ optimization_ai999x.solve('edd_max_lateness', p=[2, 4, 1, 3], d=[5, 6, 3, 9])
 
 <a id="moore_hodgson_tardy_jobs"></a>
 
-### Moore-Hodgson algorithm (minimum number of tardy jobs) — `moore_hodgson_tardy_jobs`
+### Moore-Hodgson algorithm (minimum number of tardy jobs), `moore_hodgson_tardy_jobs`
 
 The smallest possible number of late jobs on one machine, with an order of the on-time jobs and the set of late jobs.
 
@@ -1690,7 +1690,7 @@ optimization_ai999x.solve('moore_hodgson_tardy_jobs', p=[4, 3, 2, 5, 6], d=[5, 6
 
 <a id="johnson_two_machine"></a>
 
-### Johnson's rule (two-machine flow shop) — `johnson_two_machine`
+### Johnson's rule (two-machine flow shop): `johnson_two_machine`
 
 The job order that minimises the makespan when every job is processed first on machine 1 and then on machine 2.
 
@@ -1733,7 +1733,7 @@ optimization_ai999x.solve('johnson_two_machine', a=[5, 2, 6, 7], b=[3, 4, 8, 2])
 
 <a id="parallel_machine_makespan"></a>
 
-### Minimum makespan on identical parallel machines — `parallel_machine_makespan`
+### Minimum makespan on identical parallel machines, `parallel_machine_makespan`
 
 Assign jobs to m identical machines so that the last machine finishes as early as possible (P||Cmax), exactly.
 
@@ -1782,7 +1782,7 @@ optimization_ai999x.solve('parallel_machine_makespan', p=[3, 3, 2, 2, 2], m=2)
 
 <a id="critical_path_method"></a>
 
-### Critical path method (project duration and slack) — `critical_path_method`
+### Critical path method (project duration and slack), `critical_path_method`
 
 For activities with durations and precedences, the minimum project duration, the critical activities and each activity's earliest start, latest start and slack (total float).
 
@@ -1829,7 +1829,7 @@ optimization_ai999x.solve('critical_path_method', durations='3, 4, 2, 5', preced
 
 <a id="pert_project"></a>
 
-### PERT project duration and completion probability — `pert_project`
+### PERT project duration and completion probability, `pert_project`
 
 With optimistic, most likely and pessimistic times per activity, the expected project duration, its variance along the critical path and the probability of finishing by a deadline (normal approximation).
 
@@ -1878,7 +1878,7 @@ optimization_ai999x.solve('pert_project', times='2 4 6; 3 5 13; 1 2 3', preceden
 
 <a id="shortest_path"></a>
 
-### Shortest path (Dijkstra's algorithm) — `shortest_path`
+### Shortest path (Dijkstra's algorithm): `shortest_path`
 
 The length of the shortest route between two nodes of a graph with non-negative edge weights, and the route itself (stated as the route only when it is the only shortest one).
 
@@ -1931,7 +1931,7 @@ optimization_ai999x.solve('shortest_path', edges='A-B 1, B-C 1, A-C 2', source='
 
 <a id="bellman_ford_shortest_path"></a>
 
-### Shortest path with negative weights (Bellman-Ford) — `bellman_ford_shortest_path`
+### Shortest path with negative weights (Bellman-Ford), `bellman_ford_shortest_path`
 
 Shortest distance in a directed graph whose edge weights may be negative, with all distances from the source; a negative cycle reachable from the source is reported instead of a number.
 
@@ -1976,7 +1976,7 @@ optimization_ai999x.solve('bellman_ford_shortest_path', edges=[['S', 'A', 4], ['
 
 <a id="all_pairs_shortest_paths"></a>
 
-### All-pairs shortest distances (Floyd-Warshall) — `all_pairs_shortest_paths`
+### All-pairs shortest distances (Floyd-Warshall), `all_pairs_shortest_paths`
 
 The table of shortest distances between every pair of nodes, and the graph's diameter.
 
@@ -2020,7 +2020,7 @@ optimization_ai999x.solve('all_pairs_shortest_paths', edges='A-B 3, B-C 4, A-C 9
 
 <a id="minimum_spanning_tree"></a>
 
-### Minimum spanning tree (Kruskal's algorithm) — `minimum_spanning_tree`
+### Minimum spanning tree (Kruskal's algorithm), `minimum_spanning_tree`
 
 The least total weight of edges connecting all nodes of an undirected graph, and the tree (stated as THE tree only when the minimum spanning tree is unique).
 
@@ -2060,7 +2060,7 @@ optimization_ai999x.solve('minimum_spanning_tree', edges='A-B 4, A-C 1, B-C 2, B
 
 <a id="max_flow"></a>
 
-### Maximum flow and minimum cut (Edmonds-Karp) — `max_flow`
+### Maximum flow and minimum cut (Edmonds-Karp), `max_flow`
 
 The largest flow that can be sent from a source to a sink through a network of capacitated arcs, a flow achieving it and the minimum cut that proves it optimal.
 
@@ -2105,7 +2105,7 @@ optimization_ai999x.solve('max_flow', edges='S-A 10, S-B 5, A-B 15, A-T 5, B-T 1
 
 <a id="transportation_problem"></a>
 
-### Transportation problem (minimum shipping cost) — `transportation_problem`
+### Transportation problem (minimum shipping cost), `transportation_problem`
 
 Ship from sources with given supplies to destinations with given demands at least total cost: the minimum cost and a shipping plan (stated as THE plan only when it is unique).
 
@@ -2156,7 +2156,7 @@ optimization_ai999x.solve('transportation_problem', supply=[20, 30], demand=[10,
 
 <a id="min_cost_flow"></a>
 
-### Minimum-cost flow (transshipment) — `min_cost_flow`
+### Minimum-cost flow (transshipment): `min_cost_flow`
 
 Send flow from supply nodes to demand nodes through capacitated arcs at least total cost (transshipment allowed): the minimum cost and a flow achieving it.
 
@@ -2202,7 +2202,7 @@ optimization_ai999x.solve('min_cost_flow', capacity=[[0, 10, 5], [0, 0, 10], [0,
 
 <a id="assignment_min_cost"></a>
 
-### Assignment problem (Hungarian method), minimum total cost — `assignment_min_cost`
+### Assignment problem (Hungarian method), minimum total cost, `assignment_min_cost`
 
 Assign each row (worker) to a different column (task) so that the total cost is as small as possible: the optimum and an optimal assignment (stated as THE assignment only when unique).
 
@@ -2248,7 +2248,7 @@ optimization_ai999x.solve('assignment_min_cost', C='9 2 7; 6 4 3; 5 8 1')
 
 <a id="assignment_max_profit"></a>
 
-### Assignment problem (Hungarian method), maximum total value — `assignment_max_profit`
+### Assignment problem (Hungarian method), maximum total value, `assignment_max_profit`
 
 Assign each row (worker) to a different column (task) so that the total value is as large as possible: the optimum and an optimal assignment (stated as THE assignment only when unique).
 
@@ -2294,7 +2294,7 @@ optimization_ai999x.solve('assignment_max_profit', C='9 2 7; 6 4 3; 5 8 1')
 
 <a id="bipartite_matching"></a>
 
-### Maximum bipartite matching — `bipartite_matching`
+### Maximum bipartite matching: `bipartite_matching`
 
 The largest number of pairs that can be formed between two groups (workers and jobs, students and projects) using only allowed pairs, with one maximum matching and a vertex cover proving it maximum.
 
@@ -2338,7 +2338,7 @@ optimization_ai999x.solve('bipartite_matching', edges='A-X, B-X, C-X')
 
 <a id="max_weight_matching"></a>
 
-### Maximum-weight matching (general graph) — `max_weight_matching`
+### Maximum-weight matching (general graph): `max_weight_matching`
 
 Pair up nodes of a graph (each node at most once) so that the total weight of the chosen edges is as large as possible: the maximum weight and one optimal matching.
 
@@ -2376,7 +2376,7 @@ optimization_ai999x.solve('max_weight_matching', edges='A-B 6, B-C 5, C-D 6, A-D
 
 <a id="traveling_salesman"></a>
 
-### Travelling salesman tour (exact, Held-Karp) — `traveling_salesman`
+### Travelling salesman tour (exact, Held-Karp), `traveling_salesman`
 
 The shortest round trip visiting every city exactly once and returning to the start, for a distance matrix (symmetric or not): the minimum tour length and one optimal tour.
 
@@ -2418,7 +2418,7 @@ optimization_ai999x.solve('traveling_salesman', D=[[0, 10, 15, 20], [10, 0, 35, 
 
 <a id="knapsack_01"></a>
 
-### 0/1 knapsack problem — `knapsack_01`
+### 0/1 knapsack problem, `knapsack_01`
 
 Choose items (each at most once) to maximise total value without exceeding the capacity: the maximum value, one optimal choice and its weight.
 
@@ -2460,7 +2460,7 @@ optimization_ai999x.solve('knapsack_01', values='60, 100, 120', weights='10, 20,
 
 <a id="knapsack_unbounded"></a>
 
-### Unbounded knapsack problem — `knapsack_unbounded`
+### Unbounded knapsack problem: `knapsack_unbounded`
 
 Choose any number of copies of each item type to maximise total value within the capacity.
 
@@ -2504,7 +2504,7 @@ optimization_ai999x.solve('knapsack_unbounded', values=[10, 40, 50, 70], weights
 
 <a id="set_cover"></a>
 
-### Minimum-cost set cover — `set_cover`
+### Minimum-cost set cover: `set_cover`
 
 Choose sets (each with a cost) that together contain every element, at least total cost.
 
@@ -2543,7 +2543,7 @@ optimization_ai999x.solve('set_cover', sets=[[1, 1, 0, 0], [0, 1, 1, 0], [0, 0, 
 
 <a id="facility_location"></a>
 
-### Uncapacitated facility location — `facility_location`
+### Uncapacitated facility location: `facility_location`
 
 Choose which facilities to open (each with a fixed cost) and serve every customer from its cheapest open facility, minimising fixed plus service cost.
 
@@ -2582,7 +2582,7 @@ optimization_ai999x.solve('facility_location', fixed=[10, 15, 12], cost=[[3, 8, 
 
 <a id="bin_packing"></a>
 
-### Bin packing (minimum number of bins) — `bin_packing`
+### Bin packing (minimum number of bins): `bin_packing`
 
 Pack items of given sizes into the fewest bins of a given capacity: the minimum number and one packing.
 
@@ -2631,7 +2631,7 @@ optimization_ai999x.solve('bin_packing', sizes=[6, 6, 6], capacity=10)
 
 <a id="zero_sum_game"></a>
 
-### Two-person zero-sum game (value and optimal mixed strategies) — `zero_sum_game`
+### Two-person zero-sum game (value and optimal mixed strategies), `zero_sum_game`
 
 The value of a matrix game (row player maximises the payoff in the matrix, column player minimises it) and one optimal mixed strategy for each player.
 
@@ -2680,7 +2680,7 @@ optimization_ai999x.solve('zero_sum_game', A=[[1, -1], [-1, 1]])
 
 <a id="zero_sum_2x2"></a>
 
-### 2 x 2 zero-sum game (saddle point or mixed-strategy formula) — `zero_sum_2x2`
+### 2 x 2 zero-sum game (saddle point or mixed-strategy formula), `zero_sum_2x2`
 
 The value of a 2 x 2 matrix game: the saddle-point value when one exists, otherwise the mixed-strategy solution (probability of each player's first strategy, unique in that case).
 
@@ -2731,7 +2731,7 @@ optimization_ai999x.solve('zero_sum_2x2', A=[[5, 3], [4, 1]])
 
 <a id="pure_nash_equilibria"></a>
 
-### Pure-strategy Nash equilibria of a bimatrix game — `pure_nash_equilibria`
+### Pure-strategy Nash equilibria of a bimatrix game, `pure_nash_equilibria`
 
 Every pure-strategy Nash equilibrium (a cell where each player's strategy is a best reply to the other's) of a two-player game given by the two players' payoff matrices.
 
@@ -2776,7 +2776,7 @@ optimization_ai999x.solve('pure_nash_equilibria', A=[[2, 0], [0, 1]], B=[[1, 0],
 
 <a id="mixed_nash_2x2"></a>
 
-### Mixed-strategy Nash equilibrium of a 2 x 2 game — `mixed_nash_2x2`
+### Mixed-strategy Nash equilibrium of a 2 x 2 game, `mixed_nash_2x2`
 
 The equilibrium of a 2 x 2 two-player game without a pure equilibrium: each player's probability of the first strategy (chosen to make the OTHER player indifferent) and the expected payoffs.
 
@@ -2818,7 +2818,7 @@ optimization_ai999x.solve('mixed_nash_2x2', A=[[3, -1], [-2, 1]], B=[[-1, 2], [1
 
 <a id="topsis"></a>
 
-### TOPSIS ranking (closeness to the ideal solution) — `topsis`
+### TOPSIS ranking (closeness to the ideal solution), `topsis`
 
 Rank alternatives scored on several criteria by their relative closeness to the ideal and distance from the anti-ideal solution (vector normalisation, weighted Euclidean distances).
 
@@ -2869,7 +2869,7 @@ optimization_ai999x.solve('topsis', X=[[1, 1], [2, 2]], w=[1, 1], types=[1, 1])
 
 <a id="weighted_sum_model"></a>
 
-### Weighted sum model (simple additive weighting) — `weighted_sum_model`
+### Weighted sum model (simple additive weighting), `weighted_sum_model`
 
 Score alternatives by the weighted sum of linearly normalised criterion values (benefit x / max, cost min / x) and pick the best.
 
@@ -2914,7 +2914,7 @@ optimization_ai999x.solve('weighted_sum_model', X=[[250, 16, 12], [200, 16, 8], 
 
 <a id="weighted_product_model"></a>
 
-### Weighted product model — `weighted_product_model`
+### Weighted product model: `weighted_product_model`
 
 Score alternatives by the product of linearly normalised criterion values raised to the criterion weights.
 
@@ -2959,7 +2959,7 @@ optimization_ai999x.solve('weighted_product_model', X=[[4, 2], [2, 4]], w=[0.5, 
 
 <a id="ahp_priority_vector"></a>
 
-### AHP priority vector (principal eigenvector) — `ahp_priority_vector`
+### AHP priority vector (principal eigenvector), `ahp_priority_vector`
 
 The priority weights of criteria compared in pairs (analytic hierarchy process): the normalised principal eigenvector of the reciprocal comparison matrix, and its eigenvalue lambda_max.
 
@@ -3004,7 +3004,7 @@ optimization_ai999x.solve('ahp_priority_vector', judgments=[3])
 
 <a id="ahp_consistency_ratio"></a>
 
-### AHP consistency ratio — `ahp_consistency_ratio`
+### AHP consistency ratio: `ahp_consistency_ratio`
 
 How consistent a set of pairwise comparisons is: CI = (lambda_max - n)/(n - 1) and $CR = CI / RI$ (Saaty's random index); CR below 0.10 is conventionally acceptable.
 
@@ -3046,7 +3046,7 @@ optimization_ai999x.solve('ahp_consistency_ratio', judgments=[2, 4, 2])
 
 <a id="ahp_geometric_mean"></a>
 
-### AHP weights by the geometric mean method — `ahp_geometric_mean`
+### AHP weights by the geometric mean method: `ahp_geometric_mean`
 
 Priority weights from pairwise comparisons as normalised row geometric means (the logarithmic least-squares solution).
 
@@ -3085,7 +3085,7 @@ optimization_ai999x.solve('ahp_geometric_mean', judgments=[2, 4, 2])
 
 <a id="unconstrained_quadratic_min"></a>
 
-### Unconstrained quadratic minimisation — `unconstrained_quadratic_min`
+### Unconstrained quadratic minimisation: `unconstrained_quadratic_min`
 
 Minimise f(x) = 1/2 $x^{T}$ Q $x + c^{T}$ x for a symmetric positive definite Q: the minimiser and the minimum.
 
@@ -3134,7 +3134,7 @@ optimization_ai999x.solve('unconstrained_quadratic_min', Q=[[2, 0], [0, 2]], c=[
 
 <a id="equality_constrained_qp"></a>
 
-### Equality-constrained quadratic program (Lagrange multipliers / KKT) — `equality_constrained_qp`
+### Equality-constrained quadratic program (Lagrange multipliers / KKT), `equality_constrained_qp`
 
 Minimise $1/2$ $x^{T}$ Q $x + c^{T}$ x subject to A $x = b$: the minimiser, the minimum and the Lagrange multipliers.
 
@@ -3181,7 +3181,7 @@ optimization_ai999x.solve('equality_constrained_qp', Q=[[2, 0], [0, 2]], c=[0, 0
 
 <a id="steepest_descent_step"></a>
 
-### Steepest descent step with exact line search (quadratic) — `steepest_descent_step`
+### Steepest descent step with exact line search (quadratic), `steepest_descent_step`
 
 One iteration of steepest descent on f(x) = 1/2 $x^{T}$ Q $x + c^{T}$ x from x0: the gradient, the exact step length, the new point and its function value.
 
@@ -3232,7 +3232,7 @@ optimization_ai999x.solve('steepest_descent_step', Q=[[2, 0], [0, 8]], c=[0, 0],
 
 <a id="critical_point_two_variables"></a>
 
-### Critical point of a two-variable quadratic and its classification — `critical_point_two_variables`
+### Critical point of a two-variable quadratic and its classification, `critical_point_two_variables`
 
 For f(x, y) = a $x^{2} + b$ xy + c $y^{2} + d$ x + e $y + f_{0}$: the critical point, its value and whether it is a local minimum, a local maximum or a saddle point (second-derivative test).
 
@@ -3262,7 +3262,7 @@ $$
 
 ![local minimum, local maximum or saddle point (type) over a (coefficient of x^2) from 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/critical-point-two-variables-decision)
 
-*local minimum, local maximum or saddle point (type) over a (coefficient of x^2) from 0.3 to 30 and b (coefficient of xy) from 0.2 to 20 (logarithmic axes): each of the 31 × 21 cells is one run of optimization-ai999x, coloured by the verdict it returned — local minimum: 403 cells, saddle point: 248 cells. Other inputs as in the worked example: c = 1, d = -4, e = 6, f0 = 1. Marked: the worked example, a = 3, b = 2 → local minimum.*
+*local minimum, local maximum or saddle point (type) over a (coefficient of x^2) from 0.3 to 30 and b (coefficient of xy) from 0.2 to 20 (logarithmic axes): each of the 31 × 21 cells is one run of optimization-ai999x, coloured by the verdict it returned, local minimum: 403 cells, saddle point: 248 cells. Other inputs as in the worked example: c = 1, d = -4, e = 6, f0 = 1. Marked: the worked example, a = 3, b = 2 → local minimum.*
 
 ![f_value (value of f at the critical point) against a (coefficient of x^2) from 1](https://www.ai999x.com/?ax_fig=optimization-ai999x/critical-point-two-variables-curve)
 
@@ -3287,7 +3287,7 @@ optimization_ai999x.solve('critical_point_two_variables', a=1, b=0, c=-1)
 
 <a id="polynomial_extrema_interval"></a>
 
-### Absolute extrema of a polynomial on a closed interval — `polynomial_extrema_interval`
+### Absolute extrema of a polynomial on a closed interval, `polynomial_extrema_interval`
 
 The absolute minimum and maximum of a polynomial on [lo, hi] (closed-interval method: endpoints and critical points), and where they are attained.
 
@@ -3330,7 +3330,7 @@ optimization_ai999x.solve('polynomial_extrema_interval', coefficients=[1, -3, 0,
 
 <a id="wagner_whitin_lot_sizing"></a>
 
-### Dynamic lot sizing (Wagner-Whitin) — `wagner_whitin_lot_sizing`
+### Dynamic lot sizing (Wagner-Whitin): `wagner_whitin_lot_sizing`
 
 The cheapest ordering plan for known demands over several periods with a fixed cost per order and a holding cost per unit carried to the next period (no shortages).
 
@@ -3381,7 +3381,7 @@ optimization_ai999x.solve('wagner_whitin_lot_sizing', demand=[10, 0, 10], K=50, 
 
 <a id="mdp_discounted"></a>
 
-### Discounted Markov decision process (optimal values and policy) — `mdp_discounted`
+### Discounted Markov decision process (optimal values and policy), `mdp_discounted`
 
 The optimal expected discounted reward from every state of a finite Markov decision process and an optimal stationary policy.
 
@@ -3427,7 +3427,7 @@ optimization_ai999x.solve('mdp_discounted', R=[[1, 0], [0, 2]], T=[[1, 0], [0, 1
 
 <a id="graph_coloring"></a>
 
-### Chromatic number (minimum graph colouring) — `graph_coloring`
+### Chromatic number (minimum graph colouring), `graph_coloring`
 
 The fewest colours needed so that adjacent nodes get different colours (scheduling exams, assigning frequencies), and one such colouring.
 
@@ -3476,7 +3476,7 @@ optimization_ai999x.solve('graph_coloring', edges='A-B, B-C, C-D, D-A')
 
 <a id="minimum_vertex_cover"></a>
 
-### Minimum vertex cover (and maximum independent set) — `minimum_vertex_cover`
+### Minimum vertex cover (and maximum independent set), `minimum_vertex_cover`
 
 The fewest nodes that touch every edge of a graph (placing guards or sensors), one such set, and the size of a largest set of pairwise non-adjacent nodes.
 

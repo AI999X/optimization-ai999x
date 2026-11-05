@@ -1,0 +1,4202 @@
+[
+{
+"f": "tanh(0.5^x)",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "acos(cot((x^2-4)))",
+"a": 0.0,
+"b": 3.14159,
+"result": "the expression is not defined there (ValueError)",
+"sympy_decided": false
+},
+{
+"f": "acos((x-1)) * (2x+3)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2)^(-1/2)",
+"a": 0.5,
+"b": 2.0,
+"result": "the function is not continuous (or not real) on the whole interval [0.5, 2]",
+"sympy_decided": true
+},
+{
+"f": "x",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x^2",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-1)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(exp((x-0.5)))/(csc((x-0.5))) + cosh((x-0.5))",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(2x+3)",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2)^2 + (x-1)^3",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4) * ((x^2-4))/(0.5)",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(2)/((x^2+1))^(-2)",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "0.5",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sinh(2)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sqrt((x)^2)",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "exp(0.5) * log(3)",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-1)^(1/2)",
+"a": -1.5,
+"b": -0.5,
+"result": "the function is not continuous (or not real) on the whole interval [-1.5, -0.5]",
+"sympy_decided": true
+},
+{
+"f": "cosh(sinh(x^2))",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cot((x^2-4))^(-2)",
+"a": 0.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1]",
+"sympy_decided": true
+},
+{
+"f": "tanh((x-0.5))",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1) / 0.5",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5)",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(atan((x+1)))/(tanh(3)) / x^2",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(tanh((x^2+1)))/(x^2)",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4) + x^2^x",
+"a": -1.5,
+"b": -0.5,
+"result": "the function is not continuous (or not real) on the whole interval [-1.5, -0.5]",
+"sympy_decided": true
+},
+{
+"f": "((x^2+1))/(0.5^2)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cot(3)",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2)/(x^2)^3 - cos((x-0.5))",
+"a": 0.0,
+"b": 3.14159,
+"result": "the function is not continuous (or not real) on the whole interval [0, 3.14159]",
+"sympy_decided": true
+},
+{
+"f": "tan(acos((x-0.5)))",
+"a": -0.99,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-0.99, 1]",
+"sympy_decided": true
+},
+{
+"f": "atan((0.5)/((x-0.5)))",
+"a": 0.1,
+"b": 0.9,
+"result": "the function is not continuous (or not real) on the whole interval [0.1, 0.9]",
+"sympy_decided": true
+},
+{
+"f": "sec((x^2+1)) * ((2x+3))/((1-x^2))",
+"a": -1.5,
+"b": -0.5,
+"result": "the function is not continuous (or not real) on the whole interval [-1.5, -0.5]",
+"sympy_decided": true
+},
+{
+"f": "sqrt((1-x^2)) / ((1-x^2))/(3)",
+"a": -1.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-1, 1]",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5)",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "exp(acos((x^2-4))) / ((1-x^2))/(0.5)",
+"a": 1.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [1, 3]",
+"sympy_decided": true
+},
+{
+"f": "log((x+1)) * x",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sqrt(x)",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4) - ((x-1))/(x^2)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1e+06]",
+"sympy_decided": true
+},
+{
+"f": "((1-x^2))/(((1-x^2))/(2))",
+"a": -5.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [-5, 5]",
+"sympy_decided": true
+},
+{
+"f": "(x+1) * (x-0.5)^(-2)",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cos((x^2+1))^(-1/2)",
+"a": -1.5,
+"b": -0.5,
+"result": "the expression is not defined there (ValueError)",
+"sympy_decided": false
+},
+{
+"f": "sin(log(0.5)) / asin((x^2-4))",
+"a": 0.25,
+"b": 0.75,
+"result": "the function is not continuous (or not real) on the whole interval [0.25, 0.75]",
+"sympy_decided": true
+},
+{
+"f": "x^(2/3) / ((x^2-4))/((x^2-4))",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "tan((x)/(2))",
+"a": 2.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [2, 5]",
+"sympy_decided": true
+},
+{
+"f": "sec((x+1)^(-1/2))",
+"a": 0.5,
+"b": 2.0,
+"result": "the function is not continuous (or not real) on the whole interval [0.5, 2]",
+"sympy_decided": true
+},
+{
+"f": "log((x-1)^2)",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "2 + sec((1-x^2))",
+"a": 0.5,
+"b": 2.0,
+"result": "the function is not continuous (or not real) on the whole interval [0.5, 2]",
+"sympy_decided": true
+},
+{
+"f": "2 / tanh(x^2)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1e+06]",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2) - (x^2+1)",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x+1)",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5) / 0.5",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "tan(cos(2)) - (x^2-4)",
+"a": -3.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x^2+1))/(0.5) + (2x+3)^(1/3)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "3 - (1-x^2)",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-1) * ((2x+3))/(0.5)",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x+1) * asin((2x+3))",
+"a": 0.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1]",
+"sympy_decided": true
+},
+{
+"f": "x",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4) * (x^2-4)",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(log((x^2-4)))/(x^2)",
+"a": 0.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1]",
+"sympy_decided": true
+},
+{
+"f": "(2x+3) - sec(x^2)",
+"a": -5.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [-5, 5]",
+"sympy_decided": true
+},
+{
+"f": "(x-1)",
+"a": -3.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x-0.5))/(x)",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "csc(3) * acos(x^2)",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(2x+3) * (x-0.5)",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "0.5 - (x-1)^2",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "atan(x) / x",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "2^3^(1/3) + ((x-1))/((x^2-4))",
+"a": 0.0,
+"b": 3.14159,
+"result": "the function is not continuous (or not real) on the whole interval [0, 3.14159]",
+"sympy_decided": true
+},
+{
+"f": "(2x+3)^(-1/2) + ((x-1))/((x^2+1))",
+"a": -1.5,
+"b": -0.5,
+"result": "the function is not continuous (or not real) on the whole interval [-1.5, -0.5]",
+"sympy_decided": true
+},
+{
+"f": "acos((x-0.5))",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cot(asin((x^2-4))) / exp(x^2)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1e+06]",
+"sympy_decided": true
+},
+{
+"f": "(x+1) - csc(2)",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x^2^x^3 - log(3)",
+"a": -2.0,
+"b": 0.0,
+"result": "the function is not continuous (or not real) on the whole interval [-2, 0]",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4)",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "2^3^(2/3) / (x+1)^(1/2)",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x^2",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(2x+3) + x^2^(-2)",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x^2 / sinh((x^2+1))",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "2^2",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x+1)",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "csc((x-0.5)) + (1-x^2)",
+"a": 0.25,
+"b": 0.75,
+"result": "the function is not continuous (or not real) on the whole interval [0.25, 0.75]",
+"sympy_decided": true
+},
+{
+"f": "2 - csc((2x+3))",
+"a": -5.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [-5, 5]",
+"sympy_decided": true
+},
+{
+"f": "cosh((x-1)) / x",
+"a": -5.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [-5, 5]",
+"sympy_decided": true
+},
+{
+"f": "cot(sqrt((2)^2))",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(asin(x))/((0.5)/((2x+3))) - (x-1)",
+"a": 1.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [1, 3]",
+"sympy_decided": true
+},
+{
+"f": "tanh((x-0.5)^(-2))",
+"a": 0.25,
+"b": 0.75,
+"result": "the function is not continuous (or not real) on the whole interval [0.25, 0.75]",
+"sympy_decided": true
+},
+{
+"f": "((1-x^2)^(-1/2))/(csc((x-1))) / x^2",
+"a": 0.0,
+"b": 3.14159,
+"result": "the function is not continuous (or not real) on the whole interval [0, 3.14159]",
+"sympy_decided": true
+},
+{
+"f": "0.5 - (x^2-4)^(-1/2)",
+"a": 0.25,
+"b": 0.75,
+"result": "the function is not continuous (or not real) on the whole interval [0.25, 0.75]",
+"sympy_decided": true
+},
+{
+"f": "tan(x^3)",
+"a": 0.25,
+"b": 0.75,
+"result": "the function is not continuous (or not real) on the whole interval [0.25, 0.75]",
+"sympy_decided": true
+},
+{
+"f": "(2x+3) / cos((2x+3))",
+"a": -0.99,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-0.99, 1]",
+"sympy_decided": true
+},
+{
+"f": "((x^2+1))/((x+1))",
+"a": -1.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-1, 1]",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5) * (0.5)/(x)",
+"a": -5.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [-5, 5]",
+"sympy_decided": true
+},
+{
+"f": "(x+1) - tan((x-1))",
+"a": -0.99,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-0.99, 1]",
+"sympy_decided": true
+},
+{
+"f": "(exp(3))/(x^2)",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "exp(0.5) - ((x+1))/((1-x^2))",
+"a": 0.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1]",
+"sympy_decided": true
+},
+{
+"f": "(3)/(cot(2)) / (x^2-4)",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "acos((x+1))",
+"a": 2.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [2, 5]",
+"sympy_decided": true
+},
+{
+"f": "((2x+3))/(2) - cosh(3)",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "tan((x^2-4))",
+"a": 0.25,
+"b": 0.75,
+"result": "the function is not continuous (or not real) on the whole interval [0.25, 0.75]",
+"sympy_decided": true
+},
+{
+"f": "tan((x^2-4)) - ((x^2-4))/(x)",
+"a": -2.0,
+"b": 0.0,
+"result": "the function is not continuous (or not real) on the whole interval [-2, 0]",
+"sympy_decided": true
+},
+{
+"f": "sec(x^2) + sqrt(x^2)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1e+06]",
+"sympy_decided": true
+},
+{
+"f": "(sec(2))/((x-0.5)) - tan((x^2+1))",
+"a": -3.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [-3, 3]",
+"sympy_decided": true
+},
+{
+"f": "2 - sqrt(((x-0.5))^2)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "0.5 + (x^2-4)",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5)^(2/3)",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(tan((x+1)))/(tan(x))",
+"a": 0.0,
+"b": 3.14159,
+"result": "the function is not continuous (or not real) on the whole interval [0, 3.14159]",
+"sympy_decided": true
+},
+{
+"f": "(0.5)/((x+1))",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cot(exp((x-1)))",
+"a": -3.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [-3, 3]",
+"sympy_decided": true
+},
+{
+"f": "2",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x^2 / (2)/((x-1))",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(sqrt(((x+1))^2))/(sqrt((x)^2))",
+"a": 0.0,
+"b": 3.14159,
+"result": "the function is not continuous (or not real) on the whole interval [0, 3.14159]",
+"sympy_decided": true
+},
+{
+"f": "cos((2x+3))^(2/3) / x^2",
+"a": -0.99,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-0.99, 1]",
+"sympy_decided": true
+},
+{
+"f": "(x-1) + ((2x+3))/(x^2)",
+"a": -3.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [-3, 3]",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4)",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cos(((x-1))/(0.5)) * csc(2)",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2)/(x^2^(-2)) - (x^2+1)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sinh(3) * (x^2-4)",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "acos((x)/(0.5)) - 3",
+"a": 0.0,
+"b": 1000000.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1e+06]",
+"sympy_decided": true
+},
+{
+"f": "x",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "0.5",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1)",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "tanh((x^2-4)^(-1/2))",
+"a": -1.5,
+"b": -0.5,
+"result": "the function is not continuous (or not real) on the whole interval [-1.5, -0.5]",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5) / (x^2)/(3)",
+"a": 0.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1]",
+"sympy_decided": true
+},
+{
+"f": "cos((2x+3)^3) * (x-0.5)^3",
+"a": -3.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2)",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cos(x^2^(-2)) * x^2^3",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x / (x-1)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1e+06]",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4)",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x + x",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cos((2x+3))^3 / acos(0.5)",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x^3^(-1/2) + ((x+1))/((x+1))",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sinh((x-0.5)) / 3",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((1-x^2))/(2)",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(sqrt(3))/((x-1))",
+"a": -3.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [-3, 3]",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1) * ((x+1))/((x^2+1))",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x-1))/(log((x+1))) * asin((x-0.5))",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(3)/(2^3) + 3",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cos((x^2+1))^(2/3)",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x+1)",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(((x+1))/((2x+3)))/((2)/(x^2))",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(2)/(2)^(1/3) + (3)/((x^2+1))",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((2)/((x-1)))/((x^2+1))",
+"a": 0.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1]",
+"sympy_decided": true
+},
+{
+"f": "exp(atan((x^2-4))) + (x^2+1)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "3",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "0.5",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "3 * atan(0.5)",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4) + (x-1)",
+"a": -3.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sec(acos(x^2))",
+"a": 0.0,
+"b": 1000000.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1e+06]",
+"sympy_decided": true
+},
+{
+"f": "sqrt((0.5)/((x+1))) * sec(x)",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sqrt((sqrt(((x^2+1))^2))^2) * (x+1)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sinh(csc((x-1)))",
+"a": -1.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-1, 1]",
+"sympy_decided": true
+},
+{
+"f": "cosh(x^(1/2)) + sqrt(((x-0.5))^2)",
+"a": -1.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-1, 1]",
+"sympy_decided": true
+},
+{
+"f": "x + x^2^x",
+"a": -2.0,
+"b": 0.0,
+"result": "the function is not continuous (or not real) on the whole interval [-2, 0]",
+"sympy_decided": true
+},
+{
+"f": "exp(exp((x-1))) + (x-1)",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1) / acos((x-0.5))",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sqrt((x+1)^x)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": false
+},
+{
+"f": "sqrt((x-1))",
+"a": 0.5,
+"b": 2.0,
+"result": "the function is not continuous (or not real) on the whole interval [0.5, 2]",
+"sympy_decided": true
+},
+{
+"f": "sqrt(((x+1))/(x)) - (x^2-4)",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "2 - (x-0.5)",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(2x+3)",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sinh((2x+3)) - (2x+3)^(1/3)",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4)",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x^2+1))/(3^(-1))",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(2x+3) / (1-x^2)^(-1)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cos((x^2+1))",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "log(x^2) - x^2",
+"a": 0.0,
+"b": 1000000.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1e+06]",
+"sympy_decided": true
+},
+{
+"f": "x",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sqrt(((1-x^2))^2) * log((2x+3))",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sin((x+1))",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sqrt((3)^2) + (x-0.5)",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5)",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sec((3)/(3))",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sqrt(((x+1))^2)",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4)",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sinh(2^(2/3)) / (x-0.5)",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x-0.5))/((2)/(2)) * (x^2-4)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x-1))/(((x^2-4))/((x^2+1))) + (x^2-4)^(2/3)",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "0.5 / 2",
+"a": -3.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x * sec((x^2-4))",
+"a": 0.5,
+"b": 2.0,
+"result": "the function is not continuous (or not real) on the whole interval [0.5, 2]",
+"sympy_decided": true
+},
+{
+"f": "2^2",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x+1) / cos((x+1))",
+"a": 0.5,
+"b": 2.0,
+"result": "the function is not continuous (or not real) on the whole interval [0.5, 2]",
+"sympy_decided": true
+},
+{
+"f": "exp(x^(1/2)) / (2)/((x+1))",
+"a": -0.99,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-0.99, 1]",
+"sympy_decided": true
+},
+{
+"f": "(3)/(((x^2-4))/(x^2))",
+"a": 0.0,
+"b": 1000000.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1e+06]",
+"sympy_decided": true
+},
+{
+"f": "tanh(x^2)^(2/3)",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "atan(x^2) / (2x+3)",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-1) - sin((x^2+1))",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5) - (x-1)^(-1/2)",
+"a": -1.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-1, 1]",
+"sympy_decided": true
+},
+{
+"f": "(((x-0.5))/((x^2-4)))/(0.5)",
+"a": -5.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [-5, 5]",
+"sympy_decided": true
+},
+{
+"f": "0.5 + 2",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "0.5 * x^2",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "2 - (x^2-4)",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x+1) - (0.5)/((x^2+1))",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2)",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "atan(x^2)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-1) * (1-x^2)",
+"a": -3.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "0.5",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(tanh(3))/((1-x^2)) / x",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "acos((2)/((x-1))) - 0.5",
+"a": 0.5,
+"b": 2.0,
+"result": "the function is not continuous (or not real) on the whole interval [0.5, 2]",
+"sympy_decided": true
+},
+{
+"f": "x^2",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sqrt(((x^2-4))^2) * x^2",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sec(tanh((x^2+1)))",
+"a": 1.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [1, 3]",
+"sympy_decided": true
+},
+{
+"f": "x^2",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4)^(-2)",
+"a": -2.0,
+"b": 0.0,
+"result": "the function is not continuous (or not real) on the whole interval [-2, 0]",
+"sympy_decided": true
+},
+{
+"f": "asin(x^(-1/2))",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "asin(x^2) / 3^(-2)",
+"a": 1.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [1, 3]",
+"sympy_decided": true
+},
+{
+"f": "acos((x-1)) / atan((2x+3))",
+"a": -3.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [-3, 3]",
+"sympy_decided": true
+},
+{
+"f": "(sqrt((x)^2))/((1-x^2)^2)",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1)^(1/2) / cot(0.5)",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2)^2^(-1)",
+"a": 0.0,
+"b": 3.14159,
+"result": "the function is not continuous (or not real) on the whole interval [0, 3.14159]",
+"sympy_decided": true
+},
+{
+"f": "cot((x^2-4)^(-1/2))",
+"a": -2.0,
+"b": 0.0,
+"result": "the function is not continuous (or not real) on the whole interval [-2, 0]",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4) + ((x^2-4))/(3)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cosh((1-x^2)) + cos((x^2+1))",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sqrt(sqrt(((x^2-4))^2))",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "asin(x) + (x+1)^(1/3)",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x^2+1))/(2)^x + 2",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "csc(acos(x^2))",
+"a": 0.0,
+"b": 3.14159,
+"result": "the function is not continuous (or not real) on the whole interval [0, 3.14159]",
+"sympy_decided": true
+},
+{
+"f": "(sin((x^2+1)))/(2^2) * csc(3)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1) * (2x+3)",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4) / (x^2+1)",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(2x+3)",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "exp(sqrt(((x-0.5))^2))",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2)^(2/3) + ((x^2+1))/((x-0.5))",
+"a": -3.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [-3, 3]",
+"sympy_decided": true
+},
+{
+"f": "(x-1) / (x+1)",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sinh((3)/(x))",
+"a": -1.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-1, 1]",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1)",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "3",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cot(3) - cot((x^2-4))",
+"a": 0.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1]",
+"sympy_decided": true
+},
+{
+"f": "((x^2-4))/((x-0.5))",
+"a": 0.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1]",
+"sympy_decided": true
+},
+{
+"f": "tanh((x)/((x-0.5))) - (2x+3)^(-2)",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(2x+3)",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "0.5",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x-1))/(((x^2+1))/((x^2-4)))",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((2x+3))/(x) * ((2x+3))/((x+1))",
+"a": -3.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [-3, 3]",
+"sympy_decided": true
+},
+{
+"f": "(x-1)",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "acos((x^2-4)) * x^2",
+"a": 2.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [2, 5]",
+"sympy_decided": true
+},
+{
+"f": "0.5 - exp((x+1))",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sin((x-1)^3) - cosh(x)",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "3 / sec((x-1))",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((1-x^2))/((0.5)/((1-x^2))) - (x^2-4)",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x^2-4))/((x+1)) * (x+1)",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "2^(2/3)^3 - log((1-x^2))",
+"a": -0.99,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-0.99, 1]",
+"sympy_decided": true
+},
+{
+"f": "3 + 0.5^x",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "2",
+"a": -3.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "3^(-1/2)",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1)^(1/3)",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sqrt(((x-1))^2)^(1/2) * ((x^2-4))/(x^2)",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(csc((2x+3)))/((x-0.5)^(-1/2)) / acos((x-0.5))",
+"a": -3.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [-3, 3]",
+"sympy_decided": true
+},
+{
+"f": "log(0.5)^2",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sqrt((3)/((2x+3)))",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "2",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "tan(csc((x^2-4))) * (1-x^2)",
+"a": -0.99,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-0.99, 1]",
+"sympy_decided": true
+},
+{
+"f": "(x-1)",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(atan((2x+3)))/(((x-1))/((x-0.5)))",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sin(3)",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "atan((x^2-4))^3 + cosh((x^2+1))",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sin(2)^3 + acos(x)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1e+06]",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5)",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x+1)^(1/3)^(-2) - (x-1)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((1-x^2))/((x^2-4))",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x)/((x^2+1)))/(x^2^(1/2)) * (x^2+1)",
+"a": 0.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1]",
+"sympy_decided": true
+},
+{
+"f": "atan(((x^2+1))/(0.5)) - (x^2-4)^(1/3)",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x^2 * (x^2-4)^3",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "atan(x^(-1/2))",
+"a": -1.5,
+"b": -0.5,
+"result": "the function is not continuous (or not real) on the whole interval [-1.5, -0.5]",
+"sympy_decided": true
+},
+{
+"f": "(acos((x^2+1)))/(3) - x^2",
+"a": 1.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [1, 3]",
+"sympy_decided": true
+},
+{
+"f": "(x-1) + sin(0.5)",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(sec((x^2-4)))/((x^2+1)^3) / (2x+3)^(-1)",
+"a": 0.25,
+"b": 0.75,
+"result": "the function is not continuous (or not real) on the whole interval [0.25, 0.75]",
+"sympy_decided": true
+},
+{
+"f": "2 * tanh((x+1))",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x+1)",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "0.5",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(atan(0.5))/(2^(2/3)) / ((x-1))/(3)",
+"a": 0.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1]",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2) - atan((x^2-4))",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "exp(atan(2)) - tan(3)",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "exp((x^2+1)) - 3",
+"a": -3.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sin(tan((x-0.5)))",
+"a": -2.0,
+"b": 0.0,
+"result": "the function is not continuous (or not real) on the whole interval [-2, 0]",
+"sympy_decided": true
+},
+{
+"f": "(sin((x^2-4)))/(3) * (3)/(3)",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sqrt((2x+3)^x)",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": false
+},
+{
+"f": "0.5 - (x+1)",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(((1-x^2))/(3))/(3) * 2^(-1/2)",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "tan(asin(0.5)) - tanh(2)",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "2",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4)",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(((x^2-4))/((x^2-4)))/((x^2-4)) * x",
+"a": -5.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [-5, 5]",
+"sympy_decided": true
+},
+{
+"f": "(x+1)^(-2)",
+"a": -3.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [-3, 3]",
+"sympy_decided": true
+},
+{
+"f": "exp(2) - (2x+3)",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5) - ((x^2+1))/((x-0.5))",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sinh((x+1)) * (1-x^2)",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "3",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "3 * ((x-0.5))/((x-0.5))",
+"a": 0.0,
+"b": 3.14159,
+"result": "the function is not continuous (or not real) on the whole interval [0, 3.14159]",
+"sympy_decided": true
+},
+{
+"f": "(2x+3)^(1/3)",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4)",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(2x+3)",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2) / (3)/((1-x^2))",
+"a": -0.99,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-0.99, 1]",
+"sympy_decided": true
+},
+{
+"f": "(2x+3)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4)^(-2)",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x)/(2))/(x) / atan((x-0.5))",
+"a": 0.0,
+"b": 3.14159,
+"result": "the function is not continuous (or not real) on the whole interval [0, 3.14159]",
+"sympy_decided": true
+},
+{
+"f": "cos(2^(1/2))",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sin(x^2)^3",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "0.5 / (x)/(x^2)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x^2 - sqrt((x-1))",
+"a": -1.5,
+"b": -0.5,
+"result": "the function is not continuous (or not real) on the whole interval [-1.5, -0.5]",
+"sympy_decided": true
+},
+{
+"f": "sqrt((0.5^(1/2))^2)",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x^2)/((1-x^2)))/((x^2+1)^(1/3)) / cos(x^2)",
+"a": 2.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [2, 5]",
+"sympy_decided": true
+},
+{
+"f": "sqrt(((x+1)^(-1))^2) * (x)/(0.5)",
+"a": -2.0,
+"b": 0.0,
+"result": "the function is not continuous (or not real) on the whole interval [-2, 0]",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4) - (x-1)",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x^(-2)^(1/2)",
+"a": -1.5,
+"b": -0.5,
+"result": "the function is not continuous (or not real) on the whole interval [-1.5, -0.5]",
+"sympy_decided": true
+},
+{
+"f": "3 / 3",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2)^2^(-1/2) - tan(x^2)",
+"a": 2.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [2, 5]",
+"sympy_decided": true
+},
+{
+"f": "asin(csc((2x+3)))",
+"a": 0.0,
+"b": 3.14159,
+"result": "the expression is not defined there (ValueError)",
+"sympy_decided": false
+},
+{
+"f": "sqrt((x^2-4)) + atan((x+1))",
+"a": 0.1,
+"b": 0.9,
+"result": "the function is not continuous (or not real) on the whole interval [0.1, 0.9]",
+"sympy_decided": true
+},
+{
+"f": "sec((x^2+1)) * 2",
+"a": 0.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1]",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5) * x",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1)",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "2^2 * sec((1-x^2))",
+"a": 0.1,
+"b": 0.9,
+"result": "the function is not continuous (or not real) on the whole interval [0.1, 0.9]",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2)",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "0.5",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2) * (x-1)",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(3)/(asin((x-1))) * (x^2-4)",
+"a": 2.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [2, 5]",
+"sympy_decided": true
+},
+{
+"f": "atan(sinh((x^2+1)))",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "atan(((x-1))/(x)) * ((x^2-4))/((x^2-4))",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "exp((x^2+1)^x) * 3",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4) * x^2",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "exp((x+1)^(1/3))",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "asin(0.5)^(1/2) / (x-1)",
+"a": -0.99,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-0.99, 1]",
+"sympy_decided": true
+},
+{
+"f": "cos(sin((x^2+1))) / x",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sin((x^2-4))",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "tanh(cosh(3))",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(asin(3))/(cos((x^2+1))) - 2",
+"a": -1.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-1, 1]",
+"sympy_decided": true
+},
+{
+"f": "x^2 + sec((x-1))",
+"a": -1.5,
+"b": -0.5,
+"result": "the function is not continuous (or not real) on the whole interval [-1.5, -0.5]",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1)^2^(2/3) + 0.5",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x+1) * sqrt((2)^2)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1) + 2",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(0.5)/((x+1))^(-1)",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5) * sqrt((x^2)^2)",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x^2+1))/(sin((1-x^2))) + ((x+1))/((x+1))",
+"a": -5.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [-5, 5]",
+"sympy_decided": true
+},
+{
+"f": "x - (x^2-4)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(((x-0.5))/(3))/(x) * (x^2+1)",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "csc((x-0.5))",
+"a": 0.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1]",
+"sympy_decided": true
+},
+{
+"f": "log((x-0.5)) + 2",
+"a": 0.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1]",
+"sympy_decided": true
+},
+{
+"f": "((2)/(x^2))/((x-1)^2)",
+"a": -5.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [-5, 5]",
+"sympy_decided": true
+},
+{
+"f": "((x^2)/((x+1)))/((0.5)/((x^2-4))) * (x^2+1)",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cosh((x^2)/((x-1)))",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "2",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x + (2x+3)",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((2x+3))/(cosh(2))",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cos((x^2+1)^(1/2))",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(asin((x^2-4)))/(tanh((x-0.5))) - acos((x-1))",
+"a": -0.99,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-0.99, 1]",
+"sympy_decided": true
+},
+{
+"f": "x^2 + (1-x^2)^(-2)",
+"a": -5.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [-5, 5]",
+"sympy_decided": true
+},
+{
+"f": "csc(0.5) * cos(2)",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x / sqrt((1-x^2))",
+"a": 0.5,
+"b": 2.0,
+"result": "the function is not continuous (or not real) on the whole interval [0.5, 2]",
+"sympy_decided": true
+},
+{
+"f": "x^2^(1/3)",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cos((2x+3))^(1/2)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1e+06]",
+"sympy_decided": true
+},
+{
+"f": "2 + 3",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sinh(0.5)",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "atan(2)",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "acos(3) * log(3)",
+"a": -0.99,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-0.99, 1]",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cos((0.5)/((x^2-4))) / sqrt((x-0.5))",
+"a": 0.0,
+"b": 1000000.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1e+06]",
+"sympy_decided": true
+},
+{
+"f": "acos((x-1))^(-1/2) + x^(-1/2)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1e+06]",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2)^(-1)",
+"a": -3.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [-3, 3]",
+"sympy_decided": true
+},
+{
+"f": "0.5 + 3",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "tanh((x^2+1)) - sinh(x^2)",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "csc(sin((x^2+1))) * cosh((x^2-4))",
+"a": 0.1,
+"b": 0.9,
+"result": "the function is not continuous (or not real) on the whole interval [0.1, 0.9]",
+"sympy_decided": true
+},
+{
+"f": "((2x+3))/((1-x^2))",
+"a": 0.0,
+"b": 3.14159,
+"result": "the function is not continuous (or not real) on the whole interval [0, 3.14159]",
+"sympy_decided": true
+},
+{
+"f": "2 + csc((2x+3))",
+"a": -5.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [-5, 5]",
+"sympy_decided": true
+},
+{
+"f": "(x)/((x^2+1)^(-1))",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "exp(exp((x^2+1))) + (x^2-4)^2",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x^2-4))/((1-x^2)) + asin(0.5)",
+"a": 1.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [1, 3]",
+"sympy_decided": true
+},
+{
+"f": "x + (1-x^2)",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "2 / acos(3)",
+"a": 0.1,
+"b": 0.9,
+"result": "the function is not continuous (or not real) on the whole interval [0.1, 0.9]",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2) + log((2x+3))",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cosh((0.5)/((x^2+1))) + asin((x^2+1))",
+"a": -1.5,
+"b": -0.5,
+"result": "the function is not continuous (or not real) on the whole interval [-1.5, -0.5]",
+"sympy_decided": true
+},
+{
+"f": "((x^2-4)^2)/((x^2-4)) / ((x^2-4))/((x^2-4))",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2) + (x^2+1)",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5) + (0.5)/((x+1))",
+"a": -1.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-1, 1]",
+"sympy_decided": true
+},
+{
+"f": "csc((1-x^2)) * log(2)",
+"a": 0.25,
+"b": 0.75,
+"result": "the function is not continuous (or not real) on the whole interval [0.25, 0.75]",
+"sympy_decided": true
+},
+{
+"f": "(((x-0.5))/(2))/(3) + tan((x^2-4))",
+"a": 0.25,
+"b": 0.75,
+"result": "the function is not continuous (or not real) on the whole interval [0.25, 0.75]",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1)",
+"a": -3.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1)^(1/2)^(-2)",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((2x+3))/(0.5) + (x-0.5)^x",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x^2+1)^x)/((2)/((2x+3)))",
+"a": -3.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "acos(0.5)",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cos((x-1)) - 2",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "acos(atan(3))",
+"a": 1.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [1, 3]",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2) / cos((2x+3))",
+"a": 0.5,
+"b": 2.0,
+"result": "the function is not continuous (or not real) on the whole interval [0.5, 2]",
+"sympy_decided": true
+},
+{
+"f": "(x+1) + (x^2+1)^(1/3)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2) / log(0.5)",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sec(2) * (x)/(x^2)",
+"a": -2.0,
+"b": 0.0,
+"result": "the function is not continuous (or not real) on the whole interval [-2, 0]",
+"sympy_decided": true
+},
+{
+"f": "sinh(sinh(2))",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "tanh(2^x)",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((2x+3))/(((2x+3))/(3)) + ((x^2+1))/(x^2)",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x+1)^(1/3))/(exp((x+1)))",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(2x+3) * 2",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(2x+3)",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5) - asin((2x+3))",
+"a": 0.0,
+"b": 3.14159,
+"result": "the function is not continuous (or not real) on the whole interval [0, 3.14159]",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5) + (x^2+1)^(-2)",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cosh(atan(2))",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(3)/((x^2+1)) + cot((1-x^2))",
+"a": -1.5,
+"b": -0.5,
+"result": "the function is not continuous (or not real) on the whole interval [-1.5, -0.5]",
+"sympy_decided": true
+},
+{
+"f": "exp((1-x^2))^(-2)",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cot(atan(3))",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2)/((x-0.5)) / tan(3)",
+"a": 0.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1]",
+"sympy_decided": true
+},
+{
+"f": "x^2 / csc((x-0.5))",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x^2^3",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(cot((x^2+1)))/(3)",
+"a": -0.99,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-0.99, 1]",
+"sympy_decided": true
+},
+{
+"f": "((0.5)/(x))/(((2x+3))/((x-0.5)))",
+"a": -1.5,
+"b": -0.5,
+"result": "the function is not continuous (or not real) on the whole interval [-1.5, -0.5]",
+"sympy_decided": true
+},
+{
+"f": "(2x+3) / 3",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sqrt(((3)/(x))^2)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "3",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "2",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x * x",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x+1)",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "tanh(log(0.5))",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x^2^(1/3)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(2x+3) - cosh((x-0.5))",
+"a": -3.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x+1)^(-1))/(((x^2-4))/((x^2+1))) * (x-1)",
+"a": -2.0,
+"b": 0.0,
+"result": "the function is not continuous (or not real) on the whole interval [-2, 0]",
+"sympy_decided": true
+},
+{
+"f": "x * atan((x-0.5))",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sinh((x)/((x^2+1))) * (1-x^2)^(1/2)",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x^2^x^3 - acos(x)",
+"a": 0.5,
+"b": 2.0,
+"result": "the function is not continuous (or not real) on the whole interval [0.5, 2]",
+"sympy_decided": true
+},
+{
+"f": "sec(3)",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sin((x-1)) / ((1-x^2))/(x)",
+"a": 0.5,
+"b": 2.0,
+"result": "the function is not continuous (or not real) on the whole interval [0.5, 2]",
+"sympy_decided": true
+},
+{
+"f": "asin(2)",
+"a": 1.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [1, 3]",
+"sympy_decided": true
+},
+{
+"f": "sin(x)^2",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5) * (3)/(x)",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(sqrt((2)^2))/(sin((1-x^2)))",
+"a": 0.0,
+"b": 1000000.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1e+06]",
+"sympy_decided": true
+},
+{
+"f": "csc(((x^2-4))/(3))",
+"a": 0.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1]",
+"sympy_decided": true
+},
+{
+"f": "(3)/(cot((x+1)))",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "2",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "2^(-2) / sqrt((2)^2)",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(0.5)/(x^3)",
+"a": -1.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-1, 1]",
+"sympy_decided": true
+},
+{
+"f": "cot((2x+3))",
+"a": 0.0,
+"b": 3.14159,
+"result": "the function is not continuous (or not real) on the whole interval [0, 3.14159]",
+"sympy_decided": true
+},
+{
+"f": "(cosh((x-1)))/((3)/(0.5))",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cos(sqrt(0.5))",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "2^3 / (1-x^2)",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "asin(2^(2/3))",
+"a": -5.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [-5, 5]",
+"sympy_decided": true
+},
+{
+"f": "exp((x-0.5)) + (x+1)",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "csc((3)/((1-x^2)))",
+"a": 0.0,
+"b": 1.0,
+"result": "the expression is not defined there (ZeroDivisionError)",
+"sympy_decided": false
+},
+{
+"f": "(1-x^2)^(-1/2)^3 / (x-0.5)^(2/3)",
+"a": 0.1,
+"b": 0.9,
+"result": "the function is not continuous (or not real) on the whole interval [0.1, 0.9]",
+"sympy_decided": true
+},
+{
+"f": "0.5 * (x^2+1)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(3)/((x-1)^(-1))",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "csc(x)",
+"a": 2.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [2, 5]",
+"sympy_decided": true
+},
+{
+"f": "(x-1)^x^2",
+"a": 0.0,
+"b": 3.14159,
+"result": "the function is not continuous (or not real) on the whole interval [0, 3.14159]",
+"sympy_decided": true
+},
+{
+"f": "sqrt(((x-0.5))/((x^2-4)))",
+"a": 0.5,
+"b": 2.0,
+"result": "the function is not continuous (or not real) on the whole interval [0.5, 2]",
+"sympy_decided": true
+},
+{
+"f": "x^2^(1/3)",
+"a": -2.0,
+"b": 0.0,
+"result": "the function is not continuous (or not real) on the whole interval [-2, 0]",
+"sympy_decided": true
+},
+{
+"f": "sin(3^2)",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1)",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "0.5^(2/3) / sin(0.5)",
+"a": -3.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2)",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(((x^2+1))/((1-x^2)))/(x^2) * tan(x)",
+"a": 1.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [1, 3]",
+"sympy_decided": true
+},
+{
+"f": "((x-0.5))/(((x-0.5))/((x^2+1))) * (x)/((2x+3))",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sqrt(tanh(x^2)) / ((x-0.5))/((x-0.5))",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "atan((x-1)^(-1/2))",
+"a": 0.1,
+"b": 0.9,
+"result": "the function is not continuous (or not real) on the whole interval [0.1, 0.9]",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4) - sin((1-x^2))",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "log((x-1)) - exp((x^2-4))",
+"a": 0.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1]",
+"sympy_decided": true
+},
+{
+"f": "(x+1)",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sec((x^2+1))",
+"a": -3.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [-3, 3]",
+"sympy_decided": true
+},
+{
+"f": "(x^2)/((x^2+1))",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x^2+1))/(sinh(x^2)) * cot((x^2-4))",
+"a": -3.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [-3, 3]",
+"sympy_decided": true
+},
+{
+"f": "sec((x-0.5)) * (x-0.5)^(-2)",
+"a": 0.1,
+"b": 0.9,
+"result": "the function is not continuous (or not real) on the whole interval [0.1, 0.9]",
+"sympy_decided": true
+},
+{
+"f": "3",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sinh(sqrt(0.5)) * (x-0.5)^(-2)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1e+06]",
+"sympy_decided": true
+},
+{
+"f": "x",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5) / (2)/((x-0.5))",
+"a": -1.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-1, 1]",
+"sympy_decided": true
+},
+{
+"f": "3",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sqrt((0.5)/((x-1))) * (x-1)^(1/2)",
+"a": 0.1,
+"b": 0.9,
+"result": "the function is not continuous (or not real) on the whole interval [0.1, 0.9]",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5) * (x^2+1)",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "tanh(tan((x^2+1)))",
+"a": -5.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [-5, 5]",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5)",
+"a": -3.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(2)/((x^2+1))^3",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((2x+3)^(-2))/((x-0.5))",
+"a": -1.5,
+"b": -0.5,
+"result": "the function is not continuous (or not real) on the whole interval [-1.5, -0.5]",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1)",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-1)^x - exp(2)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1e+06]",
+"sympy_decided": true
+},
+{
+"f": "acos(tanh((x^2-4)))",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((2x+3))/(2)^(1/3) + (x-1)",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sqrt(((x^2+1))^2)^(2/3) / 3^(1/3)",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sinh((x^2-4)) - (2x+3)^(2/3)",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(2x+3)^(-1)",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "acos(x^2) * (x^2-4)",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5) - ((1-x^2))/((x^2-4))",
+"a": 0.0,
+"b": 1000000.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1e+06]",
+"sympy_decided": true
+},
+{
+"f": "(3)/((x+1))^(-1)",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(0.5^(-1))/((x^2-4)) / (x^2-4)",
+"a": -5.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [-5, 5]",
+"sympy_decided": true
+},
+{
+"f": "(sin((1-x^2)))/(((x-1))/((x^2+1)))",
+"a": 0.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1]",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1)^(1/2)^2 - cot(2)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sqrt(exp((1-x^2)))",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((0.5)/(3))/((x+1)^(-2)) / (x-1)",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(log((1-x^2)))/(x)",
+"a": 0.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1]",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2) + atan(x^2)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-1) + sin((x^2-4))",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "0.5^(-1)",
+"a": -3.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "exp((x+1)) + 0.5",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x+1) - x",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(2x+3)^2^x * (x-1)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sin((x-0.5)) / (x+1)",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sin(((x^2+1))/((x^2+1)))",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "2 / (2x+3)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x^2+1)^2)/(0.5)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "exp((2x+3))",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1) * (x^2+1)^2",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x+1))/(x)",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sqrt(sinh(x^2))",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x)/(cot(x^2))",
+"a": 0.0,
+"b": 1000000.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1e+06]",
+"sympy_decided": true
+},
+{
+"f": "((0.5)/(x))/((x+1))",
+"a": 0.0,
+"b": 3.14159,
+"result": "the function is not continuous (or not real) on the whole interval [0, 3.14159]",
+"sympy_decided": true
+},
+{
+"f": "(x+1)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(log((x^2+1)))/((3)/((x^2+1))) + sqrt(((1-x^2))^2)",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x^2 / (x-0.5)^(-2)",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sin((x^2+1)^3)",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1)",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2)^x",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "log(2) + csc((x-1))",
+"a": -0.99,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-0.99, 1]",
+"sympy_decided": true
+},
+{
+"f": "cot(3)",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x^2+1))/(x) + tanh(0.5)",
+"a": 0.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1]",
+"sympy_decided": true
+},
+{
+"f": "(0.5)/(0.5)^2",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(tan((x^2+1)))/((x^2+1))",
+"a": 2.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [2, 5]",
+"sympy_decided": true
+},
+{
+"f": "csc((x-0.5))^(-1)",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x^2 * csc(0.5)",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "cos(cot((x-1)))",
+"a": -1.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-1, 1]",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4) / (1-x^2)",
+"a": -3.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [-3, 3]",
+"sympy_decided": true
+},
+{
+"f": "0.5 + sqrt((x-1))",
+"a": 0.1,
+"b": 0.9,
+"result": "the function is not continuous (or not real) on the whole interval [0.1, 0.9]",
+"sympy_decided": true
+},
+{
+"f": "x^2 * (x^2-4)",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "log(((x+1))/(2)) - 3^x",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sqrt(0.5^(1/3))",
+"a": -5.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x+1))/((x^2-4))^(-2)",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x^2",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2) * asin((1-x^2))",
+"a": -2.0,
+"b": 0.0,
+"result": "the function is not continuous (or not real) on the whole interval [-2, 0]",
+"sympy_decided": true
+},
+{
+"f": "3 - tan(3)",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "log(asin(3)) - x^(-1/2)",
+"a": -2.0,
+"b": 0.0,
+"result": "the expression is not defined there (ValueError)",
+"sympy_decided": false
+},
+{
+"f": "sqrt((x^2)^2)^(-1) * (2x+3)",
+"a": -0.99,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-0.99, 1]",
+"sympy_decided": true
+},
+{
+"f": "sin(tanh(x))",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "0.5 / cosh(x)",
+"a": -3.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "csc((1-x^2)) - ((x+1))/(x)",
+"a": -1.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-1, 1]",
+"sympy_decided": true
+},
+{
+"f": "(atan(2))/((x+1)) + (x+1)",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(2)/((x+1))^(2/3) / ((2x+3))/(x)",
+"a": -1.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-1, 1]",
+"sympy_decided": true
+},
+{
+"f": "sec((x-0.5))^2",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2)^(1/3)^(-1)",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "3^(-1/2) - ((x-1))/((2x+3))",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(2x+3) * ((x^2+1))/(3)",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2)^2 * tan((x^2+1))",
+"a": -1.5,
+"b": -0.5,
+"result": "the function is not continuous (or not real) on the whole interval [-1.5, -0.5]",
+"sympy_decided": true
+},
+{
+"f": "asin((2x+3)^(-2))",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-1)",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2)^(1/2)^(2/3)",
+"a": -1.5,
+"b": -0.5,
+"result": "the function is not continuous (or not real) on the whole interval [-1.5, -0.5]",
+"sympy_decided": true
+},
+{
+"f": "((x-0.5))/(0.5) + (x^2-4)^3",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "log(sqrt((x^2)^2)) + (1-x^2)",
+"a": -5.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [-5, 5]",
+"sympy_decided": true
+},
+{
+"f": "sqrt(((x-0.5))^2) * exp((x^2-4))",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1) / (x+1)^(-1/2)",
+"a": -2.0,
+"b": 0.0,
+"result": "the function is not continuous (or not real) on the whole interval [-2, 0]",
+"sympy_decided": true
+},
+{
+"f": "((x^2+1)^(2/3))/((x^2+1)^2)",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "0.5 - asin(3)",
+"a": -2.0,
+"b": 0.0,
+"result": "the function is not continuous (or not real) on the whole interval [-2, 0]",
+"sympy_decided": true
+},
+{
+"f": "exp((x^2-4))^(-2)",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "tan(acos((1-x^2)))",
+"a": -5.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [-5, 5]",
+"sympy_decided": true
+},
+{
+"f": "(x-1) - (x+1)",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1)^(-1)^(-1/2)",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(1-x^2)^3",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sin((2x+3)^(1/2))",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(sec((1-x^2)))/(x^x) / (x+1)",
+"a": 1.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [1, 3]",
+"sympy_decided": true
+},
+{
+"f": "sinh((x^2)/((x-1))) / 3^(2/3)",
+"a": 0.5,
+"b": 2.0,
+"result": "the function is not continuous (or not real) on the whole interval [0.5, 2]",
+"sympy_decided": true
+},
+{
+"f": "sqrt(3)^(-2) / 3",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "0.5^(1/3)",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(cos((x^2-4)))/((x)/(3)) + ((x+1))/(x^2)",
+"a": -2.0,
+"b": 0.0,
+"result": "the function is not continuous (or not real) on the whole interval [-2, 0]",
+"sympy_decided": true
+},
+{
+"f": "cot(((x-0.5))/((x^2+1))) * 3",
+"a": -2.0,
+"b": 0.0,
+"result": "the function is not continuous (or not real) on the whole interval [-2, 0]",
+"sympy_decided": true
+},
+{
+"f": "((x-1)^(1/3))/(x^2) + sqrt((x^2)^2)",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x+1) / (2x+3)",
+"a": -1.5,
+"b": -0.5,
+"result": "the function is not continuous (or not real) on the whole interval [-1.5, -0.5]",
+"sympy_decided": true
+},
+{
+"f": "0.5 / (3)/((x+1))",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(csc((x-1)))/((x^2+1)) + 3",
+"a": -1.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-1, 1]",
+"sympy_decided": true
+},
+{
+"f": "cot(sqrt(((2x+3))^2)) * x^2",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-1)^(-1/2)",
+"a": 0.0,
+"b": 3.14159,
+"result": "the function is not continuous (or not real) on the whole interval [0, 3.14159]",
+"sympy_decided": true
+},
+{
+"f": "exp(sin(0.5)) + 0.5",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "tanh(acos(0.5))",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sinh((2)/((x-1)))",
+"a": 0.0,
+"b": 1000000.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1e+06]",
+"sympy_decided": true
+},
+{
+"f": "3 * ((x-0.5))/((2x+3))",
+"a": -5.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [-5, 5]",
+"sympy_decided": true
+},
+{
+"f": "log(((x-0.5))/(x))",
+"a": 0.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [0, 1]",
+"sympy_decided": true
+},
+{
+"f": "(x+1) / sqrt((x-0.5))",
+"a": -0.99,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-0.99, 1]",
+"sympy_decided": true
+},
+{
+"f": "0.5 + (x^2+1)",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "x^2",
+"a": -1.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "3 - x",
+"a": 0.0,
+"b": 3.14159,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "acos(2)",
+"a": -0.99,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-0.99, 1]",
+"sympy_decided": true
+},
+{
+"f": "x^(-2)",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sec((x^2-4))",
+"a": -1.5,
+"b": -0.5,
+"result": "the function is not continuous (or not real) on the whole interval [-1.5, -0.5]",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4) + (x^2-4)",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "0.5 / tanh(3)",
+"a": -2.0,
+"b": 0.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1)^(1/3) * (x^2+1)",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(cosh((x-1)))/(2)",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "0.5 * (x+1)",
+"a": 0.5,
+"b": 2.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "acos(cos(2)) + 3",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x^2-4)",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "2 / x^3",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "sinh(sqrt(((x^2-4))^2)) + 3",
+"a": 0.0,
+"b": 1000000.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "3 - (x-0.5)",
+"a": 0.0,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "exp((1-x^2))^(-1) + cos((1-x^2))",
+"a": 0.25,
+"b": 0.75,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "exp((2x+3)) * ((x^2-4))/(x^2)",
+"a": -2.0,
+"b": 0.0,
+"result": "the function is not continuous (or not real) on the whole interval [-2, 0]",
+"sympy_decided": true
+},
+{
+"f": "tanh(log(x^2))",
+"a": -1.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-1, 1]",
+"sympy_decided": true
+},
+{
+"f": "(x+1) + (x^2-4)",
+"a": 0.1,
+"b": 0.9,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "(x-1) / (x-1)",
+"a": -0.99,
+"b": 1.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "((x^2-4))/(x^2) + x^2",
+"a": -1.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-1, 1]",
+"sympy_decided": true
+},
+{
+"f": "cos(asin((1-x^2))) - (x^2+1)^(2/3)",
+"a": -5.0,
+"b": 5.0,
+"result": "the function is not continuous (or not real) on the whole interval [-5, 5]",
+"sympy_decided": true
+},
+{
+"f": "(x^2+1) + (0.5)/((1-x^2))",
+"a": -1.0,
+"b": 1.0,
+"result": "the function is not continuous (or not real) on the whole interval [-1, 1]",
+"sympy_decided": true
+},
+{
+"f": "exp((1-x^2))",
+"a": 2.0,
+"b": 5.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "0.5",
+"a": -3.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "asin(cos((x-1))) + sqrt((x^2)^2)",
+"a": 1.0,
+"b": 3.0,
+"result": "ok",
+"sympy_decided": true
+},
+{
+"f": "log((x-0.5)^(-2))",
+"a": -3.0,
+"b": 3.0,
+"result": "the function is not continuous (or not real) on the whole interval [-3, 3]",
+"sympy_decided": true
+},
+{
+"f": "(x-0.5)^(1/3) * 0.5",
+"a": -1.5,
+"b": -0.5,
+"result": "ok",
+"sympy_decided": true
+}
+]

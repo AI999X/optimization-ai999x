@@ -1,0 +1,21 @@
+[workspace]
+members = ["ax-engine", "optimization"]
+resolver = "2"
+
+[workspace.package]
+version = "1.5.0"
+edition = "2021"
+license = "Apache-2.0"
+authors = ["AI999X Labs <support@ai999x.com>", "Ibnul Jaif Farabi <ibnuljaiffarabi@ai999x.com>"]
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
+
+# SpaceBuild's browser module is downloaded by every visitor, so it is built for size:
+#   cargo build --profile wasm-size --target wasm32-unknown-unknown -p build-space-ai999x --lib
+[profile.wasm-size]
+inherits = "release"
+opt-level = "z"

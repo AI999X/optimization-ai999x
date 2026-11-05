@@ -1,0 +1,20 @@
+[package]
+name = "optimization-ai999x"
+description = "Optimization by AI999X: offline answers, checked against the package they were translated from (Rust build)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[[bin]]
+name = "optimization"
+path = "src/main.rs"
+
+[lib]
+path = "src/lib.rs"
+# rlib for the command line; cdylib is the browser module (cargo build --target wasm32-unknown-unknown)
+crate-type = ["rlib", "cdylib"]
+
+[dependencies]
+ax-engine = { path = "../ax-engine" }
+serde_json = "1"

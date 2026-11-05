@@ -1,0 +1,26 @@
+[package]
+name = "ax-engine"
+description = "AI999X deterministic engine: units, certified relations solved from exported forms, plain-English refusals"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+# mpmath's extended precision inside workdps blocks (MIT licence, pure Rust)
+astro-float = { version = "=0.9.6", default-features = false, features = ["std"] }
+serde = { version = "1", features = ["derive"] }
+# arbitrary_precision: an int answer beyond 64 bits is written with every digit, as Python writes it;
+# float_roundtrip: every decimal read correctly rounded (the default parser misreads about 30% of 17-digit decimals
+# by one unit in the last place: "3.8000000000000003" became 3.8, 2026-10-29); preserve_order: a dict answer keeps
+# Python's key order (serde_json sorted keys: a figure drew its bars in alphabetical order, 2026-10-30)
+serde_json = { version = "1", features = ["arbitrary_precision", "float_roundtrip", "preserve_order"] }
+# exact fractions (Python's fractions.Fraction) with unbounded integers; pure Rust, MIT/Apache-2.0
+num-bigint = "0.4"
+num-rational = { version = "0.4", default-features = false, features = ["num-bigint", "std"] }
+num-traits = "0.2"
+num-integer = "0.1"
+# erf / erfc as the C library computes them (a pure-Rust port of musl's fdlibm); MIT/Apache-2.0
+libm = "0.2"
+# Python's re module: a backtracking regex engine (lookarounds, backreferences) over the regex crate; MIT
+fancy-regex = "0.14"
