@@ -1,0 +1,1190 @@
+<!doctype html><html><head><meta charset="utf-8"><title>optimization — user guide (Rust build)</title>
+<script>window.MathJax={tex:{inlineMath:[['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+<style>
+@page{size:A4;margin:16mm 15mm}
+body{font-family:"Segoe UI",Arial,sans-serif;font-size:10.5pt;line-height:1.45;color:#1b1f24;max-width:880px;margin:auto}
+h1{font-size:22pt;border-bottom:2px solid #2b5c8a;padding-bottom:4px;margin-top:28px;page-break-before:always}
+h1:first-of-type{page-break-before:avoid}
+h2{font-size:15pt;color:#2b5c8a;margin-top:22px;page-break-after:avoid}
+h3{font-size:12pt;margin-top:16px;page-break-after:avoid}
+pre{background:#f4f6f8;border:1px solid #dde3e8;border-radius:4px;padding:8px 10px;font-size:8.8pt;white-space:pre-wrap;page-break-inside:avoid}
+code{font-family:Consolas,monospace;font-size:9pt;background:#f4f6f8;padding:0 2px}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;margin:8px 0;font-size:9pt;width:100%;page-break-inside:auto}
+th,td{border:1px solid #cfd6dd;padding:3px 6px;vertical-align:top;text-align:left}
+th{background:#eaf0f5}
+.math{margin:6px 0;overflow-x:auto}
+.badge{display:inline-block;color:#fff;border-radius:3px;padding:0 5px;font-size:8.5pt;white-space:nowrap}
+figure{margin:10px 0;text-align:center;page-break-inside:avoid}figure img{max-width:88%}.svgfig svg{max-width:88%;height:auto}
+figcaption{font-size:9pt;color:#555}
+.pb{page-break-after:always}
+</style></head><body>
+<h1>optimization: the Optimization program — user guide</h1>
+<p><strong>optimization-ai999x 1.0.3</strong>, Rust build: command line, desktop app and browser. <strong>Creator / engineer:</strong> Ibnul Jaif Farabi · <strong>Company:</strong> AI999X · support@ai999x.com</p>
+<p>Optimization covers linear and integer programming, convex and nonlinear optimisation, assignment, transportation and shortest-route problems, scheduling, inventory, queueing, game theory and multi-criteria decisions. This guide is about <code>optimization</code>, the model as a self-contained program for Windows and Linux: 72 capabilities in 16 topics, answered on your own computer with no network, no Python and nothing else to install. The same compiled model runs in the AI999X desktop app and in the browser on the model&#x27;s page (https://www.ai999x.com/models/optimization-ai999x/); the Python package (<code>pip install optimization-ai999x</code>) has its own guide. Every command output printed here is what the program printed.</p>
+<h2>Contents</h2>
+<ul><li>1. Get it: desktop app, command line, browser, Python</li><li>2. Quick start</li><li>3. Writing inputs</li><li>4. Outcomes and exit codes</li><li>5. Scripts and agents: batch and JSON</li><li>6. Figures</li><li>7. In a web page or Node.js: WebAssembly</li><li>8. Every capability</li></ul>
+<h2>1. Get it</h2>
+<p>Version 1.4.0 of the AI999X desktop app and of the command-line bundle. Checksums for every file: https://downloads.ai999x.com/desktop/1.4.0/SHA256SUMS; the newest version is always under https://downloads.ai999x.com/desktop/latest/. Full instructions: https://www.ai999x.com/desktop-cli/</p>
+<table><thead><tr><th>what</th><th>system</th><th>download</th></tr></thead><tbody><tr><td>Desktop app: Optimization</td><td>Windows x86-64</td><td>https://downloads.ai999x.com/desktop/1.4.0/ai999x-optimization-1.4.0-windows-x86_64.zip</td></tr><tr><td>Desktop app: Optimization</td><td>Linux x86-64</td><td>https://downloads.ai999x.com/desktop/1.4.0/ai999x-optimization-1.4.0-linux-x86_64.tar.gz</td></tr><tr><td>Desktop app: all models</td><td>Windows x86-64</td><td>https://downloads.ai999x.com/desktop/1.4.0/ai999x-1.4.0-windows-x86_64.zip</td></tr><tr><td>Desktop app: all models</td><td>Linux x86-64</td><td>https://downloads.ai999x.com/desktop/1.4.0/ai999x-1.4.0-linux-x86_64.tar.gz</td></tr><tr><td>Command line</td><td>Windows x86-64</td><td>https://downloads.ai999x.com/desktop/1.4.0/ai999x-cli-1.4.0-windows-x86_64.zip</td></tr><tr><td>Command line</td><td>Linux x86-64</td><td>https://downloads.ai999x.com/desktop/1.4.0/ai999x-cli-1.4.0-linux-x86_64.tar.gz</td></tr></tbody></table>
+<h3>Desktop app</h3>
+<p>Optimization in its own app: search, questions in words, input forms, live figures and explanations. Windows: Download ai999x-optimization-1.4.0-windows-x86_64.zip, right-click it → Extract All, then open the folder and start ai999x-optimization.exe. If Windows SmartScreen asks, choose More info → Run anyway. Linux:</p>
+<pre><code class="shell">curl -LO https://downloads.ai999x.com/desktop/1.4.0/ai999x-optimization-1.4.0-linux-x86_64.tar.gz
+curl -LO https://downloads.ai999x.com/desktop/1.4.0/SHA256SUMS
+sha256sum -c --ignore-missing SHA256SUMS
+tar xzf ai999x-optimization-1.4.0-linux-x86_64.tar.gz
+./ai999x-optimization-1.4.0-linux-x86_64/ai999x-optimization</code></pre>
+<p>It opens on this model: type a question or pick a capability, fill in the form and press Compute. The AI999X desktop app with every model works the same way (choose the model first). Windows: Download ai999x-1.4.0-windows-x86_64.zip, right-click it → Extract All, then open the folder and start ai999x.exe. If Windows SmartScreen asks, choose More info → Run anyway. Linux:</p>
+<pre><code class="shell">curl -LO https://downloads.ai999x.com/desktop/1.4.0/ai999x-1.4.0-linux-x86_64.tar.gz
+curl -LO https://downloads.ai999x.com/desktop/1.4.0/SHA256SUMS
+sha256sum -c --ignore-missing SHA256SUMS
+tar xzf ai999x-1.4.0-linux-x86_64.tar.gz
+./ai999x-1.4.0-linux-x86_64/ai999x</code></pre>
+<h3>Command line — Linux</h3>
+<p>The bundle holds one program per model; <code>optimization</code> is this one. The checksum line should print OK.</p>
+<pre><code class="shell">curl -LO https://downloads.ai999x.com/desktop/1.4.0/ai999x-cli-1.4.0-linux-x86_64.tar.gz
+curl -LO https://downloads.ai999x.com/desktop/1.4.0/SHA256SUMS
+sha256sum -c --ignore-missing SHA256SUMS
+mkdir -p ~/.local/share &amp;&amp; tar xzf ai999x-cli-1.4.0-linux-x86_64.tar.gz -C ~/.local/share
+echo &#x27;export PATH=&quot;$HOME/.local/share/ai999x-cli-1.4.0-linux-x86_64:$PATH&quot;&#x27; &gt;&gt; ~/.bashrc &amp;&amp; source ~/.bashrc
+optimization --version</code></pre>
+<h3>Command line — Windows (PowerShell)</h3>
+<p>The fourth line should print True.</p>
+<pre><code class="powershell">$F = &quot;ai999x-cli-1.4.0-windows-x86_64.zip&quot;
+Invoke-WebRequest &quot;https://downloads.ai999x.com/desktop/1.4.0/$F&quot; -OutFile $F
+Invoke-WebRequest &quot;https://downloads.ai999x.com/desktop/1.4.0/SHA256SUMS&quot; -OutFile SHA256SUMS
+(Get-FileHash $F -Algorithm SHA256).Hash.ToLower() -eq ((Select-String -SimpleMatch $F SHA256SUMS).Line -split &#x27; &#x27;)[0]
+Expand-Archive $F -DestinationPath &quot;$env:LOCALAPPDATA\AI999X&quot; -Force
+$D = &quot;$env:LOCALAPPDATA\AI999X\ai999x-cli-1.4.0-windows-x86_64&quot;; $env:Path += &quot;;$D&quot;
+[Environment]::SetEnvironmentVariable(&quot;Path&quot;, [Environment]::GetEnvironmentVariable(&quot;Path&quot;, &quot;User&quot;) + &quot;;$D&quot;, &quot;User&quot;)
+optimization --version</code></pre>
+<h3>In your browser</h3>
+<p>Open https://www.ai999x.com/models/optimization-ai999x/, choose a capability and press Compute in your browser: the same program runs on your device as WebAssembly; nothing is sent anywhere.</p>
+<h3>Python</h3>
+<pre><code class="shell">pip install optimization-ai999x</code></pre>
+<h2>2. Quick start</h2>
+<h3>2.1 Check the install</h3>
+<p>Prints the model, its version and that this is the Rust build.</p>
+<pre><code class="shell">$ optimization --version
+optimization-ai999x 1.0.3 (Rust build, ax-engine 0.1.0)</code></pre>
+<h3>2.2 Ask in words</h3>
+<p>Write the question as you would say it: the program reads the quantities and their units, picks the capability and answers.</p>
+<pre><code class="shell">$ optimization ask &quot;Solve the transportation problem with supply [20, 30], demand [10, 25, 15] and cost matrix [[2, 3, 1], [5, 4, 8]].&quot;
+Read as: Transportation problem (minimum shipping cost)
+min_cost = 150
+shipments = [[5.0,0.0,15.0],[5.0,25.0,0.0]]
+plan_unique = yes
+dual = [-3.0,0.0,5.0,4.0,4.0]
+  by: Transportation problem (minimum shipping cost)  (the transportation LP solved exactly (rational simplex), certified by its dual (u_i + v_j &lt;= c_ij))
+  assumes: total supply &gt;= total demand (surplus stays at the sources at no cost); at most 60 routes</code></pre>
+<h3>2.3 Find a capability</h3>
+<p>Search the capabilities by what you want to know; the first column is the id to pass to info and solve.</p>
+<pre><code class="shell">$ optimization search &quot;economic order quantity (eoq)&quot;
+eoq                                  Economic order quantity (EOQ)  (inventory management)
+eoq_quantity_discount                Order quantity with quantity discounts (all-units)  (inventory management)
+epq_production_lot                   Economic production quantity (EPQ)  (inventory management)
+eoq_planned_shortages                EOQ with planned backorders  (inventory management)
+newsvendor_normal                    Newsvendor order quantity (normal demand)  (inventory management / single-period)
+newsvendor_discrete                  Newsvendor order quantity (discrete demand)  (inventory management / single-period)
+newsvendor_uniform                   Newsvendor order quantity (uniform demand)  (inventory management / single-period)
+order_up_to_level                    Periodic-review order-up-to level  (inventory management)
+… 12 more</code></pre>
+<h3>2.4 List the capabilities</h3>
+<p>Every capability the program answers: its id (what you pass to solve) and its name.</p>
+<pre><code class="shell">$ optimization list
+ahp_consistency_ratio                    AHP consistency ratio
+ahp_geometric_mean                       AHP weights by the geometric mean method
+ahp_priority_vector                      AHP priority vector (principal eigenvector)
+all_pairs_shortest_paths                 All-pairs shortest distances (Floyd-Warshall)
+assignment_max_profit                    Assignment problem (Hungarian method), maximum total value
+assignment_min_cost                      Assignment problem (Hungarian method), minimum total cost
+bellman_ford_shortest_path               Shortest path with negative weights (Bellman-Ford)
+bin_packing                              Bin packing (minimum number of bins)
+… 64 more</code></pre>
+<h3>2.5 What a capability needs</h3>
+<p>The equation or method, every input and output with its SI unit. Read this before solve: it tells you the input names.</p>
+<pre><code class="shell">$ optimization info eoq
+Economic order quantity (EOQ)
+  minimise D S / Q + H Q / 2 (at the optimum ordering cost equals holding cost)
+  in   D        demand per period (units, e.g. per year) [1]
+  in   S        fixed cost per order [1]
+  in   H        holding cost per unit per period [1]
+  out  Q        economic order quantity [1]
+  out  total_cost minimum ordering + holding cost per period [1]
+  out  orders_per_period number of orders per period [1]
+  out  cycle_time time between orders (in periods) [1]</code></pre>
+<h3>2.6 Solve</h3>
+<p>Inputs as name=value, each with any unit of the right kind. The answer lists every output, the method used, each input converted to SI, and the conditions the answer assumes.</p>
+<pre><code class="shell">$ optimization solve eoq D=1200 S=50 H=3
+Q = 200
+total_cost = 600
+orders_per_period = 6
+cycle_time = 0.1666666667
+  by: Economic order quantity (EOQ)  (minimise D S / Q + H Q / 2 (at the optimum ordering cost equals holding cost))
+  D = 1200
+  S = 50
+  H = 3
+  assumes: D, S, H &gt; 0; constant demand, instant replenishment, no shortages</code></pre>
+<h3>2.7 Machine-readable answer</h3>
+<p>--json prints the same answer as one line of JSON (values in SI): for scripts and other programs.</p>
+<pre><code class="shell">$ optimization solve eoq D=1200 S=50 H=3 --json
+{&quot;outcome&quot;:&quot;SOLVED&quot;,&quot;message&quot;:&quot;&quot;,&quot;value&quot;:200.0,&quot;unit&quot;:&quot;&quot;,&quot;solved_for&quot;:&quot;Q&quot;,&quot;si&quot;:[[&quot;D&quot;,1200.0],[&quot;S&quot;,50.0],[&quot;H&quot;,3.0]],&quot;values&quot;:[[&quot;Q&quot;,200.0,&quot;&quot;],[&quot;total_cost&quot;,600.0,&quot;&quot;],[&quot;orders_per_period&quot;,6.0,&quot;&quot;],[&quot;cycle_time&quot;,0.16666666666666666,&quot;&quot;]],&quot;target&quot;:&quot;Q&quot;,&quot;phrase&quot;:&quot;economic order quantity&quot;,&quot;assumptions&quot;:[&quot;D, S, H &gt; 0&quot;,&quot;constant demand, instant replenishment, no shortages&quot;],&quot;name&quot;:&quot;Economic order quantity (EOQ)&quot;,&quot;equation&quot;:&quot;minimise D S / Q + H Q / 2 (at the optimum ordering cost equals holding cost)&quot;}</code></pre>
+<h3>2.8 When an input is missing</h3>
+<p>No number is guessed: the answer names what is missing, shows a complete call, and the program exits with status 1.</p>
+<pre><code class="shell">$ optimization solve eoq D=1200 S=50
+NEEDS_INPUT: eoq needs H (holding cost per unit per period). Example: solve(&#x27;eoq&#x27;, D=1200, S=50, H=3).</code></pre>
+<h3>2.9 Draw the figures</h3>
+<p>The live figures for your own inputs, written as SVG files into the folder given with --out (here the current folder); open them in any browser. Without --out the SVG text comes back as JSON.</p>
+<pre><code class="shell">$ optimization figures eoq D=1200 S=50 H=3 --out .
+[
+  {
+    &quot;slug&quot;: &quot;eoq-live-1&quot;,
+    &quot;title&quot;: &quot;Economic order quantity as holding cost per unit per period varies&quot;,
+    &quot;caption&quot;: &quot;Economic order quantity as H runs from 0.75 to 5.25, every other input as you entered it (41 solutions). Marked: your H = 3 gives Q = 200. Your inputs: D = 1200, S = 50, H = 3.&quot;,
+    &quot;file&quot;: &quot;.\\eoq-live-1.svg&quot;
+  },
+  {
+    &quot;slug&quot;: &quot;eoq-live-2&quot;,
+    &quot;title&quot;: &quot;Economic order quantity as fixed cost per order varies&quot;,
+    &quot;caption&quot;: &quot;Economic order quantity as S runs from 12.5 to 87.5, every other input as you entered it (29 solutions). Marked: your S = 50 gives Q = 200. Your inputs: D = 1200, S = 50, H = 3.&quot;,
+    &quot;file&quot;: &quot;.\\eoq-live-2.svg&quot;
+  }
+]</code></pre>
+<h3>2.10 Many questions at once</h3>
+<p>One JSON request per line in, one JSON answer per line out, in order: for scripts, notebooks and agents (the program starts once). In PowerShell: Get-Content cases.jsonl | optimization batch</p>
+<p><code>cases.jsonl</code>:</p>
+<pre><code class="json">{&quot;key&quot;: &quot;eoq&quot;, &quot;inputs&quot;: {&quot;D&quot;: 1200, &quot;S&quot;: 50, &quot;H&quot;: 3}}
+{&quot;key&quot;: &quot;ahp_consistency_ratio&quot;, &quot;inputs&quot;: {&quot;judgments&quot;: &quot;[3, 5, 2]&quot;}}</code></pre>
+<pre><code class="shell">$ optimization batch &lt; cases.jsonl
+{&quot;outcome&quot;:&quot;SOLVED&quot;,&quot;message&quot;:&quot;&quot;,&quot;value&quot;:200.0,&quot;unit&quot;:&quot;&quot;,&quot;solved_for&quot;:&quot;Q&quot;,&quot;si&quot;:[[&quot;D&quot;,1200.0],[&quot;S&quot;,50.0],[&quot;H&quot;,3.0]],&quot;values&quot;:[[&quot;Q&quot;,200.0,&quot;&quot;],[&quot;total_cost&quot;,600.0,&quot;&quot;],[&quot;orders_per_period&quot;,6.0,&quot;&quot;],[&quot;cycle_time&quot;,0.16666666666666666,&quot;&quot;]],&quot;target&quot;:&quot;Q&quot;,&quot;phrase&quot;:&quot;economic order quantity&quot;,&quot;assumptions&quot;:[&quot;D, S, H &gt; 0&quot;,&quot;constant demand, instant replenishment, no shortages&quot;],&quot;name&quot;:&quot;Economic order quantity (EOQ)&quot;,&quot;equation&quot;:&quot;minimise D S / Q + H Q / 2 (at the optimum ordering cost equals holding cost)&quot;}
+{&quot;outcome&quot;:&quot;SOLVED&quot;,&quot;message&quot;:&quot;&quot;,&quot;value&quot;:0.0031849983307239735,&quot;unit&quot;:&quot;&quot;,&quot;solved_for&quot;:&quot;CR&quot;,&quot;values&quot;:[[&quot;CR&quot;,0.0031849983307239735,&quot;&quot;],[&quot;CI&quot;,0.0018472990318199045,&quot;&quot;],[&quot;lambda_max&quot;,3.00369459806364,&quot;&quot;],[&quot;weights&quot;,[0.6483290138222366,0.2296507940626371,0.12202019211512621],&quot;&quot;],[&quot;acceptable&quot;,&quot;yes&quot;,&quot;&quot;]],&quot;target&quot;:&quot;CR&quot;,&quot;phrase&quot;:&quot;consistency ratio&quot;,&quot;assumptions&quot;:[&quot;3 to 10 criteria&quot;,&quot;RI = 0.58, 0.90, 1.12, 1.24, 1.32, 1.41, 1.45, 1.49 for n = 3..10 (Saaty)&quot;],&quot;name&quot;:&quot;AHP consistency ratio&quot;,&quot;equation&quot;:&quot;principal eigenpair by power iteration (certified as an eigenpair), then CI and CR&quot;}</code></pre>
+<h2>3. Writing inputs</h2>
+<p>Inputs are written <code>name=value</code>, one per argument; <code>optimization info &lt;capability&gt;</code> lists the names. Quote an argument that holds a space or brackets (bash, zsh and PowerShell all accept double quotes). The answer always states each input as it was read, converted to SI, so a misread unit is visible at once.</p>
+<table><thead><tr><th>kind</th><th>example</th><th>how it is read</th></tr></thead><tbody><tr><td>a number with a unit</td><td><code>&quot;R=0.128 nm&quot;</code></td><td>any unit of the same kind; converted to SI</td></tr><tr><td>a number in SI</td><td><code>R=1.28e-10</code></td><td>no unit means the SI unit shown by info</td></tr><tr><td>a choice</td><td><code>structure=FCC</code></td><td>one of the values info lists</td></tr><tr><td>a list or vector</td><td><code>&quot;v=[1, 2, 3]&quot; or &quot;v=1, 2, 3&quot;</code></td><td>brackets keep it a list</td></tr><tr><td>a matrix</td><td><code>&quot;A=[[1, 2], [3, 4]]&quot;</code></td><td>one list per row</td></tr><tr><td>true / false</td><td><code>inclusive=true</code></td><td>for yes/no options</td></tr></tbody></table>
+<p>An equation can be solved for any of its quantities: give the others and add <code>--target &lt;symbol&gt;</code>. Without <code>--target</code>, the program solves for the quantity the capability is named after.</p>
+<h2>4. Outcomes and exit codes</h2>
+<p>The program never guesses a number: when it cannot answer, it says why and exits with status 1, so a script can tell an answer from a refusal without reading the text.</p>
+<table><thead><tr><th>outcome</th><th>meaning</th><th>exit status</th></tr></thead><tbody><tr><td>SOLVED</td><td>the answer: every output with its unit, the method, the inputs in SI, the conditions assumed</td><td>0</td></tr><tr><td>NEEDS_INPUT</td><td>an input is missing; the message names it and shows a complete call</td><td>1</td></tr><tr><td>INVALID_INPUT</td><td>a value or unit of the wrong kind, an unknown input name, or a value outside the conditions</td><td>1</td></tr><tr><td>AMBIGUOUS</td><td>the inputs allow two different answers; say which one is meant</td><td>1</td></tr><tr><td>OUT_OF_SCOPE</td><td>the model has no capability for this, or the result would not be meaningful</td><td>1</td></tr><tr><td>(usage)</td><td>a command the program does not know: it prints its usage</td><td>2</td></tr></tbody></table>
+<h2>5. Scripts and agents: batch and JSON</h2>
+<p><code>optimization solve ... --json</code> prints one answer as one line of JSON. <code>optimization batch</code> reads one request per line on standard input and writes one JSON answer per line, in order, starting the program once for any number of requests. A request is <code>{&quot;key&quot;: &quot;&lt;capability&gt;&quot;, &quot;inputs&quot;: {&quot;name&quot;: &quot;value&quot;, ...}, &quot;target&quot;: null}</code>. In PowerShell, pipe the file in: <code>Get-Content cases.jsonl | optimization batch</code>. <code>optimization catalog</code> prints every capability with its inputs as JSON, to build forms or tool definitions.</p>
+<table><thead><tr><th>answer field</th><th>meaning</th></tr></thead><tbody><tr><td>outcome</td><td>one of the outcomes above</td></tr><tr><td>message</td><td>why there is no answer (empty when SOLVED)</td></tr><tr><td>value, unit</td><td>the main result in SI units</td></tr><tr><td>values</td><td>every output: [symbol, value, unit] (procedures)</td></tr><tr><td>target</td><td>the quantity solved for</td></tr><tr><td>si</td><td>each numeric input converted to SI: [symbol, value]</td></tr><tr><td>assumptions</td><td>the conditions the answer relies on</td></tr><tr><td>name, equation</td><td>the capability and its equation or method</td></tr></tbody></table>
+<pre><code class="python">import json, subprocess
+
+reqs = [{&quot;key&quot;: &quot;&lt;capability&gt;&quot;, &quot;inputs&quot;: {&quot;name&quot;: &quot;value&quot;}}]
+out = subprocess.run([&quot;optimization&quot;, &quot;batch&quot;], input=&quot;\n&quot;.join(map(json.dumps, reqs)),
+                     capture_output=True, text=True, check=True).stdout
+answers = [json.loads(line) for line in out.splitlines()]</code></pre>
+<h2>6. Figures</h2>
+<p><code>optimization figures &lt;capability&gt; name=value ... --out DIR</code> draws the live figures for those inputs and writes each as an SVG file into DIR (an existing folder); without <code>--out</code> the SVG text comes back as JSON. The desktop app and the model page draw the same figures as soon as you press Compute.</p>
+<pre><code class="shell">$ optimization figures eoq D=1200 S=50 H=3 --out .
+[
+  {
+    &quot;slug&quot;: &quot;eoq-live-1&quot;,
+    &quot;title&quot;: &quot;Economic order quantity as holding cost per unit per period varies&quot;,
+    &quot;caption&quot;: &quot;Economic order quantity as H runs from 0.75 to 5.25, every other input as you entered it (41 solutions). Marked: your H = 3 gives Q = 200. Your inputs: D = 1200, S = 50, H = 3.&quot;,
+    &quot;file&quot;: &quot;.\\eoq-live-1.svg&quot;
+  },
+  {
+    &quot;slug&quot;: &quot;eoq-live-2&quot;,
+    &quot;title&quot;: &quot;Economic order quantity as fixed cost per order varies&quot;,
+    &quot;caption&quot;: &quot;Economic order quantity as S runs from 12.5 to 87.5, every other input as you entered it (29 solutions). Marked: your S = 50 gives Q = 200. Your inputs: D = 1200, S = 50, H = 3.&quot;,
+    &quot;file&quot;: &quot;.\\eoq-live-2.svg&quot;
+  }
+]</code></pre>
+<h2>7. In a web page or Node.js: WebAssembly</h2>
+<p>The same model is a WebAssembly module, <code>optimization_ai999x.wasm</code> (https://www.ai999x.com/compute/rust/optimization_ai999x.wasm), with a small loader, <code>ax-wasm.js</code> (https://www.ai999x.com/compute/rust/ax-wasm.js). It runs in a browser, a Web Worker or Node.js, with no server.</p>
+<pre><code class="html">&lt;script src=&quot;ax-wasm.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+  AXWasm.load(&quot;optimization_ai999x.wasm&quot;).then(function (m) {
+    var a = m.solve({key: &quot;&lt;capability&gt;&quot;, inputs: {name: &quot;value&quot;}});
+    console.log(a.outcome, a.values || a.value);
+    console.log(m.catalog().capabilities.length + &quot; capabilities&quot;);
+  });
+&lt;/script&gt;</code></pre>
+<h2>8. Every capability</h2>
+<p>By topic. For each: what it does, what it needs and gives, when it applies, and a command with what the program printed for it. <code>optimization info &lt;id&gt;</code> shows the same inputs and outputs in the terminal.</p>
+<h3>Calculus optimisation (5)</h3>
+<h4 id="polynomial_extrema_interval">Absolute extrema of a polynomial on a closed interval — <code>polynomial_extrema_interval</code></h4>
+<p>The absolute minimum and maximum of a polynomial on [lo, hi] (closed-interval method: endpoints and critical points), and where they are attained.</p>
+<div class="math">\[\min_{[a,b]} f = \min\{f(a), f(b), f(c) : f&#x27;(c) = 0,\ a &lt; c &lt; b\}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>coefficients</code></td><td>in</td><td>polynomial coefficients, highest power first</td><td>—</td></tr><tr><td><code>lo</code></td><td>in</td><td>left end of the interval</td><td>—</td></tr><tr><td><code>hi</code></td><td>in</td><td>right end of the interval</td><td>—</td></tr><tr><td><code>min_value</code></td><td>out</td><td>absolute minimum</td><td>—</td></tr><tr><td><code>max_value</code></td><td>out</td><td>absolute maximum</td><td>—</td></tr><tr><td><code>argmin_example</code></td><td>out</td><td>a point attaining the minimum (the smallest one on a tie)</td><td>—</td></tr><tr><td><code>argmax_example</code></td><td>out</td><td>a point attaining the maximum (the smallest one on a tie)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> lo &lt; hi; degree 1 to 5.</p>
+<pre><code class="shell">$ optimization solve polynomial_extrema_interval &quot;coefficients=[1, -3, 0, 2]&quot; lo=-1 hi=3
+min_value = -2
+max_value = 2
+argmin_example = -1
+argmax_example = 0
+  by: Absolute extrema of a polynomial on a closed interval  (real roots of f&#x27; in [lo, hi] (monotone pieces between the roots of f&#x27;&#x27; bisected to the last float), compared with the endpoints)
+  lo = -1
+  hi = 3
+  assumes: lo &lt; hi; degree 1 to 5</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the global extrema of a polynomial on the closed interval from -1 to 3. It evaluates the function at the endpoints and all real critical points where the derivative is zero within the interval. The smallest resulting value is reported as the absolute minimum, -2, attained at -1, while the largest is the absolute maximum, 2, found at 0.</p>
+<h4 id="can_min_surface">Closed cylinder of least surface area for a given volume — <code>can_min_surface</code></h4>
+<p>The radius, height and surface area of the closed cylindrical can that holds a volume V with the least material.</p>
+<div class="math">\[r^* = \left(\frac{V}{2\pi}\right)^{1/3}, \quad h^* = 2r^*\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>V</code></td><td>in</td><td>volume (cube of the length unit)</td><td>—</td></tr><tr><td><code>radius</code></td><td>out</td><td>optimal radius</td><td>—</td></tr><tr><td><code>height</code></td><td>out</td><td>optimal height (equal to the diameter)</td><td>—</td></tr><tr><td><code>min_area</code></td><td>out</td><td>least total surface area</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> V &gt; 0; closed top and bottom.</p>
+<pre><code class="shell">$ optimization solve can_min_surface V=500
+radius = 4.301270069
+height = 8.602540138
+min_area = 348.7342055
+  by: Closed cylinder of least surface area for a given volume  (A(r) = 2 pi r^2 + 2V/r; A&#x27;(r) = 0)
+  V = 500
+  assumes: V &gt; 0; closed top and bottom</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the dimensions for a closed cylindrical container that holds a specific volume while using the least amount of material. Given an input volume of 500, the method finds the optimal radius to be 4.30127 and the corresponding height to be 8.60254. The resulting minimum surface area required is 348.734. This ensures efficient packaging design by balancing the top, bottom, and side surfaces.</p>
+<h4 id="critical_point_two_variables">Critical point of a two-variable quadratic and its classification — <code>critical_point_two_variables</code></h4>
+<p>For f(x, y) = a x^2 + b xy + c y^2 + d x + e y + f0: the critical point, its value and whether it is a local minimum, a local maximum or a saddle point (second-derivative test).</p>
+<div class="math">\[D = f_{xx} f_{yy} - f_{xy}^2 = 4ac - b^2\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>a</code></td><td>in</td><td>coefficient of x^2</td><td>—</td></tr><tr><td><code>b</code></td><td>in</td><td>coefficient of xy</td><td>—</td></tr><tr><td><code>c</code></td><td>in</td><td>coefficient of y^2</td><td>—</td></tr><tr><td><code>d</code></td><td>in</td><td>coefficient of x (optional)</td><td>—</td></tr><tr><td><code>e</code></td><td>in</td><td>coefficient of y (optional)</td><td>—</td></tr><tr><td><code>f0</code></td><td>in</td><td>constant term (optional)</td><td>—</td></tr><tr><td><code>f_value</code></td><td>out</td><td>value of f at the critical point</td><td>—</td></tr><tr><td><code>x</code></td><td>out</td><td>x of the critical point</td><td>—</td></tr><tr><td><code>y</code></td><td>out</td><td>y of the critical point</td><td>—</td></tr><tr><td><code>type</code></td><td>out</td><td>local minimum, local maximum or saddle point</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> 4ac - b^2 != 0 (an isolated critical point).</p>
+<pre><code class="shell">$ optimization solve critical_point_two_variables a=3 b=2 c=1 d=-4 e=6 f0=1
+f_value = -20.5
+x = 2.5
+y = -5.5
+type = local minimum
+  by: Critical point of a two-variable quadratic and its classification  (grad f = 0 solved exactly; D = f_xx f_yy - f_xy^2 = 4ac - b^2 classifies it)
+  a = 3
+  b = 2
+  c = 1
+  d = -4
+  e = 6
+  f0 = 1
+  assumes: 4ac - b^2 != 0 (an isolated critical point)</code></pre>
+<p><strong>What the worked example means:</strong> This calculation identifies the stationary point for the quadratic function defined by coefficients 3, 2, 1, -4, 6, and 1. Solving the gradient equal to zero shows that the critical point occurs at coordinates x equals 2.5 and y equals -5.5. The value of the function at this specific location is -20.5. Based on the second derivative test, which examines the curvature using the determinant of the Hessian matrix, the nature of this point is classified as a local minimum. This classification indicates whether the surface curves upward like a bowl, downward like a dome, or forms a saddle shape at this coordinate.</p>
+<h4 id="fence_max_area">Largest rectangle for a given length of fencing — <code>fence_max_area</code></h4>
+<p>The dimensions and maximum area of a rectangle enclosed by a fence of length L, on four sides or on three sides with a wall or river as the fourth.</p>
+<div class="math">\[A_{\max} = \frac{L^2}{16} \text{ (4 sides)}, \quad \frac{L^2}{8} \text{ (3 sides)}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>L</code></td><td>in</td><td>total length of fencing (any length unit)</td><td>—</td></tr><tr><td><code>wall</code></td><td>in</td><td>true when one side lies along a wall or river and needs no fence (optional)</td><td>—</td></tr><tr><td><code>width</code></td><td>out</td><td>side perpendicular to the wall (or one side of the square)</td><td>—</td></tr><tr><td><code>length</code></td><td>out</td><td>side parallel to the wall</td><td>—</td></tr><tr><td><code>max_area</code></td><td>out</td><td>maximum enclosed area (square of the length unit)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> L &gt; 0.</p>
+<pre><code class="shell">$ optimization solve fence_max_area wall=False L=200
+width = 50
+length = 50
+max_area = 2500
+  by: Largest rectangle for a given length of fencing  (area as a function of one side, derivative set to zero)
+  L = 200
+  assumes: L &gt; 0</code></pre>
+<p><strong>What the worked example means:</strong> This calculation finds the largest rectangular area possible for a given fencing length. Using the total fence amount 200, it determines the optimal side dimensions. The resulting maximum area is 2500, achieved when the perpendicular side is 50 and the parallel side is 50. This ensures the most efficient use of boundary materials.</p>
+<h4 id="open_box_max_volume">Open box of maximum volume from a rectangular sheet — <code>open_box_max_volume</code></h4>
+<p>Squares of side x are cut from the corners of an L by W sheet and the sides folded up: the cut that maximises the volume, and that volume.</p>
+<div class="math">\[x^* = \frac{(L+W) - \sqrt{L^2 - LW + W^2}}{6}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>L</code></td><td>in</td><td>sheet length</td><td>—</td></tr><tr><td><code>W</code></td><td>in</td><td>sheet width</td><td>—</td></tr><tr><td><code>cut</code></td><td>out</td><td>side of the corner squares at the maximum</td><td>—</td></tr><tr><td><code>max_volume</code></td><td>out</td><td>maximum volume</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> L &gt; 0 and W &gt; 0.</p>
+<pre><code class="shell">$ optimization solve open_box_max_volume L=12 W=12
+cut = 2
+max_volume = 128
+  by: Open box of maximum volume from a rectangular sheet  (V(x) = x (L - 2x)(W - 2x); V&#x27;(x) = 0, the root in (0, min(L, W)/2))
+  L = 12
+  W = 12
+  assumes: L &gt; 0 and W &gt; 0</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the side length of squares to cut from the corners of a rectangular sheet with length 12 and width 12 to maximize the volume of the resulting open box. The optimal cut size is found to be 2, which yields a maximum volume of 128. This result assumes negligible material thickness and perfect vertical folding.</p>
+<h3>Cost-volume-profit analysis (1)</h3>
+<h4 id="break_even_point">Break-even quantity — <code>break_even_point</code></h4>
+<p>The number of units at which revenue equals total cost (fixed plus variable), and the revenue there.</p>
+<div class="math">\[Q_{BE} = \frac{F}{p - v}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>F_</code></td><td>in</td><td>fixed cost (currency)</td><td>—</td></tr><tr><td><code>p</code></td><td>in</td><td>selling price per unit</td><td>—</td></tr><tr><td><code>v</code></td><td>in</td><td>variable cost per unit</td><td>—</td></tr><tr><td><code>quantity</code></td><td>out</td><td>break-even quantity (units)</td><td>—</td></tr><tr><td><code>revenue</code></td><td>out</td><td>revenue at break-even</td><td>—</td></tr><tr><td><code>contribution_margin</code></td><td>out</td><td>price minus variable cost per unit</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> fixed cost &gt;= 0; price &gt; variable cost.</p>
+<pre><code class="shell">$ optimization solve break_even_point F_=5000 p=25 v=15
+quantity = 500
+revenue = 12500
+contribution_margin = 10
+  by: Break-even quantity  (solve p Q = F + v Q)
+  F_ = 5000
+  p = 25
+  v = 15
+  assumes: fixed cost &gt;= 0; price &gt; variable cost</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the number of units that must be sold to cover all fixed and variable costs, resulting in zero profit. Using a fixed cost of 5000, a selling price of 25, and a variable cost of 15, the model computes a break-even quantity of 500. At this volume, total revenue equals 12500, meaning the business covers its expenses but earns no profit.</p>
+<h3>Dynamic programming (2)</h3>
+<h4 id="mdp_discounted">Discounted Markov decision process (optimal values and policy) — <code>mdp_discounted</code></h4>
+<p>The optimal expected discounted reward from every state of a finite Markov decision process and an optimal stationary policy.</p>
+<div class="math">\[V^*(s) = \max_a \Big( R(s,a) + \gamma \sum_{s&#x27;} P(s&#x27; \mid s,a)\, V^*(s&#x27;) \Big)\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>R</code></td><td>in</td><td>rewards, rows = states, columns = actions</td><td>—</td></tr><tr><td><code>T</code></td><td>in</td><td>transition probabilities: one row per (state, action) in the order s1a1, s1a2, ..., s2a1, ...; columns = next state</td><td>—</td></tr><tr><td><code>gamma</code></td><td>in</td><td>discount factor (0 &lt; gamma &lt; 1)</td><td>—</td></tr><tr><td><code>value_state_1</code></td><td>out</td><td>optimal value of state 1</td><td>—</td></tr><tr><td><code>values</code></td><td>out</td><td>optimal value of every state</td><td>—</td></tr><tr><td><code>policy</code></td><td>out</td><td>optimal action in each state, 1-based (the lowest-numbered one on a tie)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> 0 &lt; gamma &lt; 1; rows of T sum to 1; at most 10 states and 5 actions.</p>
+<pre><code class="shell">$ optimization solve mdp_discounted &quot;R=[[1, 0], [0, 2]]&quot; &quot;T=[[1, 0], [0, 1], [0, 1], [1, 0]]&quot; gamma=0.9
+value_state_1 = 10
+values = [10.0,11.0]
+policy = [1.0,2.0]
+  by: Discounted Markov decision process (optimal values and policy)  (policy iteration in exact arithmetic; certified by the Bellman optimality equation)
+  gamma = 0.9
+  assumes: 0 &lt; gamma &lt; 1; rows of T sum to 1; at most 10 states and 5 actions</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the maximum long-term value achievable in each state of a finite Markov decision process. Using policy iteration, it finds the best stationary strategy by maximizing immediate rewards plus discounted future returns. The resulting optimal value for the first state is 10, reflecting the best possible outcome given the input parameters.</p>
+<h4 id="wagner_whitin_lot_sizing">Dynamic lot sizing (Wagner-Whitin) — <code>wagner_whitin_lot_sizing</code></h4>
+<p>The cheapest ordering plan for known demands over several periods with a fixed cost per order and a holding cost per unit carried to the next period (no shortages).</p>
+<div class="math">\[C_t = \min_{1 \le s \le t} \Big( C_{s-1} + K + h \sum_{u=s}^{t} (u - s)\, d_u \Big)\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>demand</code></td><td>in</td><td>demand in each period</td><td>—</td></tr><tr><td><code>K</code></td><td>in</td><td>setup (ordering) cost per order</td><td>—</td></tr><tr><td><code>h</code></td><td>in</td><td>holding cost per unit per period</td><td>—</td></tr><tr><td><code>min_cost</code></td><td>out</td><td>minimum total setup plus holding cost</td><td>—</td></tr><tr><td><code>order_quantities_example</code></td><td>out</td><td>one optimal plan: quantity ordered in each period</td><td>—</td></tr><tr><td><code>orders</code></td><td>out</td><td>number of orders in that plan</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> demands, K, h &gt;= 0; no initial stock, no shortages, holding charged on end-of-period stock.</p>
+<pre><code class="shell">$ optimization solve wagner_whitin_lot_sizing &quot;demand=[20, 50, 10, 50]&quot; K=100 h=1
+min_cost = 270
+order_quantities_example = [80.0,0.0,0.0,50.0]
+orders = 2
+  by: Dynamic lot sizing (Wagner-Whitin)  (Wagner-Whitin dynamic programme (each order covers whole periods) in exact arithmetic)
+  K = 100
+  h = 1
+  assumes: demands, K, h &gt;= 0; no initial stock, no shortages, holding charged on end-of-period stock</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the least expensive inventory plan by balancing fixed ordering costs against holding costs. Given demands, a setup cost of 100, and a holding cost of 1, the algorithm finds that the optimal strategy incurs a total cost of 270. This result reflects the trade-off where fewer orders reduce setup expenses but increase storage charges for unused stock.</p>
+<h3>Economic optimisation (2)</h3>
+<h4 id="profit_max_linear_demand">Profit-maximising output with linear demand — <code>profit_max_linear_demand</code></h4>
+<p>With inverse demand p = a - b q and cost C = F + c q, the output, price and profit at the profit maximum.</p>
+<div class="math">\[q^* = \frac{a - c}{2b}, \quad p^* = \frac{a + c}{2}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>a</code></td><td>in</td><td>demand intercept (price at zero quantity)</td><td>—</td></tr><tr><td><code>b</code></td><td>in</td><td>demand slope (price drop per unit)</td><td>—</td></tr><tr><td><code>cv</code></td><td>in</td><td>marginal (variable) cost per unit</td><td>—</td></tr><tr><td><code>F_</code></td><td>in</td><td>fixed cost (default 0) (optional)</td><td>—</td></tr><tr><td><code>quantity</code></td><td>out</td><td>profit-maximising quantity</td><td>—</td></tr><tr><td><code>price</code></td><td>out</td><td>price at that quantity</td><td>—</td></tr><tr><td><code>profit</code></td><td>out</td><td>maximum profit</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> b &gt; 0; a &gt; c.</p>
+<pre><code class="shell">$ optimization solve profit_max_linear_demand a=100 b=2 F_=300 cv=20
+quantity = 20
+price = 60
+profit = 500
+  by: Profit-maximising output with linear demand  (marginal revenue equals marginal cost: a - 2 b q = c)
+  a = 100
+  b = 2
+  F_ = 300
+  cv = 20
+  assumes: b &gt; 0; a &gt; c</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the optimal output level for a firm with market power facing linear demand. By equating marginal revenue to marginal cost, it finds that the best quantity to produce is 20. At this level, the firm charges a price of 60 to maximize its returns. The resulting maximum profit, after subtracting fixed costs, is 500. This result assumes constant marginal cost and a downward-sloping demand curve where the intercept exceeds the cost.</p>
+<h4 id="revenue_max_linear_demand">Revenue-maximising price with linear demand — <code>revenue_max_linear_demand</code></h4>
+<p>With demand q = alpha - beta p, the price that maximises revenue p q, the quantity sold and the revenue.</p>
+<div class="math">\[p^* = \frac{\alpha}{2\beta}, \quad R^* = \frac{\alpha^2}{4\beta}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>alpha</code></td><td>in</td><td>demand at a price of zero</td><td>—</td></tr><tr><td><code>beta</code></td><td>in</td><td>drop in demand per unit increase in price</td><td>—</td></tr><tr><td><code>price</code></td><td>out</td><td>revenue-maximising price</td><td>—</td></tr><tr><td><code>quantity</code></td><td>out</td><td>quantity sold at that price</td><td>—</td></tr><tr><td><code>revenue</code></td><td>out</td><td>maximum revenue</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> alpha &gt; 0; beta &gt; 0.</p>
+<pre><code class="shell">$ optimization solve revenue_max_linear_demand alpha=1000 beta=20
+price = 25
+quantity = 500
+revenue = 12500
+  by: Revenue-maximising price with linear demand  (dR/dp = alpha - 2 beta p = 0 (unit elasticity))
+  alpha = 1000
+  beta = 20
+  assumes: alpha &gt; 0; beta &gt; 0</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the optimal price to set when demand follows a linear pattern, specifically targeting maximum gross revenue rather than profit. Using the demand intercept of 1000 and the price sensitivity of 20, the model computes that charging 25 will result in selling 500 units. This strategy generates the highest possible income of 12500, assuming that costs are ignored and the market reacts predictably to price changes without competitor interference.</p>
+<h3>Game theory (4)</h3>
+<h4 id="zero_sum_2x2">2 x 2 zero-sum game (saddle point or mixed-strategy formula) — <code>zero_sum_2x2</code></h4>
+<p>The value of a 2 x 2 matrix game: the saddle-point value when one exists, otherwise the mixed-strategy solution (probability of each player&#x27;s first strategy, unique in that case).</p>
+<div class="math">\[v = \frac{ad - bc}{a + d - b - c},\quad p = \frac{d - c}{a + d - b - c},\quad q = \frac{d - b}{a + d - b - c}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>A</code></td><td>in</td><td>2 x 2 payoff matrix to the row player [[a, b], [c, d]]</td><td>—</td></tr><tr><td><code>value</code></td><td>out</td><td>value of the game</td><td>—</td></tr><tr><td><code>saddle_point</code></td><td>out</td><td>yes when a pure saddle point exists</td><td>—</td></tr><tr><td><code>p_row1</code></td><td>out</td><td>probability the row player plays row 1 (only without a saddle point)</td><td>—</td></tr><tr><td><code>q_col1</code></td><td>out</td><td>probability the column player plays column 1 (only without a saddle point)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> a 2 x 2 matrix.</p>
+<pre><code class="shell">$ optimization solve zero_sum_2x2 &quot;A=[[3, -1], [-2, 4]]&quot;
+value = 1
+p_row1 = 0.6
+q_col1 = 0.5
+saddle_point = no
+  by: 2 x 2 zero-sum game (saddle point or mixed-strategy formula)  (maximin = minimax gives a saddle point; otherwise the indifference formulas in exact arithmetic)
+  assumes: a 2 x 2 matrix</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the equilibrium for a two by two zero sum game using payoff matrix A. If a pure strategy equilibrium exists, indicated by no, the value of the game is 1. When no pure equilibrium exists, the solver computes mixed strategies where the row player selects their first option with probability 0.6 and the column player selects their first option with probability 0.5, ensuring neither can improve their expected outcome unilaterally.</p>
+<h4 id="mixed_nash_2x2">Mixed-strategy Nash equilibrium of a 2 x 2 game — <code>mixed_nash_2x2</code></h4>
+<p>The equilibrium of a 2 x 2 two-player game without a pure equilibrium: each player&#x27;s probability of the first strategy (chosen to make the OTHER player indifferent) and the expected payoffs.</p>
+<div class="math">\[q = \frac{a_{22} - a_{12}}{a_{11} - a_{12} - a_{21} + a_{22}},\quad p = \frac{b_{22} - b_{21}}{b_{11} - b_{12} - b_{21} + b_{22}}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>A</code></td><td>in</td><td>row player&#x27;s 2 x 2 payoffs</td><td>—</td></tr><tr><td><code>B</code></td><td>in</td><td>column player&#x27;s 2 x 2 payoffs</td><td>—</td></tr><tr><td><code>p_row1</code></td><td>out</td><td>probability the row player plays row 1</td><td>—</td></tr><tr><td><code>q_col1</code></td><td>out</td><td>probability the column player plays column 1</td><td>—</td></tr><tr><td><code>row_payoff</code></td><td>out</td><td>row player&#x27;s expected payoff</td><td>—</td></tr><tr><td><code>col_payoff</code></td><td>out</td><td>column player&#x27;s expected payoff</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> 2 x 2 matrices; no pure-strategy equilibrium (then the mixed one is unique).</p>
+<pre><code class="shell">$ optimization solve mixed_nash_2x2 &quot;A=[[3, -1], [-2, 1]]&quot; &quot;B=[[-1, 2], [1, -1]]&quot;
+p_row1 = 0.4
+q_col1 = 0.2857142857
+row_payoff = 0.1428571429
+col_payoff = 0.2
+  by: Mixed-strategy Nash equilibrium of a 2 x 2 game  (indifference conditions in exact arithmetic: p from the column player&#x27;s payoffs, q from the row player&#x27;s)
+  assumes: 2 x 2 matrices; no pure-strategy equilibrium (then the mixed one is unique)</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the mixed-strategy Nash equilibrium for a two-by-two game where no pure strategy is stable. Setting probabilities to make each opponent indifferent between their choices shows that the row player should play their first strategy with probability 0.4, while the column player should play their first strategy with probability 0.285714. Consequently, the expected payoff for the row player is 0.142857 and for the column player is 0.2.</p>
+<h4 id="pure_nash_equilibria">Pure-strategy Nash equilibria of a bimatrix game — <code>pure_nash_equilibria</code></h4>
+<p>Every pure-strategy Nash equilibrium (a cell where each player&#x27;s strategy is a best reply to the other&#x27;s) of a two-player game given by the two players&#x27; payoff matrices.</p>
+<div class="math">\[a_{rs} = \max_k a_{ks},\quad b_{rs} = \max_k b_{rk}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>A</code></td><td>in</td><td>row player&#x27;s payoffs (rows = row strategies)</td><td>—</td></tr><tr><td><code>B</code></td><td>in</td><td>column player&#x27;s payoffs (same shape)</td><td>—</td></tr><tr><td><code>count</code></td><td>out</td><td>number of pure equilibria</td><td>—</td></tr><tr><td><code>equilibria</code></td><td>out</td><td>all pure equilibria as [row, column], 1-based, in row-major order</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> at most 8 strategies per player; weak best replies count (ties are equilibria).</p>
+<pre><code class="shell">$ optimization solve pure_nash_equilibria &quot;A=[[3, 0], [5, 1]]&quot; &quot;B=[[3, 5], [0, 1]]&quot;
+count = 1
+equilibria = [[2.0,2.0]]
+  by: Pure-strategy Nash equilibria of a bimatrix game  (mutual best replies, cell by cell, in exact arithmetic)
+  assumes: at most 8 strategies per player; weak best replies count (ties are equilibria)</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines all stable outcomes where neither player can improve their payoff by unilaterally changing their strategy. It scans every cell of the input matrices [3 0; 5 1] and [3 5; 0 1] to find mutual best replies, meaning the row player&#x27;s choice maximizes their payoff given the column player&#x27;s choice, and vice versa. The result reports the total number of such equilibria as 1 and lists them as coordinate pairs in [[2, 2]], using one-based indexing for clarity.</p>
+<h4 id="zero_sum_game">Two-person zero-sum game (value and optimal mixed strategies) — <code>zero_sum_game</code></h4>
+<p>The value of a matrix game (row player maximises the payoff in the matrix, column player minimises it) and one optimal mixed strategy for each player.</p>
+<div class="math">\[v = \max_{x \in \Delta_m} \min_{j} \sum_i x_i a_{ij} = \min_{y \in \Delta_n} \max_i \sum_j a_{ij} y_j\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>A</code></td><td>in</td><td>payoff matrix to the row player, rows = row strategies, columns = column strategies</td><td>—</td></tr><tr><td><code>value</code></td><td>out</td><td>value of the game</td><td>—</td></tr><tr><td><code>row_strategy_example</code></td><td>out</td><td>one optimal mixed strategy of the row player</td><td>—</td></tr><tr><td><code>col_strategy_example</code></td><td>out</td><td>one optimal mixed strategy of the column player</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> at most 12 strategies per player.</p>
+<pre><code class="shell">$ optimization solve zero_sum_game &quot;A=[[3, -1, 2], [-2, 4, 1], [0, 1, -1]]&quot;
+value = 1
+row_strategy_example = [0.6,0.4,0.0]
+col_strategy_example = [0.5,0.5,0.0]
+  by: Two-person zero-sum game (value and optimal mixed strategies)  (the game as a pair of dual linear programs on the shifted matrix, solved exactly (rational simplex); the pair of strategies is the certificate (each guarantees the value))
+  assumes: at most 12 strategies per player</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the equilibrium outcome for a two-person zero-sum game defined by the payoff matrix [3 -1 2; -2 4 1; 0 1 -1]. It computes the game&#x27;s value, which represents the expected payoff to the row player when both participants use their optimal mixed strategies. The result includes one specific optimal probability distribution for the row player, shown as [0.6, 0.4, 0], and one for the column player, shown as [0.5, 0.5, 0]. These strategies guarantee that neither player can improve their expected outcome by unilaterally changing their approach.</p>
+<h3>Integer programming (8)</h3>
+<h4 id="knapsack_01">0/1 knapsack problem — <code>knapsack_01</code></h4>
+<p>Choose items (each at most once) to maximise total value without exceeding the capacity: the maximum value, one optimal choice and its weight.</p>
+<div class="math">\[\max \sum_i v_i x_i \ \text{s.t.}\ \sum_i w_i x_i \le W,\ x_i \in \{0,1\}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>values</code></td><td>in</td><td>value of each item</td><td>—</td></tr><tr><td><code>weights</code></td><td>in</td><td>weight of each item</td><td>—</td></tr><tr><td><code>capacity</code></td><td>in</td><td>knapsack capacity</td><td>—</td></tr><tr><td><code>max_value</code></td><td>out</td><td>maximum total value</td><td>—</td></tr><tr><td><code>items_example</code></td><td>out</td><td>one optimal set of items (1-based; ties to the lighter set)</td><td>—</td></tr><tr><td><code>total_weight</code></td><td>out</td><td>weight of that set</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> values, weights, capacity &gt;= 0; at most 40 items.</p>
+<pre><code class="shell">$ optimization solve knapsack_01 &quot;values=[60, 100, 120]&quot; &quot;weights=[10, 20, 30]&quot; capacity=50
+max_value = 220
+items_example = [2,3]
+total_weight = 50
+  by: 0/1 knapsack problem  (exact dynamic programming over (weight, value) states with Pareto pruning, rational arithmetic)
+  capacity = 50
+  assumes: values, weights, capacity &gt;= 0; at most 40 items</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the optimal subset of items to maximize total value without exceeding the given capacity. Using exact dynamic programming, it identifies that the best possible value is 220. This result corresponds to choosing the specific set of items listed as [2, 3], which together weigh 50. The solution respects the constraint that each item can be taken at most once and ensures no negative values or weights are involved.</p>
+<h4 id="bin_packing">Bin packing (minimum number of bins) — <code>bin_packing</code></h4>
+<p>Pack items of given sizes into the fewest bins of a given capacity: the minimum number and one packing.</p>
+<div class="math">\[\min \#\text{bins} \ \ge\ \left\lceil \sum_j s_j / C \right\rceil\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>sizes</code></td><td>in</td><td>size of each item</td><td>—</td></tr><tr><td><code>capacity</code></td><td>in</td><td>capacity of each bin</td><td>—</td></tr><tr><td><code>min_bins</code></td><td>out</td><td>minimum number of bins</td><td>—</td></tr><tr><td><code>bin_of_item</code></td><td>out</td><td>one optimal packing: bin number of each item</td><td>—</td></tr><tr><td><code>lower_bound</code></td><td>out</td><td>ceil(total size / capacity)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> at most 14 items; every item fits in a bin.</p>
+<pre><code class="shell">$ optimization solve bin_packing &quot;sizes=[4, 8, 1, 4, 2, 1]&quot; capacity=10
+min_bins = 2
+bin_of_item = [2,1,2,2,1,2]
+lower_bound = 2
+  by: Bin packing (minimum number of bins)  (exact depth-first search (largest item first, symmetric bins skipped) with the volume bound)
+  capacity = 10
+  assumes: at most 14 items; every item fits in a bin</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the fewest containers needed to hold all items, resulting in a minimum of 2 bins. The process checks if each item fits into a bin and uses an exact search method to find an optimal packing arrangement, represented by [2, 1, 2, 2, 1, 2]. A theoretical floor for this count is established by dividing the total size of all items by the bin capacity, yielding a lower bound of 2. If the computed minimum equals this bound, the packing is perfectly efficient with no wasted space beyond what is unavoidable.</p>
+<h4 id="graph_coloring">Chromatic number (minimum graph colouring) — <code>graph_coloring</code></h4>
+<p>The fewest colours needed so that adjacent nodes get different colours (scheduling exams, assigning frequencies), and one such colouring.</p>
+<div class="math">\[\chi(G) = \min\{k : \exists\, c: V \to \{1..k\},\ c(u) \neq c(v)\ \forall uv \in E\}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>edges</code></td><td>in</td><td>edges &#x27;A-B, B-C, ...&#x27; (undirected)</td><td>—</td></tr><tr><td><code>chromatic_number</code></td><td>out</td><td>minimum number of colours</td><td>—</td></tr><tr><td><code>coloring_example</code></td><td>out</td><td>one optimal colouring, in the order of &#x27;nodes&#x27;</td><td>—</td></tr><tr><td><code>nodes</code></td><td>out</td><td>node order (first appearance)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> at most 14 nodes; no self-loops.</p>
+<pre><code class="shell">$ optimization solve graph_coloring &quot;edges=A-B, B-C, C-A, C-D&quot;
+chromatic_number = 3
+coloring_example = [2.0,3.0,1.0,2.0]
+nodes = [&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;]
+  by: Chromatic number (minimum graph colouring)  (exact backtracking for k = 1, 2, ... colours (largest degree first, symmetric colours skipped))
+  assumes: at most 14 nodes; no self-loops</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the chromatic number, which is the smallest integer 3 such that every node in the set [A, B, C, D] can be assigned one of these colors without any two connected nodes having the same color. The result includes a specific valid assignment [2, 3, 1, 2] derived from the input edges A-B, B-C, C-A, C-D. This value represents the optimal solution found by exhaustively checking possible colorings, providing both the count and an example configuration for resource allocation tasks like scheduling or frequency assignment.</p>
+<h4 id="integer_program">Integer linear program (branch and bound) — <code>integer_program</code></h4>
+<p>Optimise a linear objective over non-negative INTEGER points satisfying linear constraints: the optimal value and one optimal integer solution.</p>
+<div class="math">\[\max / \min \; c^\top x \quad \text{s.t. } A x \;(\le,\ge,=)\; b,\; x \in \mathbb{Z}_{\ge 0}^n\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>sense</code></td><td>in</td><td>maximize or minimize</td><td>—</td></tr><tr><td><code>c</code></td><td>in</td><td>objective coefficients, one per variable</td><td>—</td></tr><tr><td><code>A</code></td><td>in</td><td>constraint coefficients, one row per constraint</td><td>—</td></tr><tr><td><code>b</code></td><td>in</td><td>right-hand sides, one per constraint</td><td>—</td></tr><tr><td><code>relations</code></td><td>in</td><td>relation of each constraint: &lt;=, &gt;= or = (default all &lt;=) (optional)</td><td>—</td></tr><tr><td><code>optimal_value</code></td><td>out</td><td>optimal value over integer points</td><td>—</td></tr><tr><td><code>x_one_optimal</code></td><td>out</td><td>one optimal integer solution (the first found: depth-first, lowest-index fractional variable, round-down branch first)</td><td>—</td></tr><tr><td><code>nodes</code></td><td>out</td><td>branch-and-bound nodes explored</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> all variables integer and &gt;= 0; a bounded LP relaxation; at most 4000 branch-and-bound nodes.</p>
+<pre><code class="shell">$ optimization solve integer_program sense=maximize &quot;c=[5, 4]&quot; &quot;A=[[6, 4], [1, 2]]&quot; &quot;b=[24, 6]&quot; &quot;relations=&lt;=,&lt;=&quot;
+optimal_value = 20
+x_one_optimal = [4.0,0.0]
+nodes = 5
+  by: Integer linear program (branch and bound)  (LP-based branch and bound; every relaxation solved exactly (rational simplex), so pruning and integrality tests are exact)
+  sense = maximize
+  relations = &lt;=,&lt;=
+  assumes: all variables integer and &gt;= 0; a bounded LP relaxation; at most 4000 branch-and-bound nodes</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the best possible outcome for a linear objective function when all decision variables must be whole numbers. It takes the coefficients defining the goal and constraints, then systematically searches through potential solutions using branch and bound to ensure exactness. The result provides the maximum or minimum achievable value, represented here as 20, along with one specific set of variable values that achieves it.</p>
+<h4 id="minimum_vertex_cover">Minimum vertex cover (and maximum independent set) — <code>minimum_vertex_cover</code></h4>
+<p>The fewest nodes that touch every edge of a graph (placing guards or sensors), one such set, and the size of a largest set of pairwise non-adjacent nodes.</p>
+<div class="math">\[\tau(G) = \min\{|C| : C \cap \{u, v\} \neq \emptyset\ \forall uv \in E\},\quad \alpha(G) = |V| - \tau(G)\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>edges</code></td><td>in</td><td>edges &#x27;A-B, B-C, ...&#x27; (undirected)</td><td>—</td></tr><tr><td><code>min_cover_size</code></td><td>out</td><td>size of a minimum vertex cover</td><td>—</td></tr><tr><td><code>cover_example</code></td><td>out</td><td>one minimum vertex cover</td><td>—</td></tr><tr><td><code>max_independent_set_size</code></td><td>out</td><td>size of a maximum independent set (nodes minus cover)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> at most 30 nodes; no self-loops; only nodes that appear in an edge count.</p>
+<pre><code class="shell">$ optimization solve minimum_vertex_cover &quot;edges=A-B, A-C, A-D, B-C, D-E&quot;
+min_cover_size = 3
+cover_example = [&quot;A&quot;,&quot;C&quot;,&quot;E&quot;]
+max_independent_set_size = 2
+  by: Minimum vertex cover (and maximum independent set)  (exact branch and bound (a node of largest degree in the cover, or all its neighbours))
+  assumes: at most 30 nodes; no self-loops; only nodes that appear in an edge count</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the smallest number of nodes needed to touch every edge in the graph, resulting in a minimum vertex cover of size 3. One such optimal set is identified as [A, C, E]. Additionally, the size of the largest group of nodes where no two are connected, known as the maximum independent set, is computed as 2. These values help understand efficient sensor placement or security coverage within the network structure.</p>
+<h4 id="set_cover">Minimum-cost set cover — <code>set_cover</code></h4>
+<p>Choose sets (each with a cost) that together contain every element, at least total cost.</p>
+<div class="math">\[\min \sum_i c_i x_i\ \text{s.t.}\ \sum_{i \ni e} x_i \ge 1\ \forall e,\ x \in \{0,1\}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>sets</code></td><td>in</td><td>incidence matrix: row i lists with 0/1 which elements set i contains</td><td>—</td></tr><tr><td><code>costs</code></td><td>in</td><td>cost of each set</td><td>—</td></tr><tr><td><code>min_cost</code></td><td>out</td><td>minimum total cost of a cover</td><td>—</td></tr><tr><td><code>sets_example</code></td><td>out</td><td>one optimal choice of sets (1-based)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> at most 18 sets; every element in some set.</p>
+<pre><code class="shell">$ optimization solve set_cover &quot;sets=[[1, 1, 0, 0], [0, 1, 1, 0], [0, 0, 1, 1], [1, 0, 0, 1]]&quot; &quot;costs=[3, 2, 3, 2]&quot;
+min_cost = 4
+sets_example = [2,4]
+  by: Minimum-cost set cover  (exhaustive enumeration of set combinations (exact))
+  assumes: at most 18 sets; every element in some set</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the least expensive combination of sets that includes every required element. By exhaustively checking all possible combinations, it guarantees an exact solution where the total cost equals 4 when choosing sets [2, 4]. This result represents the optimal trade-off between coverage completeness and resource expenditure.</p>
+<h4 id="knapsack_unbounded">Unbounded knapsack problem — <code>knapsack_unbounded</code></h4>
+<p>Choose any number of copies of each item type to maximise total value within the capacity.</p>
+<div class="math">\[V(c) = \max\big(V(c-1),\ \max_{i: w_i \le c} V(c - w_i) + v_i\big)\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>values</code></td><td>in</td><td>value of each item type</td><td>—</td></tr><tr><td><code>weights</code></td><td>in</td><td>weight of each item type (whole numbers)</td><td>—</td></tr><tr><td><code>capacity</code></td><td>in</td><td>capacity (a whole number)</td><td>—</td></tr><tr><td><code>max_value</code></td><td>out</td><td>maximum total value</td><td>—</td></tr><tr><td><code>copies_example</code></td><td>out</td><td>number of copies of each type in one optimal choice</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> positive whole-number weights; capacity a whole number &lt;= 100000.</p>
+<pre><code class="shell">$ optimization solve knapsack_unbounded &quot;values=[10, 40, 50, 70]&quot; &quot;weights=[1, 3, 4, 5]&quot; capacity=8
+max_value = 110
+copies_example = [0.0,1.0,0.0,1.0]
+  by: Unbounded knapsack problem  (dynamic programming over capacities)
+  capacity = 8
+  assumes: positive whole-number weights; capacity a whole number &lt;= 100000</code></pre>
+<p><strong>What the worked example means:</strong> Using dynamic programming over capacities, the model determines the best combination of item types to maximize total value without exceeding the limit. Given values [10, 40, 50, 70] and weights [1, 3, 4, 5], the optimal selection yields a total value of 110. One example configuration achieving this uses [0, 1, 0, 1] copies of each respective type.</p>
+<h4 id="facility_location">Uncapacitated facility location — <code>facility_location</code></h4>
+<p>Choose which facilities to open (each with a fixed cost) and serve every customer from its cheapest open facility, minimising fixed plus service cost.</p>
+<div class="math">\[\min_{S \neq \emptyset} \sum_{i \in S} f_i + \sum_j \min_{i \in S} c_{ij}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>fixed</code></td><td>in</td><td>fixed opening cost of each facility</td><td>—</td></tr><tr><td><code>cost</code></td><td>in</td><td>service cost matrix, rows = facilities, columns = customers</td><td>—</td></tr><tr><td><code>min_cost</code></td><td>out</td><td>minimum total cost</td><td>—</td></tr><tr><td><code>open_example</code></td><td>out</td><td>one optimal set of facilities to open (1-based)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> at most 15 facilities; unlimited capacity.</p>
+<pre><code class="shell">$ optimization solve facility_location &quot;fixed=[10, 15, 12]&quot; &quot;cost=[[3, 8, 6, 9], [7, 2, 4, 3], [5, 6, 2, 8]]&quot;
+min_cost = 31
+open_example = [2]
+  by: Uncapacitated facility location  (exact enumeration of the facilities to open; each customer assigned to its cheapest open facility)
+  assumes: at most 15 facilities; unlimited capacity</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the optimal subset of facilities to open by enumerating all possible combinations, subject to a limit on the number of facilities. For each combination, every customer is assigned to the available facility with the lowest service cost. The method sums the fixed opening costs of the selected facilities and the resulting service costs for all customers. The output provides the global minimum total cost, which is 31, along with one example of an optimal facility set, denoted as [2]. This approach ensures that the trade-off between paying higher fixed costs to open more facilities versus incurring lower service costs is resolved optimally.</p>
+<h3>Inventory management (9)</h3>
+<h4 id="eoq">Economic order quantity (EOQ) — <code>eoq</code></h4>
+<p>The order size that minimises ordering plus holding cost for a steady demand, the minimum cost, the number of orders per period and the time between orders.</p>
+<div class="math">\[Q^* = \sqrt{\frac{2 D S}{H}}, \quad TC^* = \sqrt{2 D S H}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>D</code></td><td>in</td><td>demand per period (units, e.g. per year)</td><td>—</td></tr><tr><td><code>S</code></td><td>in</td><td>fixed cost per order</td><td>—</td></tr><tr><td><code>H</code></td><td>in</td><td>holding cost per unit per period</td><td>—</td></tr><tr><td><code>Q</code></td><td>out</td><td>economic order quantity</td><td>—</td></tr><tr><td><code>total_cost</code></td><td>out</td><td>minimum ordering + holding cost per period</td><td>—</td></tr><tr><td><code>orders_per_period</code></td><td>out</td><td>number of orders per period</td><td>—</td></tr><tr><td><code>cycle_time</code></td><td>out</td><td>time between orders (in periods)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> D, S, H &gt; 0; constant demand, instant replenishment, no shortages.</p>
+<pre><code class="shell">$ optimization solve eoq D=1200 S=50 H=3
+Q = 200
+total_cost = 600
+orders_per_period = 6
+cycle_time = 0.1666666667
+  by: Economic order quantity (EOQ)  (minimise D S / Q + H Q / 2 (at the optimum ordering cost equals holding cost))
+  D = 1200
+  S = 50
+  H = 3
+  assumes: D, S, H &gt; 0; constant demand, instant replenishment, no shortages</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the economic order quantity by balancing ordering and holding costs. Using a demand of 1200, an ordering cost of 50, and a holding cost of 3, the model finds that ordering 200 units minimizes expenses. At this optimum, the total cost is 600 per period, requiring 6 orders per period with a cycle time of 0.166667.</p>
+<h4 id="epq_production_lot">Economic production quantity (EPQ) — <code>epq_production_lot</code></h4>
+<p>The production lot size that minimises setup plus holding cost when stock builds up gradually at a finite production rate.</p>
+<div class="math">\[Q^* = \sqrt{\frac{2DS}{H(1 - D/P)}}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>D</code></td><td>in</td><td>demand rate per period</td><td>—</td></tr><tr><td><code>P</code></td><td>in</td><td>production rate per period (&gt; D)</td><td>—</td></tr><tr><td><code>S</code></td><td>in</td><td>setup cost per run</td><td>—</td></tr><tr><td><code>H</code></td><td>in</td><td>holding cost per unit per period</td><td>—</td></tr><tr><td><code>Q</code></td><td>out</td><td>economic production quantity</td><td>—</td></tr><tr><td><code>max_inventory</code></td><td>out</td><td>maximum inventory Q (1 - D/P)</td><td>—</td></tr><tr><td><code>total_cost</code></td><td>out</td><td>minimum setup + holding cost per period</td><td>—</td></tr><tr><td><code>runs_per_period</code></td><td>out</td><td>production runs per period</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> P &gt; D &gt; 0; S, H &gt; 0.</p>
+<pre><code class="shell">$ optimization solve epq_production_lot D=1000 S=100 H=4 P=2000
+Q = 316.227766
+max_inventory = 158.113883
+total_cost = 632.455532
+runs_per_period = 3.16227766
+  by: Economic production quantity (EPQ)  (minimise D S/Q + H Q (1 - D/P)/2)
+  D = 1000
+  S = 100
+  H = 4
+  P = 2000
+  assumes: P &gt; D &gt; 0; S, H &gt; 0</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the economic production quantity, which is the ideal batch size that minimizes total inventory costs when items are manufactured gradually. By considering a demand rate of 1000, a production rate of 2000, a setup cost per run of 100, and a holding cost per unit of 4, the model finds that producing batches of 316.228 units results in a minimum total cost of 632.456 per period. This approach accounts for the fact that stock builds up over time rather than arriving instantly, allowing for simultaneous production and consumption.</p>
+<h4 id="eoq_planned_shortages">EOQ with planned backorders — <code>eoq_planned_shortages</code></h4>
+<p>The order quantity and the planned maximum backorder that minimise ordering, holding and shortage cost when unmet demand is backordered.</p>
+<div class="math">\[Q^* = \sqrt{\frac{2DS}{H}\cdot\frac{H+B}{B}}, \quad s^* = Q^* \frac{H}{H+B}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>D</code></td><td>in</td><td>demand per period</td><td>—</td></tr><tr><td><code>S</code></td><td>in</td><td>cost per order</td><td>—</td></tr><tr><td><code>H</code></td><td>in</td><td>holding cost per unit per period</td><td>—</td></tr><tr><td><code>B</code></td><td>in</td><td>backorder (shortage) cost per unit per period</td><td>—</td></tr><tr><td><code>Q</code></td><td>out</td><td>optimal order quantity</td><td>—</td></tr><tr><td><code>max_backorder</code></td><td>out</td><td>planned maximum backorder</td><td>—</td></tr><tr><td><code>max_inventory</code></td><td>out</td><td>maximum inventory level</td><td>—</td></tr><tr><td><code>total_cost</code></td><td>out</td><td>minimum total cost per period</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> D, S, H, B &gt; 0; backorders filled when the order arrives.</p>
+<pre><code class="shell">$ optimization solve eoq_planned_shortages D=1200 S=50 H=3 B=6
+Q = 244.9489743
+max_backorder = 81.64965809
+max_inventory = 163.2993162
+total_cost = 489.8979486
+  by: EOQ with planned backorders  (minimise D S/Q + H (Q-s)^2/(2Q) + B s^2/(2Q) over Q and s)
+  D = 1200
+  S = 50
+  H = 3
+  B = 6
+  assumes: D, S, H, B &gt; 0; backorders filled when the order arrives</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the best inventory policy by minimizing total costs. The optimal order quantity is 244.949 and the planned maximum backorder is 81.6497. This results in a maximum inventory level of 163.299 and a minimum total cost per period of 489.898. These values balance ordering, holding, and shortage expenses under constant demand.</p>
+<h4 id="newsvendor_discrete">Newsvendor order quantity (discrete demand) — <code>newsvendor_discrete</code></h4>
+<p>For demand taking listed values with given probabilities, the order quantity that maximises expected profit (the smallest demand value whose cumulative probability reaches the critical ratio) and that profit.</p>
+<div class="math">\[Q^* = \min\{ d : F(d) \ge \tfrac{p - c}{p - s} \}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>p</code></td><td>in</td><td>selling price per unit</td><td>—</td></tr><tr><td><code>c</code></td><td>in</td><td>cost per unit</td><td>—</td></tr><tr><td><code>demands</code></td><td>in</td><td>possible demand values, increasing</td><td>—</td></tr><tr><td><code>probs</code></td><td>in</td><td>probability of each demand value (sum 1)</td><td>—</td></tr><tr><td><code>s</code></td><td>in</td><td>salvage value per unsold unit (default 0) (optional)</td><td>—</td></tr><tr><td><code>critical_ratio</code></td><td>out</td><td>critical ratio (p - c)/(p - s)</td><td>—</td></tr><tr><td><code>Q</code></td><td>out</td><td>optimal order quantity (smallest optimal value)</td><td>—</td></tr><tr><td><code>expected_profit</code></td><td>out</td><td>maximum expected profit</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> salvage &lt; cost &lt; price; probabilities sum to 1; order quantities restricted to the listed demand values.</p>
+<pre><code class="shell">$ optimization solve newsvendor_discrete p=10 c=4 &quot;demands=[10, 20, 30, 40]&quot; &quot;probs=[0.1, 0.3, 0.4, 0.2]&quot;
+critical_ratio = 0.6
+Q = 30
+expected_profit = 130
+  by: Newsvendor order quantity (discrete demand)  (cumulative distribution against the critical ratio, in exact fractions)
+  p = 10
+  c = 4
+  assumes: salvage &lt; cost &lt; price; probabilities sum to 1; order quantities restricted to the listed demand values</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the best order size for discrete demand by comparing cumulative probabilities to the critical ratio. The result shows that ordering 30 units maximizes expected profit, which computes to 130. This quantity is chosen because it is the smallest demand level where the cumulative probability meets or exceeds the critical ratio of 0.6, balancing the cost of understocking against the cost of overstocking.</p>
+<h4 id="newsvendor_normal">Newsvendor order quantity (normal demand) — <code>newsvendor_normal</code></h4>
+<p>The single-period order quantity that maximises expected profit for normally distributed demand: the critical ratio, the optimal quantity and the expected profit.</p>
+<div class="math">\[F(Q^*) = \frac{p - c}{p - s}, \quad Q^* = \mu + z\,\sigma\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>p</code></td><td>in</td><td>selling price per unit</td><td>—</td></tr><tr><td><code>c</code></td><td>in</td><td>cost per unit</td><td>—</td></tr><tr><td><code>mu</code></td><td>in</td><td>mean demand</td><td>—</td></tr><tr><td><code>sigma</code></td><td>in</td><td>standard deviation of demand</td><td>—</td></tr><tr><td><code>s</code></td><td>in</td><td>salvage value per unsold unit (default 0) (optional)</td><td>—</td></tr><tr><td><code>critical_ratio</code></td><td>out</td><td>critical ratio (p - c)/(p - s)</td><td>—</td></tr><tr><td><code>Q</code></td><td>out</td><td>optimal order quantity</td><td>—</td></tr><tr><td><code>expected_profit</code></td><td>out</td><td>expected profit at Q</td><td>—</td></tr><tr><td><code>expected_shortage</code></td><td>out</td><td>expected unmet demand at Q</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> salvage &lt; cost &lt; price; sigma &gt; 0; continuous normal demand.</p>
+<pre><code class="shell">$ optimization solve newsvendor_normal p=2 c=0.5 s=0.2 mu=100 sigma=20
+critical_ratio = 0.8333333333
+Q = 119.3484313
+expected_profit = 141.0053661
+expected_shortage = 1.772280259
+  by: Newsvendor order quantity (normal demand)  (critical fractile: F(Q) = (p - c)/(p - s); expected profit from the standard normal loss function)
+  p = 2
+  c = 0.5
+  s = 0.2
+  mu = 100
+  sigma = 20
+  assumes: salvage &lt; cost &lt; price; sigma &gt; 0; continuous normal demand</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the best single-period order size for normally distributed demand. Comparing the cost of understocking against overstocking gives a critical ratio of 0.833333. This ratio dictates that you should order 119.348 units to maximize returns. At this level, the expected profit reaches 141.005, while any unmet demand averages 1.77228 units.</p>
+<h4 id="newsvendor_uniform">Newsvendor order quantity (uniform demand) — <code>newsvendor_uniform</code></h4>
+<p>The single-period order quantity that maximises expected profit when demand is uniform on [a, b].</p>
+<div class="math">\[Q^* = a + \frac{p - c}{p - s}(b - a)\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>p</code></td><td>in</td><td>selling price per unit</td><td>—</td></tr><tr><td><code>c</code></td><td>in</td><td>cost per unit</td><td>—</td></tr><tr><td><code>lo</code></td><td>in</td><td>lowest possible demand a</td><td>—</td></tr><tr><td><code>hi</code></td><td>in</td><td>highest possible demand b</td><td>—</td></tr><tr><td><code>s</code></td><td>in</td><td>salvage value per unsold unit (default 0) (optional)</td><td>—</td></tr><tr><td><code>critical_ratio</code></td><td>out</td><td>critical ratio (p - c)/(p - s)</td><td>—</td></tr><tr><td><code>Q</code></td><td>out</td><td>optimal order quantity a + CR (b - a)</td><td>—</td></tr><tr><td><code>expected_profit</code></td><td>out</td><td>expected profit at Q</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> salvage &lt; cost &lt; price; 0 &lt;= a &lt; b.</p>
+<pre><code class="shell">$ optimization solve newsvendor_uniform p=10 c=4 lo=100 hi=300
+critical_ratio = 0.6
+Q = 220
+expected_profit = 960
+  by: Newsvendor order quantity (uniform demand)  (critical fractile of the uniform distribution)
+  p = 10
+  c = 4
+  lo = 100
+  hi = 300
+  assumes: salvage &lt; cost &lt; price; 0 &lt;= a &lt; b</code></pre>
+<p><strong>What the worked example means:</strong> The optimal order quantity is 220, derived from a critical ratio of 0.6.</p>
+<h4 id="eoq_quantity_discount">Order quantity with quantity discounts (all-units) — <code>eoq_quantity_discount</code></h4>
+<p>With all-units price breaks, the order quantity that minimises purchase + ordering + holding cost, the price paid and the minimum total cost per period.</p>
+<div class="math">\[TC(Q) = D p_k + \frac{D S}{Q} + \frac{i p_k Q}{2}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>D</code></td><td>in</td><td>demand per period</td><td>—</td></tr><tr><td><code>S</code></td><td>in</td><td>cost per order</td><td>—</td></tr><tr><td><code>i_rate</code></td><td>in</td><td>holding cost as a fraction of the unit price per period (0.2 = 20%)</td><td>—</td></tr><tr><td><code>breaks</code></td><td>in</td><td>minimum order quantity of each price tier, increasing, the first 0</td><td>—</td></tr><tr><td><code>prices</code></td><td>in</td><td>unit price of each tier</td><td>—</td></tr><tr><td><code>order_quantity</code></td><td>out</td><td>optimal order quantity</td><td>—</td></tr><tr><td><code>total_cost</code></td><td>out</td><td>minimum total cost per period (purchase + ordering + holding)</td><td>—</td></tr><tr><td><code>unit_price</code></td><td>out</td><td>unit price paid</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> D, S, i &gt; 0; breaks increasing from 0; ties broken toward the lower-quantity tier.</p>
+<pre><code class="shell">$ optimization solve eoq_quantity_discount D=5000 S=49 i_rate=0.2 &quot;breaks=[0, 1000, 2000]&quot; &quot;prices=[5, 4.8, 4.75]&quot;
+order_quantity = 1000
+total_cost = 24725
+unit_price = 4.8
+  by: Order quantity with quantity discounts (all-units)  (EOQ per tier at its price, raised to the tier minimum when below it; tiers whose EOQ exceeds their upper limit are dominated; least total cost)
+  D = 5000
+  S = 49
+  i_rate = 0.2
+  assumes: D, S, i &gt; 0; breaks increasing from 0; ties broken toward the lower-quantity tier</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the best order size when suppliers offer price breaks for larger quantities. Evaluating the total cost, which includes purchase, ordering, and holding expenses, at each tier&#x27;s minimum requirement or its economic order quantity, shows that ordering 1000 units minimizes the overall expense to 24725. The unit price paid for this volume is 4.8.</p>
+<h4 id="order_up_to_level">Periodic-review order-up-to level — <code>order_up_to_level</code></h4>
+<p>The target inventory position S of a periodic-review system that covers demand over the review period plus the lead time with a given cycle service level.</p>
+<div class="math">\[S = \bar d (R + L) + z_{SL}\,\sigma_d\sqrt{R + L}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>d</code></td><td>in</td><td>average demand per period</td><td>—</td></tr><tr><td><code>sigma</code></td><td>in</td><td>standard deviation of demand per period</td><td>—</td></tr><tr><td><code>R</code></td><td>in</td><td>review period (periods)</td><td>—</td></tr><tr><td><code>L</code></td><td>in</td><td>lead time (periods)</td><td>—</td></tr><tr><td><code>SL</code></td><td>in</td><td>cycle service level, e.g. 0.95</td><td>—</td></tr><tr><td><code>order_up_to_level</code></td><td>out</td><td>order-up-to level S</td><td>—</td></tr><tr><td><code>safety_stock</code></td><td>out</td><td>safety stock z sigma sqrt(R + L)</td><td>—</td></tr><tr><td><code>z</code></td><td>out</td><td>standard normal quantile</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> 0.5 &lt;= SL &lt; 1; independent normal demand per period.</p>
+<pre><code class="shell">$ optimization solve order_up_to_level d=20 sigma=4 R=7 L=2 SL=0.95
+order_up_to_level = 199.7382435
+safety_stock = 19.73824352
+z = 1.644853627
+  by: Periodic-review order-up-to level  (S = d (R + L) + z sigma sqrt(R + L))
+  d = 20
+  sigma = 4
+  R = 7
+  L = 2
+  SL = 0.95
+  assumes: 0.5 &lt;= SL &lt; 1; independent normal demand per period</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the target inventory position for a periodic-review system. It combines the average expected demand over the combined review period and lead time, calculated as 20 times the sum of 7 and 2, with a buffer known as safety stock. The safety stock, valued at 19.7382, is derived from the standard deviation of demand 4 scaled by the normal quantile 1.64485 corresponding to the service level 0.95. The resulting order-up-to level of 199.738 ensures that customer demand is met with the specified probability while accounting for variability in both demand and timing.</p>
+<h4 id="reorder_point">Reorder point with safety stock — <code>reorder_point</code></h4>
+<p>The stock level at which to reorder so that demand during the lead time is covered with a given cycle service level, for normally distributed demand per period.</p>
+<div class="math">\[ROP = \bar d L + z_{SL}\,\sigma_d \sqrt{L}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>d</code></td><td>in</td><td>average demand per period</td><td>—</td></tr><tr><td><code>L</code></td><td>in</td><td>lead time in periods</td><td>—</td></tr><tr><td><code>sigma</code></td><td>in</td><td>standard deviation of demand per period</td><td>—</td></tr><tr><td><code>SL</code></td><td>in</td><td>cycle service level (probability of no stockout per cycle, e.g. 0.95)</td><td>—</td></tr><tr><td><code>reorder_point</code></td><td>out</td><td>reorder point</td><td>—</td></tr><tr><td><code>safety_stock</code></td><td>out</td><td>safety stock z sigma sqrt(L)</td><td>—</td></tr><tr><td><code>z</code></td><td>out</td><td>standard normal quantile of the service level</td><td>—</td></tr><tr><td><code>lead_time_demand</code></td><td>out</td><td>expected demand during the lead time</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> 0.5 &lt;= SL &lt; 1; independent normal demand per period.</p>
+<pre><code class="shell">$ optimization solve reorder_point d=40 sigma=8 L=9 SL=0.95
+reorder_point = 399.476487
+safety_stock = 39.47648705
+z = 1.644853627
+lead_time_demand = 360
+  by: Reorder point with safety stock  (z = Phi^{-1}(SL); ROP = d L + z sigma sqrt(L))
+  d = 40
+  sigma = 8
+  L = 9
+  SL = 0.95
+  assumes: 0.5 &lt;= SL &lt; 1; independent normal demand per period</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the inventory level that triggers a new order to achieve a cycle service level of 0.95. The result, 399.476, consists of two parts: the expected demand during the lead time, which is 360, and the safety stock buffer, calculated as 39.4765. This buffer accounts for demand variability using a standard normal quantile of 1.64485, ensuring that stockouts are unlikely under normal conditions.</p>
+<h3>Linear programming (3)</h3>
+<h4 id="linear_program">Linear program (simplex method) — <code>linear_program</code></h4>
+<p>Optimise a linear objective subject to linear constraints with non-negative variables: the optimal value, an optimal solution (stated as unique only when it is) and the shadow prices.</p>
+<div class="math">\[\max / \min \; c^\top x \quad \text{s.t. } A x \;(\le, \ge, =)\; b,\; x \ge 0\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>sense</code></td><td>in</td><td>maximize or minimize</td><td>—</td></tr><tr><td><code>c</code></td><td>in</td><td>objective coefficients, one per variable</td><td>—</td></tr><tr><td><code>A</code></td><td>in</td><td>constraint coefficients, one row per constraint</td><td>—</td></tr><tr><td><code>b</code></td><td>in</td><td>right-hand sides, one per constraint</td><td>—</td></tr><tr><td><code>relations</code></td><td>in</td><td>relation of each constraint: &lt;=, &gt;= or = (default all &lt;=) (optional)</td><td>—</td></tr><tr><td><code>optimal_value</code></td><td>out</td><td>optimal value of the objective</td><td>—</td></tr><tr><td><code>x</code></td><td>out</td><td>the optimal solution, variables in order of first appearance (only when unique; otherwise x_one_optimal)</td><td>—</td></tr><tr><td><code>solution_unique</code></td><td>out</td><td>yes when the optimal solution is unique</td><td>—</td></tr><tr><td><code>shadow_prices</code></td><td>out</td><td>change of the optimal value per unit increase of each right-hand side (only when unique; otherwise dual_one_optimal)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> all variables &gt;= 0; the LP is feasible and bounded (otherwise INVALID_INPUT says which); at most 12 variables and constraints.</p>
+<pre><code class="shell">$ optimization solve linear_program sense=maximize &quot;c=[3, 5]&quot; &quot;A=[[1, 0], [0, 2], [3, 2]]&quot; &quot;b=[4, 12, 18]&quot; &quot;relations=&lt;=,&lt;=,&lt;=&quot;
+optimal_value = 36
+x = [2.0,6.0]
+solution_unique = yes
+shadow_prices = [0.0,1.5,1.0]
+  by: Linear program (simplex method)  (two-phase simplex in exact rational arithmetic with Bland&#x27;s anti-cycling rule; optimality certified by a dual solution (primal feasibility, dual feasibility, equal objective values); uniqueness proved by an auxiliary LP over the optimal face)
+  sense = maximize
+  relations = &lt;=,&lt;=,&lt;=
+  assumes: all variables &gt;= 0; the LP is feasible and bounded (otherwise INVALID_INPUT says which); at most 12 variables and constraints</code></pre>
+<p>In the worked example, sense = maximize, c = [3, 5], A = [1 0; 0 2; 3 2], b = [4, 12, 18], relations = &lt;=,&lt;=,&lt;= go through the equation above and give optimal_value = 36, x = [2, 6], solution_unique = yes, shadow_prices = [0, 1.5, 1]. It applies only when all variables &gt;= 0; the LP is feasible and bounded (otherwise INVALID_INPUT says which); at most 12 variables and constraints: outside that it says what is wrong instead of returning a number.</p>
+<h4 id="lp_shadow_prices">Shadow prices of a linear program — <code>lp_shadow_prices</code></h4>
+<p>The shadow price (dual value) of each constraint: the change of the optimal value per unit increase of its right-hand side, when it is uniquely defined.</p>
+<div class="math">\[y^\top = c_B^\top B^{-1}, \qquad \frac{\partial z^*}{\partial b_i} = y_i\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>sense</code></td><td>in</td><td>maximize or minimize</td><td>—</td></tr><tr><td><code>c</code></td><td>in</td><td>objective coefficients, one per variable</td><td>—</td></tr><tr><td><code>A</code></td><td>in</td><td>constraint coefficients, one row per constraint</td><td>—</td></tr><tr><td><code>b</code></td><td>in</td><td>right-hand sides, one per constraint</td><td>—</td></tr><tr><td><code>relations</code></td><td>in</td><td>relation of each constraint: &lt;=, &gt;= or = (default all &lt;=) (optional)</td><td>—</td></tr><tr><td><code>shadow_prices</code></td><td>out</td><td>shadow price of each constraint, in order</td><td>—</td></tr><tr><td><code>optimal_value</code></td><td>out</td><td>optimal value of the objective</td><td>—</td></tr><tr><td><code>x</code></td><td>out</td><td>the optimal solution (only when unique; otherwise x_one_optimal)</td><td>—</td></tr><tr><td><code>solution_unique</code></td><td>out</td><td>yes when the optimal solution is unique</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> all variables &gt;= 0; a finite optimum; unique dual solution (otherwise INVALID_INPUT).</p>
+<pre><code class="shell">$ optimization solve lp_shadow_prices sense=maximize &quot;c=[3, 5]&quot; &quot;A=[[1, 0], [0, 2], [3, 2]]&quot; &quot;b=[4, 12, 18]&quot; &quot;relations=&lt;=,&lt;=,&lt;=&quot;
+optimal_value = 36
+x = [2.0,6.0]
+solution_unique = yes
+shadow_prices = [0.0,1.5,1.0]
+  by: Shadow prices of a linear program  (exact simplex; the dual solution y = c_B B^{-1}; uniqueness of the dual proved by an auxiliary LP over the dual optimal face)
+  sense = maximize
+  relations = &lt;=,&lt;=,&lt;=
+  assumes: all variables &gt;= 0; a finite optimum; unique dual solution (otherwise INVALID_INPUT)</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the shadow prices for each constraint, represented as [0, 1.5, 1]. These values indicate the rate of change in the optimal objective value, 36, with respect to a one-unit increase in the corresponding right-hand side parameters. The result is derived from the dual solution associated with the optimal basis, providing insight into the marginal worth of resources defined by the constraints.</p>
+<h4 id="lp_two_variable_graphical">Two-variable linear program (graphical corner-point method) — <code>lp_two_variable_graphical</code></h4>
+<p>Solve a linear program in two variables by evaluating the objective at every corner point of the feasible region.</p>
+<div class="math">\[z^* = \max_{v \in \text{corners}} c^\top v\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>sense</code></td><td>in</td><td>maximize or minimize</td><td>—</td></tr><tr><td><code>c</code></td><td>in</td><td>objective coefficients, one per variable</td><td>—</td></tr><tr><td><code>A</code></td><td>in</td><td>constraint coefficients, one row per constraint</td><td>—</td></tr><tr><td><code>b</code></td><td>in</td><td>right-hand sides, one per constraint</td><td>—</td></tr><tr><td><code>relations</code></td><td>in</td><td>relation of each constraint: &lt;=, &gt;= or = (default all &lt;=) (optional)</td><td>—</td></tr><tr><td><code>optimal_value</code></td><td>out</td><td>optimal value of the objective</td><td>—</td></tr><tr><td><code>x</code></td><td>out</td><td>first variable at the optimum (only when the optimum is unique)</td><td>—</td></tr><tr><td><code>y</code></td><td>out</td><td>second variable at the optimum (only when the optimum is unique)</td><td>—</td></tr><tr><td><code>optimal_corners</code></td><td>out</td><td>every corner point at which the optimum is attained</td><td>—</td></tr><tr><td><code>corner_points</code></td><td>out</td><td>every corner point of the feasible region</td><td>—</td></tr><tr><td><code>solution_unique</code></td><td>out</td><td>yes when exactly one point is optimal</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> exactly two variables, both &gt;= 0; a feasible region and a finite optimum.</p>
+<pre><code class="shell">$ optimization solve lp_two_variable_graphical sense=maximize &quot;c=[3, 5]&quot; &quot;A=[[1, 0], [0, 2], [3, 2]]&quot; &quot;b=[4, 12, 18]&quot; &quot;relations=&lt;=,&lt;=,&lt;=&quot;
+optimal_value = 36
+optimal_corners = [[2.0,6.0]]
+corner_points = [[0.0,0.0],[0.0,6.0],[2.0,6.0],[4.0,0.0],[4.0,3.0]]
+x = 2
+y = 6
+solution_unique = yes
+  by: Two-variable linear program (graphical corner-point method)  (intersect every pair of boundary lines (exact fractions), keep the feasible corners, evaluate the objective; unboundedness detected from the extreme rays of the recession cone)
+  sense = maximize
+  relations = &lt;=,&lt;=,&lt;=
+  assumes: exactly two variables, both &gt;= 0; a feasible region and a finite optimum</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the best outcome for a two-variable linear program by checking every corner of the feasible region. It uses objective coefficients [3, 5] and constraint data [1 0; 0 2; 3 2], [4, 12, 18], and &lt;=,&lt;=,&lt;= to find valid corners [[0, 0], [0, 6], [2, 6], [4, 0], [4, 3]]. The final result shows that the maximum or minimum value 36 occurs at specific points, indicating whether the solution is unique based on yes.</p>
+<h3>Multi-criteria decision analysis (6)</h3>
+<h4 id="ahp_consistency_ratio">AHP consistency ratio — <code>ahp_consistency_ratio</code></h4>
+<p>How consistent a set of pairwise comparisons is: CI = (lambda_max - n)/(n - 1) and CR = CI / RI (Saaty&#x27;s random index); CR below 0.10 is conventionally acceptable.</p>
+<div class="math">\[CI = \frac{\lambda_{\max} - n}{n - 1},\quad CR = \frac{CI}{RI_n}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>judgments</code></td><td>in</td><td>upper-triangle pairwise judgments a12, a13, ..., a23, ... (Saaty scale; a_ji = 1/a_ij)</td><td>—</td></tr><tr><td><code>CR</code></td><td>out</td><td>consistency ratio</td><td>—</td></tr><tr><td><code>CI</code></td><td>out</td><td>consistency index</td><td>—</td></tr><tr><td><code>lambda_max</code></td><td>out</td><td>principal eigenvalue</td><td>—</td></tr><tr><td><code>weights</code></td><td>out</td><td>priority weights</td><td>—</td></tr><tr><td><code>acceptable</code></td><td>out</td><td>yes when CR &lt; 0.10</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> 3 to 10 criteria; RI = 0.58, 0.90, 1.12, 1.24, 1.32, 1.41, 1.45, 1.49 for n = 3..10 (Saaty).</p>
+<pre><code class="shell">$ optimization solve ahp_consistency_ratio &quot;judgments=[2, 4, 2]&quot;
+CR = 0
+CI = 0
+lambda_max = 3
+weights = [0.5714285714285714,0.2857142857142857,0.14285714285714285]
+acceptable = yes
+  by: AHP consistency ratio  (principal eigenpair by power iteration (certified as an eigenpair), then CI and CR)
+  assumes: 3 to 10 criteria; RI = 0.58, 0.90, 1.12, 1.24, 1.32, 1.41, 1.45, 1.49 for n = 3..10 (Saaty)</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines how logically consistent your pairwise comparisons are. It derives the principal eigenvalue, denoted as 3, from the judgment matrix to compute the consistency index, or 0. This index is then divided by a random index specific to the number of criteria to yield the final consistency ratio, 0. A value below zero point one suggests that the derived priority weights, [0.571429, 0.285714, 0.142857], are reliable for decision-making.</p>
+<h4 id="ahp_priority_vector">AHP priority vector (principal eigenvector) — <code>ahp_priority_vector</code></h4>
+<p>The priority weights of criteria compared in pairs (analytic hierarchy process): the normalised principal eigenvector of the reciprocal comparison matrix, and its eigenvalue lambda_max.</p>
+<div class="math">\[P w = \lambda_{\max} w,\quad \sum_i w_i = 1\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>judgments</code></td><td>in</td><td>upper-triangle pairwise judgments a12, a13, ..., a23, ... (Saaty scale; a_ji = 1/a_ij)</td><td>—</td></tr><tr><td><code>weights</code></td><td>out</td><td>priority weights (sum 1)</td><td>—</td></tr><tr><td><code>lambda_max</code></td><td>out</td><td>principal eigenvalue</td><td>—</td></tr><tr><td><code>best</code></td><td>out</td><td>highest-priority criterion, 1-based</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> judgments &gt; 0; 2 to 10 criteria.</p>
+<pre><code class="shell">$ optimization solve ahp_priority_vector &quot;judgments=[2, 4, 2]&quot;
+weights = [0.5714285714285714,0.2857142857142857,0.14285714285714285]
+lambda_max = 3
+best = 1
+  by: AHP priority vector (principal eigenvector)  (power iteration on the positive reciprocal matrix; certified as an eigenpair (P w = lambda w, w &gt; 0: the Perron vector))
+  assumes: judgments &gt; 0; 2 to 10 criteria</code></pre>
+<p>In the worked example, judgments = [2, 4, 2] go through the equation above and give weights = [0.5714285714, 0.2857142857, 0.1428571429], lambda_max = 3, best = 1. It applies only when judgments &gt; 0; 2 to 10 criteria: outside that it says what is wrong instead of returning a number.</p>
+<h4 id="ahp_geometric_mean">AHP weights by the geometric mean method — <code>ahp_geometric_mean</code></h4>
+<p>Priority weights from pairwise comparisons as normalised row geometric means (the logarithmic least-squares solution).</p>
+<div class="math">\[w_i = \frac{(\prod_j a_{ij})^{1/n}}{\sum_k (\prod_j a_{kj})^{1/n}}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>judgments</code></td><td>in</td><td>upper-triangle pairwise judgments a12, a13, ..., a23, ... (Saaty scale; a_ji = 1/a_ij)</td><td>—</td></tr><tr><td><code>weights</code></td><td>out</td><td>priority weights (sum 1)</td><td>—</td></tr><tr><td><code>max_weight</code></td><td>out</td><td>largest weight</td><td>—</td></tr><tr><td><code>best</code></td><td>out</td><td>highest-priority criterion, 1-based</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> judgments &gt; 0; 2 to 10 criteria.</p>
+<pre><code class="shell">$ optimization solve ahp_geometric_mean &quot;judgments=[2, 4, 2]&quot;
+weights = [0.5714285714285714,0.2857142857142857,0.14285714285714285]
+max_weight = 0.5714285714
+best = 1
+  by: AHP weights by the geometric mean method  (row geometric means, normalised)
+  assumes: judgments &gt; 0; 2 to 10 criteria</code></pre>
+<p><strong>What the worked example means:</strong> This calculation derives priority weights from pairwise judgments using row geometric means. Given the input judgments, the method computes the geometric mean of each row in the comparison matrix and normalizes these values so they sum to one. The resulting weights are [0.571429, 0.285714, 0.142857]. Among these, the largest weight is 0.571429, which corresponds to the highest-priority criterion identified as 1. This approach provides a logarithmic least-squares solution that reflects the relative importance of each criterion based on the provided comparisons.</p>
+<h4 id="topsis">TOPSIS ranking (closeness to the ideal solution) — <code>topsis</code></h4>
+<p>Rank alternatives scored on several criteria by their relative closeness to the ideal and distance from the anti-ideal solution (vector normalisation, weighted Euclidean distances).</p>
+<div class="math">\[C_i = \frac{D_i^-}{D_i^+ + D_i^-},\quad D_i^\pm = \Big\| w \odot r_i - v^\pm \Big\|_2\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>X</code></td><td>in</td><td>decision matrix, rows = alternatives, columns = criteria (all values &gt; 0)</td><td>—</td></tr><tr><td><code>w</code></td><td>in</td><td>criterion weights (&gt; 0; normalised to sum 1)</td><td>—</td></tr><tr><td><code>types</code></td><td>in</td><td>criterion types: 1 = benefit (larger is better), -1 = cost (smaller is better)</td><td>—</td></tr><tr><td><code>scores</code></td><td>out</td><td>score of each alternative</td><td>—</td></tr><tr><td><code>best_score</code></td><td>out</td><td>the highest score</td><td>—</td></tr><tr><td><code>best</code></td><td>out</td><td>best alternative, 1-based (on a tie the first listed)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> values &gt; 0; weights &gt; 0 (normalised to sum 1); types 1 or -1.</p>
+<pre><code class="shell">$ optimization solve topsis &quot;X=[[1, 1], [2, 2]]&quot; &quot;w=[1, 1]&quot; &quot;types=[1, 1]&quot;
+scores = [0.0,1.0]
+best_score = 1
+best = 2
+  by: TOPSIS ranking (closeness to the ideal solution)  (vector normalisation r = x / ||x_col||, weighted; ideal = best per criterion, anti-ideal = worst; C = D- / (D+ + D-))
+  assumes: values &gt; 0; weights &gt; 0 (normalised to sum 1); types 1 or -1</code></pre>
+<p><strong>What the worked example means:</strong> This calculation ranks alternatives by their relative closeness to an ideal solution. Using vector normalization and weighted Euclidean distances, it computes a score for each option based on how close it is to the best possible performance across all criteria and how far it is from the worst. The highest score, 1, belongs to alternative 2, indicating it is the most balanced choice given the weights and criteria types.</p>
+<h4 id="weighted_product_model">Weighted product model — <code>weighted_product_model</code></h4>
+<p>Score alternatives by the product of linearly normalised criterion values raised to the criterion weights.</p>
+<div class="math">\[P_i = \prod_j n_{ij}^{\,w_j}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>X</code></td><td>in</td><td>decision matrix, rows = alternatives, columns = criteria (all values &gt; 0)</td><td>—</td></tr><tr><td><code>w</code></td><td>in</td><td>criterion weights (&gt; 0; normalised to sum 1)</td><td>—</td></tr><tr><td><code>types</code></td><td>in</td><td>criterion types: 1 = benefit (larger is better), -1 = cost (smaller is better)</td><td>—</td></tr><tr><td><code>scores</code></td><td>out</td><td>score of each alternative</td><td>—</td></tr><tr><td><code>best_score</code></td><td>out</td><td>the highest score</td><td>—</td></tr><tr><td><code>best</code></td><td>out</td><td>best alternative, 1-based (on a tie the first listed)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> values &gt; 0; weights &gt; 0 (normalised to sum 1); types 1 or -1.</p>
+<pre><code class="shell">$ optimization solve weighted_product_model &quot;X=[[4, 2], [2, 4]]&quot; &quot;w=[0.5, 0.5]&quot; &quot;types=[1, 1]&quot;
+scores = [0.7071067811865476,0.7071067811865476]
+best_score = 0.7071067812
+best = 1
+  by: Weighted product model  (linear normalisation (x / max for benefits, min / x for costs), then P_i = prod_j n_ij^{w_j})
+  assumes: values &gt; 0; weights &gt; 0 (normalised to sum 1); types 1 or -1</code></pre>
+<p><strong>What the worked example means:</strong> This algorithm evaluates alternatives by computing the product of linearly normalized criterion values raised to their respective weights. It takes the decision matrix [4 2; 2 4], criterion weights [0.5, 0.5], and types [1, 1] as inputs. The resulting scores [0.707107, 0.707107] indicate relative performance, where higher values are better. The top-ranked alternative is identified as 1 with a maximum score of 0.707107. This multiplicative approach emphasizes that strong performance across all criteria is required for a high overall ranking.</p>
+<h4 id="weighted_sum_model">Weighted sum model (simple additive weighting) — <code>weighted_sum_model</code></h4>
+<p>Score alternatives by the weighted sum of linearly normalised criterion values (benefit x / max, cost min / x) and pick the best.</p>
+<div class="math">\[S_i = \sum_j w_j n_{ij},\quad n_{ij} = \frac{x_{ij}}{\max_i x_{ij}}\ \text{or}\ \frac{\min_i x_{ij}}{x_{ij}}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>X</code></td><td>in</td><td>decision matrix, rows = alternatives, columns = criteria (all values &gt; 0)</td><td>—</td></tr><tr><td><code>w</code></td><td>in</td><td>criterion weights (&gt; 0; normalised to sum 1)</td><td>—</td></tr><tr><td><code>types</code></td><td>in</td><td>criterion types: 1 = benefit (larger is better), -1 = cost (smaller is better)</td><td>—</td></tr><tr><td><code>scores</code></td><td>out</td><td>score of each alternative</td><td>—</td></tr><tr><td><code>best_score</code></td><td>out</td><td>the highest score</td><td>—</td></tr><tr><td><code>best</code></td><td>out</td><td>best alternative, 1-based (on a tie the first listed)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> values &gt; 0; weights &gt; 0 (normalised to sum 1); types 1 or -1.</p>
+<pre><code class="shell">$ optimization solve weighted_sum_model &quot;X=[[250, 16, 12], [200, 16, 8], [300, 32, 16]]&quot; &quot;w=[0.4, 0.3, 0.3]&quot; &quot;types=[-1, 1, 1]&quot;
+scores = [0.6950000000000001,0.7,0.8666666666666667]
+best_score = 0.8666666667
+best = 3
+  by: Weighted sum model (simple additive weighting)  (linear normalisation (x / max for benefits, min / x for costs), then S_i = sum_j w_j n_ij)
+  assumes: values &gt; 0; weights &gt; 0 (normalised to sum 1); types 1 or -1</code></pre>
+<p><strong>What the worked example means:</strong> This method calculates scores for each option by normalizing criterion values based on whether they are benefits or costs, then summing these weighted values. The resulting highest score belongs to the top-ranked choice, identified as 3, which achieved a total value of 0.866667. This process relies on positive input data and weights that sum to one to ensure a valid comparison across different scales.</p>
+<h3>Network optimisation (12)</h3>
+<h4 id="all_pairs_shortest_paths">All-pairs shortest distances (Floyd-Warshall) — <code>all_pairs_shortest_paths</code></h4>
+<p>The table of shortest distances between every pair of nodes, and the graph&#x27;s diameter.</p>
+<div class="math">\[d_{ij} \leftarrow \min(d_{ij},\, d_{ik} + d_{kj})\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>edges</code></td><td>in</td><td>weighted edges &#x27;A-B 4, ...&#x27;</td><td>—</td></tr><tr><td><code>directed</code></td><td>in</td><td>true for a directed graph, false for undirected</td><td>—</td></tr><tr><td><code>distances</code></td><td>out</td><td>shortest-distance matrix (rows and columns in the order of &#x27;nodes&#x27;)</td><td>—</td></tr><tr><td><code>nodes</code></td><td>out</td><td>node order (first appearance)</td><td>—</td></tr><tr><td><code>diameter</code></td><td>out</td><td>largest shortest distance</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> every node reaches every other; no negative cycle; at most 40 nodes.</p>
+<pre><code class="shell">$ optimization solve all_pairs_shortest_paths &quot;edges=A-B 3, B-C 4, A-C 9, C-D 2&quot; directed=false
+nodes = [&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;]
+distances = [[0.0,3.0,7.0,9.0],[3.0,0.0,4.0,6.0],[7.0,4.0,0.0,2.0],[9.0,6.0,2.0,0.0]]
+diameter = 9
+  by: All-pairs shortest distances (Floyd-Warshall)  (Floyd-Warshall in exact arithmetic)
+  assumes: every node reaches every other; no negative cycle; at most 40 nodes</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the shortest distance between every pair of nodes using the Floyd-Warshall algorithm. The resulting matrix, [[0, 3, 7, 9], [3, 0, 4, 6], [7, 4, 0, 2], [9, 6, 2, 0]], provides a complete map of connectivity costs based on the input edges, A-B (3), B-C (4), A-C (9), C-D (2). The maximum value in this matrix is identified as the graph&#x27;s diameter, 9, which indicates the greatest minimum effort required to travel between any two points in the network.</p>
+<h4 id="assignment_max_profit">Assignment problem (Hungarian method), maximum total value — <code>assignment_max_profit</code></h4>
+<p>Assign each row (worker) to a different column (task) so that the total value is as large as possible: the optimum and an optimal assignment (stated as THE assignment only when unique).</p>
+<div class="math">\[\min_{\sigma} \sum_i c_{i\sigma(i)} = \max \Big\{ \sum_i u_i + \sum_j v_j : u_i + v_j \le c_{ij} \Big\}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>C</code></td><td>in</td><td>value matrix, rows = workers, columns = tasks (square)</td><td>—</td></tr><tr><td><code>max_value</code></td><td>out</td><td>optimal total value</td><td>—</td></tr><tr><td><code>assignment</code></td><td>out</td><td>column assigned to each row, 1-based (only when unique; otherwise assignment_example)</td><td>—</td></tr><tr><td><code>assignment_unique</code></td><td>out</td><td>yes when the optimal assignment is unique</td><td>—</td></tr><tr><td><code>dual_u</code></td><td>out</td><td>row potentials</td><td>—</td></tr><tr><td><code>dual_v</code></td><td>out</td><td>column potentials (u_i + v_j bounds every cell: the optimality certificate)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> square matrix, at most 12 x 12 (pad with zeros for unbalanced problems).</p>
+<pre><code class="shell">$ optimization solve assignment_max_profit &quot;C=[[9, 2, 7], [6, 4, 3], [5, 8, 1]]&quot;
+max_value = 21
+assignment = [3,1,2]
+assignment_unique = yes
+dual_u = [7.0,4.0,8.0]
+dual_v = [2.0,0.0,0.0]
+  by: Assignment problem (Hungarian method), maximum total value  (Hungarian method (shortest augmenting paths with potentials) in exact arithmetic; uniqueness by forbidding each chosen cell)
+  assumes: square matrix, at most 12 x 12 (pad with zeros for unbalanced problems)</code></pre>
+<p><strong>What the worked example means:</strong> The Hungarian method computes the maximum total value for assigning workers to tasks using the input matrix [9 2 7; 6 4 3; 5 8 1]. The resulting optimal total value is 21. If the solution is unique, indicated by yes, the specific assignment is given as [3, 1, 2]; otherwise, an example of a valid optimal assignment is provided. This process ensures every worker is assigned exactly one distinct task while maximizing the sum of their values.</p>
+<h4 id="assignment_min_cost">Assignment problem (Hungarian method), minimum total cost — <code>assignment_min_cost</code></h4>
+<p>Assign each row (worker) to a different column (task) so that the total cost is as small as possible: the optimum and an optimal assignment (stated as THE assignment only when unique).</p>
+<div class="math">\[\min_{\sigma} \sum_i c_{i\sigma(i)} = \max \Big\{ \sum_i u_i + \sum_j v_j : u_i + v_j \le c_{ij} \Big\}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>C</code></td><td>in</td><td>cost matrix, rows = workers, columns = tasks (square)</td><td>—</td></tr><tr><td><code>min_cost</code></td><td>out</td><td>optimal total cost</td><td>—</td></tr><tr><td><code>assignment</code></td><td>out</td><td>column assigned to each row, 1-based (only when unique; otherwise assignment_example)</td><td>—</td></tr><tr><td><code>assignment_unique</code></td><td>out</td><td>yes when the optimal assignment is unique</td><td>—</td></tr><tr><td><code>dual_u</code></td><td>out</td><td>row potentials</td><td>—</td></tr><tr><td><code>dual_v</code></td><td>out</td><td>column potentials (u_i + v_j bounds every cell: the optimality certificate)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> square matrix, at most 12 x 12 (pad with zeros for unbalanced problems).</p>
+<pre><code class="shell">$ optimization solve assignment_min_cost &quot;C=[[9, 2, 7], [6, 4, 3], [5, 8, 1]]&quot;
+min_cost = 9
+assignment = [2,1,3]
+assignment_unique = yes
+dual_u = [4.0,6.0,4.0]
+dual_v = [0.0,-2.0,-3.0]
+  by: Assignment problem (Hungarian method), minimum total cost  (Hungarian method (shortest augmenting paths with potentials) in exact arithmetic; uniqueness by forbidding each chosen cell)
+  assumes: square matrix, at most 12 x 12 (pad with zeros for unbalanced problems)</code></pre>
+<p>In the worked example, C = [9 2 7; 6 4 3; 5 8 1] go through the equation above and give min_cost = 9, assignment = [2, 1, 3], assignment_unique = yes, dual_u = [4, 6, 4]. It applies only when square matrix, at most 12 x 12 (pad with zeros for unbalanced problems): outside that it says what is wrong instead of returning a number.</p>
+<h4 id="bipartite_matching">Maximum bipartite matching — <code>bipartite_matching</code></h4>
+<p>The largest number of pairs that can be formed between two groups (workers and jobs, students and projects) using only allowed pairs, with one maximum matching and a vertex cover proving it maximum.</p>
+<div class="math">\[\nu(G) = \tau(G) \text{ for bipartite } G\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>edges</code></td><td>in</td><td>allowed pairs &#x27;left-right&#x27;, e.g. &#x27;W1-J1, W1-J2, W2-J1&#x27;</td><td>—</td></tr><tr><td><code>max_matching</code></td><td>out</td><td>size of a maximum matching</td><td>—</td></tr><tr><td><code>matching_example</code></td><td>out</td><td>one maximum matching</td><td>—</td></tr><tr><td><code>vertex_cover</code></td><td>out</td><td>a minimum vertex cover of the same size (Konig&#x27;s theorem: the certificate)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> bipartite: the first node of each pair is on the left, the second on the right.</p>
+<pre><code class="shell">$ optimization solve bipartite_matching &quot;edges=W1-J1, W1-J2, W2-J1, W3-J2, W3-J3&quot;
+max_matching = 3
+matching_example = [&quot;W1-J2&quot;,&quot;W2-J1&quot;,&quot;W3-J3&quot;]
+vertex_cover = [&quot;W1&quot;,&quot;W2&quot;,&quot;W3&quot;]
+  by: Maximum bipartite matching  (augmenting paths (Kuhn); minimum vertex cover from alternating reachability (Konig))
+  assumes: bipartite: the first node of each pair is on the left, the second on the right</code></pre>
+<p>In the worked example, edges = W1-J1, W1-J2, W2-J1, W3-J2, W3-J3 go through the equation above and give max_matching = 3, matching_example = [W1-J2, W2-J1, W3-J3], vertex_cover = [W1, W2, W3]. It applies only when bipartite: the first node of each pair is on the left, the second on the right: outside that it says what is wrong instead of returning a number.</p>
+<h4 id="max_flow">Maximum flow and minimum cut (Edmonds-Karp) — <code>max_flow</code></h4>
+<p>The largest flow that can be sent from a source to a sink through a network of capacitated arcs, a flow achieving it and the minimum cut that proves it optimal.</p>
+<div class="math">\[\max |f| = \min_{(S, \bar S)} c(S, \bar S)\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>edges</code></td><td>in</td><td>directed arcs with capacities &#x27;S-A 10, A-T 5, ...&#x27;</td><td>—</td></tr><tr><td><code>source</code></td><td>in</td><td>source node</td><td>—</td></tr><tr><td><code>target</code></td><td>in</td><td>sink node</td><td>—</td></tr><tr><td><code>max_flow</code></td><td>out</td><td>maximum flow value</td><td>—</td></tr><tr><td><code>min_cut_source_side</code></td><td>out</td><td>nodes on the source side of a minimum cut (those reachable in the final residual network)</td><td>—</td></tr><tr><td><code>edge_flows</code></td><td>out</td><td>flow on each arc, in input order (one maximum flow)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> directed arcs; capacities &gt;= 0.</p>
+<p>Run <code>optimization info max_flow</code> for its inputs, then <code>optimization solve max_flow name=value ...</code>.</p>
+<p><strong>What the worked example means:</strong> This calculation determines the largest amount of flow that can be sent from the source node S to the target node T through a network of directed arcs with specific capacities. The result, 15, represents the bottleneck capacity of the system, which is mathematically equal to the sum of capacities across the minimum cut defined by the set of nodes [S]. Additionally, the specific distribution of flow along each arc in the network is provided as [10, 5, 5, 5, 10], showing how the total volume is routed while respecting all capacity constraints and conservation laws.</p>
+<h4 id="max_weight_matching">Maximum-weight matching (general graph) — <code>max_weight_matching</code></h4>
+<p>Pair up nodes of a graph (each node at most once) so that the total weight of the chosen edges is as large as possible: the maximum weight and one optimal matching.</p>
+<div class="math">\[\max_{M \text{ matching}} \sum_{e \in M} w_e\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>edges</code></td><td>in</td><td>undirected weighted edges &#x27;A-B 4, ...&#x27;</td><td>—</td></tr><tr><td><code>max_weight</code></td><td>out</td><td>maximum total weight of a matching</td><td>—</td></tr><tr><td><code>matching_example</code></td><td>out</td><td>one maximum-weight matching</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> at most 16 nodes; edges of weight &lt;= 0 are never worth choosing.</p>
+<pre><code class="shell">$ optimization solve max_weight_matching &quot;edges=A-B 6, B-C 5, C-D 6, A-D 2, A-C 4&quot;
+max_weight = 12
+matching_example = [&quot;A-B&quot;,&quot;C-D&quot;]
+  by: Maximum-weight matching (general graph)  (exact dynamic programming over node subsets)
+  assumes: at most 16 nodes; edges of weight &lt;= 0 are never worth choosing</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the optimal way to pair nodes in an undirected graph such that each node appears in at most one pair and the sum of the selected edge weights is maximized. The result, 12, represents this highest possible total value, while [A-B, C-D] lists the specific edges that form this optimal configuration. This approach uses exact dynamic programming over subsets of nodes, which is feasible here because the graph contains no more than sixteen nodes.</p>
+<h4 id="minimum_spanning_tree">Minimum spanning tree (Kruskal&#x27;s algorithm) — <code>minimum_spanning_tree</code></h4>
+<p>The least total weight of edges connecting all nodes of an undirected graph, and the tree (stated as THE tree only when the minimum spanning tree is unique).</p>
+<div class="math">\[\min_{T \text{ spanning tree}} \sum_{e \in T} w_e\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>edges</code></td><td>in</td><td>undirected weighted edges &#x27;A-B 4, ...&#x27;</td><td>—</td></tr><tr><td><code>total_weight</code></td><td>out</td><td>weight of a minimum spanning tree</td><td>—</td></tr><tr><td><code>tree_edges</code></td><td>out</td><td>the minimum spanning tree (only when unique; otherwise tree_edges_example)</td><td>—</td></tr><tr><td><code>tree_unique</code></td><td>out</td><td>yes when the minimum spanning tree is unique</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> connected undirected graph.</p>
+<pre><code class="shell">$ optimization solve minimum_spanning_tree &quot;edges=A-B 4, A-C 1, B-C 2, B-D 5, C-D 8&quot;
+total_weight = 8
+tree_unique = yes
+tree_edges = [&quot;A-C&quot;,&quot;B-C&quot;,&quot;B-D&quot;]
+  by: Minimum spanning tree (Kruskal&#x27;s algorithm)  (Kruskal (edges by weight, union-find); uniqueness by the cycle property; total re-checked by Prim)
+  assumes: connected undirected graph</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the subset of edges that connects all nodes in an undirected graph with the lowest possible total cost. Sorting edges by weight and adding them if they do not form a cycle gives the optimal structure. The resulting total weight is 8, and the specific connections forming this tree are listed as [A-C, B-C, B-D]. If the minimum spanning tree is unique, it represents the only way to achieve this minimal connectivity cost.</p>
+<h4 id="min_cost_flow">Minimum-cost flow (transshipment) — <code>min_cost_flow</code></h4>
+<p>Send flow from supply nodes to demand nodes through capacitated arcs at least total cost (transshipment allowed): the minimum cost and a flow achieving it.</p>
+<div class="math">\[\min \sum c_{ij} x_{ij}\ \text{s.t.}\ \sum_j x_{vj} - \sum_i x_{iv} = b_v,\ 0 \le x_{ij} \le u_{ij}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>capacity</code></td><td>in</td><td>arc capacities, n x n (row = from node, column = to node, 0 = no arc)</td><td>—</td></tr><tr><td><code>cost</code></td><td>in</td><td>unit cost of each arc, n x n</td><td>—</td></tr><tr><td><code>supply</code></td><td>in</td><td>net supply of each node (positive = supply, negative = demand), summing to 0</td><td>—</td></tr><tr><td><code>min_cost</code></td><td>out</td><td>minimum total cost</td><td>—</td></tr><tr><td><code>flows</code></td><td>out</td><td>optimal flow matrix (only when unique; otherwise flows_example)</td><td>—</td></tr><tr><td><code>flow_unique</code></td><td>out</td><td>yes when the optimal flow is unique</td><td>—</td></tr><tr><td><code>dual</code></td><td>out</td><td>dual values: node potentials then arc-capacity prices</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> supplies sum to 0; a feasible flow exists; at most 60 arcs.</p>
+<pre><code class="shell">$ optimization solve min_cost_flow &quot;capacity=[[0, 10, 5], [0, 0, 10], [0, 0, 0]]&quot; &quot;cost=[[0, 1, 4], [0, 0, 2], [0, 0, 0]]&quot; &quot;supply=[8, 0, -8]&quot;
+min_cost = 24
+flows = [[0.0,8.0,0.0],[0.0,0.0,8.0],[0.0,0.0,0.0]]
+flow_unique = yes
+dual = [3.0,2.0,0.0,0.0,0.0,0.0]
+  by: Minimum-cost flow (transshipment)  (the min-cost-flow LP solved exactly (rational simplex) and certified by its dual)
+  assumes: supplies sum to 0; a feasible flow exists; at most 60 arcs</code></pre>
+<p>In the worked example, capacity = [0 10 5; 0 0 10; 0 0 0], cost = [0 1 4; 0 0 2; 0 0 0], supply = [8, 0, -8] go through the equation above and give min_cost = 24, flows = [[0, 8, 0], [0, 0, 8], [0, 0, 0]], flow_unique = yes, dual = [3, 2, 0, 0, 0, 0]. It applies only when supplies sum to 0; a feasible flow exists; at most 60 arcs: outside that it says what is wrong instead of returning a number.</p>
+<h4 id="shortest_path">Shortest path (Dijkstra&#x27;s algorithm) — <code>shortest_path</code></h4>
+<p>The length of the shortest route between two nodes of a graph with non-negative edge weights, and the route itself (stated as the route only when it is the only shortest one).</p>
+<div class="math">\[d(v) = \min_{(u,v)} \big(d(u) + w_{uv}\big)\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>edges</code></td><td>in</td><td>weighted edges &#x27;A-B 4, B-C 1, ...&#x27;</td><td>—</td></tr><tr><td><code>source</code></td><td>in</td><td>start node</td><td>—</td></tr><tr><td><code>target</code></td><td>in</td><td>end node</td><td>—</td></tr><tr><td><code>directed</code></td><td>in</td><td>true for a directed graph (edge u-v goes from u to v), false for undirected</td><td>—</td></tr><tr><td><code>distance</code></td><td>out</td><td>shortest distance</td><td>—</td></tr><tr><td><code>path</code></td><td>out</td><td>the shortest path (only when unique; otherwise path_example)</td><td>—</td></tr><tr><td><code>path_unique</code></td><td>out</td><td>yes when exactly one shortest path exists</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> weights &gt;= 0; a path from source to target exists; parallel edges: the lightest counts.</p>
+<p>Run <code>optimization info shortest_path</code> for its inputs, then <code>optimization solve shortest_path name=value ...</code>.</p>
+<p><strong>What the worked example means:</strong> This calculation determines the minimum total weight required to travel from the starting node A to the destination node D using the provided edges. The result, 8, represents this optimal cost. If a single unique route exists, it is identified as [A, C, B, D]; otherwise, the system notes that multiple paths share this minimal cost.</p>
+<h4 id="bellman_ford_shortest_path">Shortest path with negative weights (Bellman-Ford) — <code>bellman_ford_shortest_path</code></h4>
+<p>Shortest distance in a directed graph whose edge weights may be negative, with all distances from the source; a negative cycle reachable from the source is reported instead of a number.</p>
+<div class="math">\[d(v) \le d(u) + w_{uv} \ \forall (u,v)\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>edges</code></td><td>in</td><td>directed weighted edges &#x27;A-B 4, B-C -2, ...&#x27;</td><td>—</td></tr><tr><td><code>source</code></td><td>in</td><td>start node</td><td>—</td></tr><tr><td><code>target</code></td><td>in</td><td>end node</td><td>—</td></tr><tr><td><code>distance</code></td><td>out</td><td>shortest distance from source to target</td><td>—</td></tr><tr><td><code>distances_from_source</code></td><td>out</td><td>shortest distance to every reachable node</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> directed graph; no negative cycle reachable from the source (otherwise INVALID_INPUT).</p>
+<p>Run <code>optimization info bellman_ford_shortest_path</code> for its inputs, then <code>optimization solve bellman_ford_shortest_path name=value ...</code>.</p>
+<p><strong>What the worked example means:</strong> This calculation determines the minimum path cost between two nodes in a directed graph that may contain negative edge weights. By applying iterative relaxation, the algorithm finds the optimal route from S to T. The resulting value of 5 represents the sum of weights along this shortest path. If no such path exists or if a negative cycle is detected, the result would be invalid rather than a numerical distance.</p>
+<h4 id="transportation_problem">Transportation problem (minimum shipping cost) — <code>transportation_problem</code></h4>
+<p>Ship from sources with given supplies to destinations with given demands at least total cost: the minimum cost and a shipping plan (stated as THE plan only when it is unique).</p>
+<div class="math">\[\min \sum_{ij} c_{ij} x_{ij}\ \text{s.t.}\ \sum_j x_{ij} \le s_i,\ \sum_i x_{ij} = d_j,\ x \ge 0\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>supply</code></td><td>in</td><td>supply of each source</td><td>—</td></tr><tr><td><code>demand</code></td><td>in</td><td>demand of each destination</td><td>—</td></tr><tr><td><code>cost</code></td><td>in</td><td>unit shipping cost, rows = sources, columns = destinations</td><td>—</td></tr><tr><td><code>min_cost</code></td><td>out</td><td>minimum total shipping cost</td><td>—</td></tr><tr><td><code>shipments</code></td><td>out</td><td>optimal plan, rows = sources (only when unique; otherwise shipments_example)</td><td>—</td></tr><tr><td><code>plan_unique</code></td><td>out</td><td>yes when the optimal plan is unique</td><td>—</td></tr><tr><td><code>dual</code></td><td>out</td><td>dual values (u for sources, v for destinations): the optimality certificate</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> total supply &gt;= total demand (surplus stays at the sources at no cost); at most 60 routes.</p>
+<pre><code class="shell">$ optimization solve transportation_problem &quot;supply=[20, 30]&quot; &quot;demand=[10, 25, 15]&quot; &quot;cost=[[2, 3, 1], [5, 4, 8]]&quot;
+min_cost = 150
+shipments = [[5.0,0.0,15.0],[5.0,25.0,0.0]]
+plan_unique = yes
+dual = [-3.0,0.0,5.0,4.0,4.0]
+  by: Transportation problem (minimum shipping cost)  (the transportation LP solved exactly (rational simplex), certified by its dual (u_i + v_j &lt;= c_ij))
+  assumes: total supply &gt;= total demand (surplus stays at the sources at no cost); at most 60 routes</code></pre>
+<p>In the worked example, supply = [20, 30], demand = [10, 25, 15], cost = [2 3 1; 5 4 8] go through the equation above and give min_cost = 150, shipments = [[5, 0, 15], [5, 25, 0]], plan_unique = yes, dual = [-3, 0, 5, 4, 4]. It applies only when total supply &gt;= total demand (surplus stays at the sources at no cost); at most 60 routes: outside that it says what is wrong instead of returning a number.</p>
+<h4 id="traveling_salesman">Travelling salesman tour (exact, Held-Karp) — <code>traveling_salesman</code></h4>
+<p>The shortest round trip visiting every city exactly once and returning to the start, for a distance matrix (symmetric or not): the minimum tour length and one optimal tour.</p>
+<div class="math">\[g(S, k) = \min_{m \in S \setminus \{k\}} \big(g(S \setminus \{k\}, m) + d_{mk}\big)\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>D</code></td><td>in</td><td>distance matrix, D[i][j] = distance from city i to city j</td><td>—</td></tr><tr><td><code>min_tour_length</code></td><td>out</td><td>length of a shortest tour</td><td>—</td></tr><tr><td><code>tour_example</code></td><td>out</td><td>one optimal tour starting and ending at city 1</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> 2 to 11 cities.</p>
+<pre><code class="shell">$ optimization solve traveling_salesman &quot;D=[[0, 10, 15, 20], [10, 0, 35, 25], [15, 35, 0, 30], [20, 25, 30, 0]]&quot;
+min_tour_length = 80
+tour_example = [1,3,4,2,1]
+  by: Travelling salesman tour (exact, Held-Karp)  (Held-Karp dynamic programming over city subsets, exact arithmetic)
+  assumes: 2 to 11 cities</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the shortest possible route that visits every city exactly once and returns to the starting point, using dynamic programming over all subsets of cities. Given the distance matrix [0 10 15 20; 10 0 35 25; 15 35 0 30; 20 25 30 0], the algorithm computes the optimal path by minimizing the sum of segment distances across all permutations. The result is a specific sequence [1, 3, 4, 2, 1] with a total cost of 80, guaranteeing this is the absolute best solution rather than an approximation.</p>
+<h3>Nonlinear optimisation (3)</h3>
+<h4 id="equality_constrained_qp">Equality-constrained quadratic program (Lagrange multipliers / KKT) — <code>equality_constrained_qp</code></h4>
+<p>Minimise 1/2 x^T Q x + c^T x subject to A x = b: the minimiser, the minimum and the Lagrange multipliers.</p>
+<div class="math">\[\begin{bmatrix} Q &amp; A^\top \\ A &amp; 0 \end{bmatrix}\begin{bmatrix} x \\ \lambda \end{bmatrix} = \begin{bmatrix} -c \\ b \end{bmatrix}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>Q</code></td><td>in</td><td>symmetric positive definite Hessian Q</td><td>—</td></tr><tr><td><code>c</code></td><td>in</td><td>linear term c</td><td>—</td></tr><tr><td><code>A</code></td><td>in</td><td>constraint matrix A (rows = constraints)</td><td>—</td></tr><tr><td><code>b</code></td><td>in</td><td>right-hand side b</td><td>—</td></tr><tr><td><code>f_min</code></td><td>out</td><td>minimum value</td><td>—</td></tr><tr><td><code>x_star</code></td><td>out</td><td>the minimiser (unique)</td><td>—</td></tr><tr><td><code>multipliers</code></td><td>out</td><td>Lagrange multipliers lambda (convention Q x + c + A^T lambda = 0)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> Q symmetric positive definite; rows of A linearly independent.</p>
+<pre><code class="shell">$ optimization solve equality_constrained_qp &quot;Q=2 0; 0 2&quot; &quot;c=0, 0&quot; &quot;A=1 1&quot; b=2
+f_min = 2
+x_star = [1.0,1.0]
+multipliers = [-2.0]
+  by: Equality-constrained quadratic program (Lagrange multipliers / KKT)  (the KKT system [Q A^T; A 0][x; lambda] = [-c; b] solved exactly; certified by stationarity and feasibility)
+  assumes: Q symmetric positive definite; rows of A linearly independent</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the optimal solution for a quadratic minimization problem subject to linear equality constraints. Solving the associated system of linear equations derived from optimality conditions gives the specific decision variables that minimize the objective function. The result indicates that the lowest achievable cost or energy level is 2, occurring exactly when the variables take the values [1, 1]. Additionally, the sensitivity of this optimum to changes in the constraint limits is captured by the Lagrange multipliers, which are reported as [-2].</p>
+<h4 id="steepest_descent_step">Steepest descent step with exact line search (quadratic) — <code>steepest_descent_step</code></h4>
+<p>One iteration of steepest descent on f(x) = 1/2 x^T Q x + c^T x from x0: the gradient, the exact step length, the new point and its function value.</p>
+<div class="math">\[\alpha = \frac{g^\top g}{g^\top Q g},\quad x_1 = x_0 - \alpha g\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>Q</code></td><td>in</td><td>symmetric positive definite Hessian Q</td><td>—</td></tr><tr><td><code>c</code></td><td>in</td><td>linear term c</td><td>—</td></tr><tr><td><code>x0</code></td><td>in</td><td>starting point x0</td><td>—</td></tr><tr><td><code>alpha</code></td><td>out</td><td>exact step length g^T g / g^T Q g</td><td>—</td></tr><tr><td><code>x1</code></td><td>out</td><td>new point x0 - alpha g</td><td>—</td></tr><tr><td><code>f1</code></td><td>out</td><td>f at the new point</td><td>—</td></tr><tr><td><code>gradient</code></td><td>out</td><td>gradient at x0</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> Q symmetric positive definite; x0 is not the minimiser.</p>
+<pre><code class="shell">$ optimization solve steepest_descent_step &quot;Q=[[2, 0], [0, 8]]&quot; &quot;c=[0, 0]&quot; &quot;x0=[4, 1]&quot;
+alpha = 0.2
+x1 = [2.4,-0.6]
+f1 = 7.2
+gradient = [8.0,8.0]
+  by: Steepest descent step with exact line search (quadratic)  (g = Q x0 + c; alpha = g^T g / g^T Q g in exact arithmetic; certified by g^T grad f(x1) = 0)
+  assumes: Q symmetric positive definite; x0 is not the minimiser</code></pre>
+<p><strong>What the worked example means:</strong> This calculation finds the optimal distance to move from the starting point in the direction opposite to the gradient. The gradient at the start is [8, 8], and the precise step length that minimizes the function along this line is 0.2. Applying this step yields the new position [2.4, -0.6], where the function value becomes 7.2. This ensures the next iteration begins with a significantly reduced error.</p>
+<h4 id="unconstrained_quadratic_min">Unconstrained quadratic minimisation — <code>unconstrained_quadratic_min</code></h4>
+<p>Minimise f(x) = 1/2 x^T Q x + c^T x for a symmetric positive definite Q: the minimiser and the minimum.</p>
+<div class="math">\[x^* = -Q^{-1} c,\quad f^* = \tfrac12 c^\top x^*\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>Q</code></td><td>in</td><td>symmetric positive definite Hessian Q (n x n)</td><td>—</td></tr><tr><td><code>c</code></td><td>in</td><td>linear term c (n entries)</td><td>—</td></tr><tr><td><code>f_min</code></td><td>out</td><td>minimum value</td><td>—</td></tr><tr><td><code>x_star</code></td><td>out</td><td>the minimiser x* = -Q^{-1} c (unique)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> Q symmetric positive definite (convention: f = 1/2 x^T Q x + c^T x); n &lt;= 10.</p>
+<pre><code class="shell">$ optimization solve unconstrained_quadratic_min &quot;Q=[[4, 1], [1, 3]]&quot; &quot;c=[-1, -2]&quot;
+f_min = -0.6818181818
+x_star = [0.09090909090909091,0.6363636363636364]
+  by: Unconstrained quadratic minimisation  (positive definiteness by symmetric elimination, then Q x = -c solved exactly; certified by the gradient)
+  assumes: Q symmetric positive definite (convention: f = 1/2 x^T Q x + c^T x); n &lt;= 10</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the global minimum of a quadratic function defined by a symmetric positive definite matrix. It solves for the point where the gradient vanishes, yielding the optimal solution vector [0.0909091, 0.636364] and the corresponding objective value -0.681818. The result represents the lowest possible cost achievable under these conditions.</p>
+<h3>Project scheduling (2)</h3>
+<h4 id="critical_path_method">Critical path method (project duration and slack) — <code>critical_path_method</code></h4>
+<p>For activities with durations and precedences, the minimum project duration, the critical activities and each activity&#x27;s earliest start, latest start and slack (total float).</p>
+<div class="math">\[ES_k = \max_{j \to k}(ES_j + d_j),\quad LS_k = \min_{k \to s} LS_s - d_k,\quad \text{slack}_k = LS_k - ES_k\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>durations</code></td><td>in</td><td>duration of each activity; activities are named A, B, C, ... (or 1, 2, 3, ...) in this order</td><td>—</td></tr><tr><td><code>precedences</code></td><td>in</td><td>precedence pairs &#x27;A-B&#x27; meaning A must finish before B starts (none if omitted) (optional)</td><td>—</td></tr><tr><td><code>project_duration</code></td><td>out</td><td>minimum project duration</td><td>—</td></tr><tr><td><code>critical_activities</code></td><td>out</td><td>activities with zero slack</td><td>—</td></tr><tr><td><code>slack</code></td><td>out</td><td>total slack of each activity</td><td>—</td></tr><tr><td><code>earliest_start</code></td><td>out</td><td>earliest start of each activity</td><td>—</td></tr><tr><td><code>latest_start</code></td><td>out</td><td>latest start of each activity</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> finish-to-start precedences without cycles; deterministic durations.</p>
+<pre><code class="shell">$ optimization solve critical_path_method &quot;durations=[3, 4, 2, 5]&quot; &quot;precedences=A-B, A-C, B-D, C-D&quot;
+project_duration = 12
+critical_activities = [&quot;A&quot;,&quot;B&quot;,&quot;D&quot;]
+slack = [0.0,0.0,2.0,0.0]
+earliest_start = [0.0,3.0,3.0,7.0]
+latest_start = [0.0,3.0,5.0,7.0]
+  by: Critical path method (project duration and slack)  (forward pass (earliest starts) and backward pass (latest finishes) on the activity-on-node network, exact fractions)
+  assumes: finish-to-start precedences without cycles; deterministic durations</code></pre>
+<p><strong>What the worked example means:</strong> The optimization model computes the earliest start, latest start, and total slack for each activity based on their durations and precedence constraints. The resulting minimum project duration of 12 represents the longest path through the network, meaning any delay in the critical activities [A, B, D] will directly extend the project timeline. Non-critical tasks possess positive slack values, indicating how much they can be delayed without affecting the overall completion date.</p>
+<h4 id="pert_project">PERT project duration and completion probability — <code>pert_project</code></h4>
+<p>With optimistic, most likely and pessimistic times per activity, the expected project duration, its variance along the critical path and the probability of finishing by a deadline (normal approximation).</p>
+<div class="math">\[t_e = \frac{a + 4m + b}{6},\; \sigma^2 = \left(\frac{b - a}{6}\right)^2,\; P(T \le d) = \Phi\!\left(\frac{d - \mu}{\sigma}\right)\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>times</code></td><td>in</td><td>rows (optimistic, most likely, pessimistic), one per activity A, B, C, ...</td><td>—</td></tr><tr><td><code>precedences</code></td><td>in</td><td>precedence pairs &#x27;A-B&#x27; (A before B) (optional)</td><td>—</td></tr><tr><td><code>deadline</code></td><td>in</td><td>deadline for the completion probability (optional) (optional)</td><td>—</td></tr><tr><td><code>expected_duration</code></td><td>out</td><td>expected project duration</td><td>—</td></tr><tr><td><code>variance</code></td><td>out</td><td>variance of the critical path</td><td>—</td></tr><tr><td><code>std_dev</code></td><td>out</td><td>standard deviation</td><td>—</td></tr><tr><td><code>critical_path</code></td><td>out</td><td>the critical path (must be unique)</td><td>—</td></tr><tr><td><code>expected_times</code></td><td>out</td><td>expected time of each activity (a + 4m + b)/6</td><td>—</td></tr><tr><td><code>probability</code></td><td>out</td><td>probability of completion by the deadline</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> a unique critical path (otherwise INVALID_INPUT); independent activity times; normal approximation.</p>
+<pre><code class="shell">$ optimization solve pert_project &quot;times=[[2, 4, 6], [3, 5, 13], [1, 2, 3]]&quot; &quot;precedences=A-B, A-C&quot;
+expected_duration = 10
+variance = 3.222222222
+std_dev = 1.795054936
+critical_path = [&quot;A&quot;,&quot;B&quot;]
+expected_times = [4.0,6.0,2.0]
+  by: PERT project duration and completion probability  (beta-PERT expected times, longest path in exact fractions with a count of longest paths, variance summed along it)
+  assumes: a unique critical path (otherwise INVALID_INPUT); independent activity times; normal approximation</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the expected project duration and its variability based on optimistic, most likely, and pessimistic time estimates for each activity. Applying beta-PERT formulas gives an expected time for every task and identifies the unique critical path, which dictates the overall schedule risk. The result shows that the project has an expected duration of 10 and a standard deviation of 1.79505, indicating the spread of possible completion times around this mean.</p>
+<h3>Queueing theory (7)</h3>
+<h4 id="erlang_b">Erlang B blocking probability (M/M/c/c loss system) — <code>erlang_b</code></h4>
+<p>The probability that a call (customer) is blocked in a loss system with c servers and no waiting room, for an offered traffic of A erlangs, with the carried and lost traffic.</p>
+<div class="math">\[B(c, A) = \frac{A^c / c!}{\sum_{k=0}^{c} A^k / k!}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>A</code></td><td>in</td><td>offered traffic in erlangs (arrival rate x mean holding time)</td><td>—</td></tr><tr><td><code>c</code></td><td>in</td><td>number of servers (lines, trunks)</td><td>—</td></tr><tr><td><code>blocking_probability</code></td><td>out</td><td>Erlang B blocking probability</td><td>—</td></tr><tr><td><code>carried_traffic</code></td><td>out</td><td>carried traffic A (1 - B), erlangs</td><td>—</td></tr><tr><td><code>lost_traffic</code></td><td>out</td><td>lost traffic A B, erlangs</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> blocked customers are lost (no waiting); A &gt; 0.</p>
+<pre><code class="shell">$ optimization solve erlang_b A=3 c=5
+blocking_probability = 0.1100543478
+carried_traffic = 2.669836957
+lost_traffic = 0.3301630435
+  by: Erlang B blocking probability (M/M/c/c loss system)  (stable recursion B(k) = A B(k-1) / (k + A B(k-1)))
+  A = 3
+  assumes: blocked customers are lost (no waiting); A &gt; 0</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the likelihood that a call is blocked in a loss system with no waiting room. Given an offered traffic of 3 erlangs and 5 servers, the model computes a blocking probability of 0.110054. Consequently, the system successfully carries 2.66984 erlangs of traffic, while 0.330163 erlangs are lost due to insufficient capacity.</p>
+<h4 id="mg1_pollaczek_khinchine">M/G/1 queue (Pollaczek-Khinchine formula) — <code>mg1_pollaczek_khinchine</code></h4>
+<p>Mean queue length and waiting times of a single-server queue with Poisson arrivals and a GENERAL service time distribution given by its mean and standard deviation (M/D/1 when the standard deviation is 0).</p>
+<div class="math">\[L_q = \frac{\lambda^2 \sigma_S^2 + \rho^2}{2(1-\rho)}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>lam</code></td><td>in</td><td>arrival rate</td><td>—</td></tr><tr><td><code>ES</code></td><td>in</td><td>mean service time (time unit of 1/lambda)</td><td>—</td></tr><tr><td><code>sd</code></td><td>in</td><td>standard deviation of the service time</td><td>—</td></tr><tr><td><code>rho</code></td><td>out</td><td>utilisation lambda E[S]</td><td>—</td></tr><tr><td><code>Lq</code></td><td>out</td><td>mean number waiting</td><td>—</td></tr><tr><td><code>L</code></td><td>out</td><td>mean number in the system</td><td>—</td></tr><tr><td><code>Wq</code></td><td>out</td><td>mean waiting time</td><td>—</td></tr><tr><td><code>W</code></td><td>out</td><td>mean time in the system</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> lambda E[S] &lt; 1; Poisson arrivals, one server, first come first served.</p>
+<pre><code class="shell">$ optimization solve mg1_pollaczek_khinchine lam=0.5 ES=1 sd=1
+rho = 0.5
+Lq = 0.5
+L = 1
+Wq = 1
+W = 2
+  by: M/G/1 queue (Pollaczek-Khinchine formula)  (Pollaczek-Khinchine mean-value formula; Little&#x27;s law)
+  lam = 0.5
+  ES = 1
+  sd = 1
+  assumes: lambda E[S] &lt; 1; Poisson arrivals, one server, first come first served</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the average queue length and waiting times for a single server handling Poisson arrivals with general service times. Using the arrival rate of 0.5 and service characteristics defined by a mean time of 1 and standard deviation of 1, the system yields a utilisation of 0.5. The resulting mean number of customers waiting is 0.5, while the total mean number in the system is 1. Consequently, the average time spent waiting in line is 1, and the total time in the system is 2.</p>
+<h4 id="mm1_queue">M/M/1 queue — <code>mm1_queue</code></h4>
+<p>Steady-state measures of a single-server queue with Poisson arrivals and exponential service: utilisation, mean numbers in system and in queue, mean times in system and in queue, probability of an empty system.</p>
+<div class="math">\[L = \frac{\rho}{1-\rho},\; W = \frac{1}{\mu - \lambda},\; W_q = \frac{\rho}{\mu-\lambda}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>lam</code></td><td>in</td><td>arrival rate (customers per unit time)</td><td>—</td></tr><tr><td><code>mu</code></td><td>in</td><td>service rate (customers per unit time)</td><td>—</td></tr><tr><td><code>rho</code></td><td>out</td><td>utilisation lambda/mu</td><td>—</td></tr><tr><td><code>L</code></td><td>out</td><td>mean number in the system</td><td>—</td></tr><tr><td><code>Lq</code></td><td>out</td><td>mean number waiting</td><td>—</td></tr><tr><td><code>W</code></td><td>out</td><td>mean time in the system (time unit of the rates)</td><td>—</td></tr><tr><td><code>Wq</code></td><td>out</td><td>mean waiting time in the queue</td><td>—</td></tr><tr><td><code>P0</code></td><td>out</td><td>probability the system is empty</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> lambda &lt; mu (stable); Poisson arrivals, exponential service, one server, unlimited capacity.</p>
+<pre><code class="shell">$ optimization solve mm1_queue lam=8 mu=10
+rho = 0.8
+L = 4
+Lq = 3.2
+W = 0.5
+Wq = 0.4
+P0 = 0.2
+  by: M/M/1 queue  (geometric stationary distribution; Little&#x27;s law)
+  lam = 8
+  mu = 10
+  assumes: lambda &lt; mu (stable); Poisson arrivals, exponential service, one server, unlimited capacity</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines steady-state performance for a single-server queue. Given an arrival rate of 8 and a service rate of 10, the system utilisation is computed as 0.8. Consequently, the average number of customers in the system is 4, while those waiting in the queue average 3.2. The mean time spent in the entire system is 0.5, and the average wait before service begins is 0.4. Finally, the probability that the system is completely empty is 0.2.</p>
+<h4 id="mmc_queue">M/M/c queue (Erlang C) — <code>mmc_queue</code></h4>
+<p>Steady-state measures of a queue with c parallel identical servers, Poisson arrivals and exponential service: probability of waiting (Erlang C), mean queue length and waiting times.</p>
+<div class="math">\[C(c, a) = \frac{B(c,a)}{1 - \rho(1 - B(c,a))}, \quad L_q = C\,\frac{\rho}{1-\rho}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>lam</code></td><td>in</td><td>arrival rate</td><td>—</td></tr><tr><td><code>mu</code></td><td>in</td><td>service rate of each server</td><td>—</td></tr><tr><td><code>c</code></td><td>in</td><td>number of servers</td><td>—</td></tr><tr><td><code>rho</code></td><td>out</td><td>utilisation lambda/(c mu)</td><td>—</td></tr><tr><td><code>P_wait</code></td><td>out</td><td>probability an arrival waits (Erlang C)</td><td>—</td></tr><tr><td><code>Lq</code></td><td>out</td><td>mean number waiting</td><td>—</td></tr><tr><td><code>Wq</code></td><td>out</td><td>mean waiting time</td><td>—</td></tr><tr><td><code>W</code></td><td>out</td><td>mean time in the system</td><td>—</td></tr><tr><td><code>L</code></td><td>out</td><td>mean number in the system</td><td>—</td></tr><tr><td><code>P0</code></td><td>out</td><td>probability the system is empty</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> lambda &lt; c mu (stable); unlimited queue capacity.</p>
+<pre><code class="shell">$ optimization solve mmc_queue lam=24 mu=10 c=3
+rho = 0.8
+P_wait = 0.6471910112
+Lq = 2.588764045
+Wq = 0.1078651685
+W = 0.2078651685
+L = 4.988764045
+P0 = 0.05617977528
+  by: M/M/c queue (Erlang C)  (Erlang B by its stable recursion, then Erlang C = B / (1 - rho (1 - B)); Little&#x27;s law)
+  lam = 24
+  mu = 10
+  assumes: lambda &lt; c mu (stable); unlimited queue capacity</code></pre>
+<p><strong>What the worked example means:</strong> The system computes steady-state queue metrics for a multi-server setup. With an arrival rate of 24 per time unit and individual server capacity of 10, the total utilization is 0.8. The calculated probability that an arriving customer must wait in line is 0.647191. Consequently, the mean number of customers waiting in the queue is 2.58876, and the average time spent waiting before service begins is 0.107865. These results reflect the balance between demand and available parallel processing capacity.</p>
+<h4 id="mmck_finite_queue">M/M/c/K queue (finite capacity) — <code>mmck_finite_queue</code></h4>
+<p>Steady-state measures of a queue with c servers and room for at most K customers in the system (arrivals finding it full are lost): blocking probability, effective arrival rate, mean numbers and times.</p>
+<div class="math">\[\pi_n \propto \frac{a^n}{n!}\ (n \le c),\quad \frac{a^c}{c!}\left(\frac{a}{c}\right)^{n-c}\ (c &lt; n \le K)\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>lam</code></td><td>in</td><td>arrival rate</td><td>—</td></tr><tr><td><code>mu</code></td><td>in</td><td>service rate of each server</td><td>—</td></tr><tr><td><code>c</code></td><td>in</td><td>number of servers</td><td>—</td></tr><tr><td><code>K</code></td><td>in</td><td>system capacity (customers in service plus waiting)</td><td>—</td></tr><tr><td><code>P_block</code></td><td>out</td><td>probability an arrival is lost (system full)</td><td>—</td></tr><tr><td><code>lam_eff</code></td><td>out</td><td>effective arrival rate</td><td>—</td></tr><tr><td><code>L</code></td><td>out</td><td>mean number in the system</td><td>—</td></tr><tr><td><code>Lq</code></td><td>out</td><td>mean number waiting</td><td>—</td></tr><tr><td><code>W</code></td><td>out</td><td>mean time in the system</td><td>—</td></tr><tr><td><code>Wq</code></td><td>out</td><td>mean waiting time</td><td>—</td></tr><tr><td><code>P0</code></td><td>out</td><td>probability the system is empty</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> 1 &lt;= c &lt;= K; any utilisation (finite capacity is always stable).</p>
+<pre><code class="shell">$ optimization solve mmck_finite_queue lam=2 mu=2 c=1 K=3
+P_block = 0.25
+lam_eff = 1.5
+L = 1.5
+Lq = 0.75
+W = 1
+Wq = 0.5
+P0 = 0.25
+  by: M/M/c/K queue (finite capacity)  (truncated birth-death distribution computed in log space; Little&#x27;s law with the effective arrival rate)
+  lam = 2
+  mu = 2
+  assumes: 1 &lt;= c &lt;= K; any utilisation (finite capacity is always stable)</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines steady-state performance for a finite-capacity queue. Given an arrival rate of 2, a service rate of 2, 1 servers, and a maximum capacity of 3, the model computes the probability that an arriving customer finds the system full and is lost, which is 0.25. The effective arrival rate entering the system is 1.5, leading to an average number of customers in the system of 1.5 and an average waiting time of 0.5.</p>
+<h4 id="machine_repair_queue">Machine-repair (finite-source) queue — <code>machine_repair_queue</code></h4>
+<p>N machines each fail at rate lambda while running and c repairers fix them at rate mu each: mean number of machines down and waiting, failure rate, downtime and the mean number working.</p>
+<div class="math">\[\pi_n \propto \frac{N!}{(N-n)!}\,\frac{(\lambda/\mu)^n}{n!\ \text{or}\ c!\,c^{n-c}}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>N</code></td><td>in</td><td>number of machines</td><td>—</td></tr><tr><td><code>lam</code></td><td>in</td><td>failure rate of one running machine</td><td>—</td></tr><tr><td><code>mu</code></td><td>in</td><td>repair rate of one repairer</td><td>—</td></tr><tr><td><code>c</code></td><td>in</td><td>number of repairers (default 1) (optional)</td><td>—</td></tr><tr><td><code>L</code></td><td>out</td><td>mean number of machines down</td><td>—</td></tr><tr><td><code>Lq</code></td><td>out</td><td>mean number waiting for repair</td><td>—</td></tr><tr><td><code>lam_eff</code></td><td>out</td><td>mean failure rate lambda (N - L)</td><td>—</td></tr><tr><td><code>W</code></td><td>out</td><td>mean downtime per failure</td><td>—</td></tr><tr><td><code>Wq</code></td><td>out</td><td>mean wait for a repairer</td><td>—</td></tr><tr><td><code>P0</code></td><td>out</td><td>probability all machines run</td><td>—</td></tr><tr><td><code>working</code></td><td>out</td><td>mean number running</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> 1 &lt;= c &lt;= N; exponential failure and repair times.</p>
+<pre><code class="shell">$ optimization solve machine_repair_queue N=5 lam=0.2 mu=1 c=1
+L = 1.424339107
+Lq = 0.709206928
+lam_eff = 0.7151321787
+W = 1.991714468
+Wq = 0.9917144678
+P0 = 0.2848678213
+working = 3.575660893
+  by: Machine-repair (finite-source) queue  (finite birth-death distribution (birth (N - n) lambda, death min(n, c) mu) in log space; Little&#x27;s law)
+  lam = 0.2
+  mu = 1
+  assumes: 1 &lt;= c &lt;= N; exponential failure and repair times</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the steady-state performance of a finite-source queueing system where 5 machines operate with individual failure rates of 0.2 and are serviced by 1 repairers at a rate of 1. The primary output, 1.42434, represents the average number of machines that are currently broken or waiting for repair. This gives the mean downtime per failure, 1.99171, and the probability that all machines are operational, 0.284868. These metrics allow operators to assess whether the current staffing level of 1 repairers is sufficient to maintain production targets given the observed failure behavior.</p>
+<h4 id="mmc_staffing">Minimum number of servers for a service target (Erlang C) — <code>mmc_staffing</code></h4>
+<p>The smallest number of servers c of an M/M/c queue for which the probability of waiting, or the mean waiting time, meets a target.</p>
+<div class="math">\[c^* = \min\{c &gt; \lambda/\mu : C(c, \lambda/\mu) \le \alpha\}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>lam</code></td><td>in</td><td>arrival rate</td><td>—</td></tr><tr><td><code>mu</code></td><td>in</td><td>service rate of each server</td><td>—</td></tr><tr><td><code>target</code></td><td>in</td><td>target value (a probability, or a mean wait in the time unit of the rates)</td><td>—</td></tr><tr><td><code>criterion</code></td><td>in</td><td>wait_probability (default) or mean_wait (optional)</td><td>—</td></tr><tr><td><code>servers</code></td><td>out</td><td>minimum number of servers</td><td>—</td></tr><tr><td><code>P_wait</code></td><td>out</td><td>probability of waiting with that many servers</td><td>—</td></tr><tr><td><code>Wq</code></td><td>out</td><td>mean waiting time with that many servers</td><td>—</td></tr><tr><td><code>utilisation</code></td><td>out</td><td>server utilisation</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> Poisson arrivals, exponential service; target &gt; 0.</p>
+<p>Run <code>optimization info mmc_staffing</code> for its inputs, then <code>optimization solve mmc_staffing name=value ...</code>.</p>
+<p><strong>What the worked example means:</strong> This calculation determines the smallest number of servers needed for an M/M/c queue to satisfy the specified service level. By incrementally increasing the server count from the traffic intensity floor, the algorithm finds that 5 servers are sufficient. With this configuration, the probability that an arriving customer must wait is 0.113504, and the mean waiting time is 0.00436553. The resulting server utilisation is 0.48, indicating how busy the system is under these conditions.</p>
+<h3>Revenue management (1)</h3>
+<h4 id="littlewood_protection">Littlewood&#x27;s rule (two-fare protection level) — <code>littlewood_protection</code></h4>
+<p>How many seats (units) to protect for full-fare demand when a discount fare is also sold: the protection level and, with a capacity, the booking limit for the discount class.</p>
+<div class="math">\[P(D_1 &gt; y^*) = \frac{p_2}{p_1}, \quad y^* = \mu + z\,\sigma\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>p1</code></td><td>in</td><td>full fare</td><td>—</td></tr><tr><td><code>p2</code></td><td>in</td><td>discount fare</td><td>—</td></tr><tr><td><code>mu</code></td><td>in</td><td>mean full-fare demand</td><td>—</td></tr><tr><td><code>sigma</code></td><td>in</td><td>standard deviation of full-fare demand</td><td>—</td></tr><tr><td><code>capacity</code></td><td>in</td><td>total capacity (optional) (optional)</td><td>—</td></tr><tr><td><code>protection_level</code></td><td>out</td><td>units protected for full-fare demand</td><td>—</td></tr><tr><td><code>z</code></td><td>out</td><td>standard normal quantile of 1 - p2/p1</td><td>—</td></tr><tr><td><code>booking_limit</code></td><td>out</td><td>discount booking limit = capacity - protection (when a capacity is given)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> 0 &lt; p2 &lt; p1; normally distributed full-fare demand; continuous approximation (no rounding).</p>
+<pre><code class="shell">$ optimization solve littlewood_protection p1=400 p2=150 mu=60 sigma=20
+protection_level = 66.37278728
+z = 0.318639364
+  by: Littlewood&#x27;s rule (two-fare protection level)  (protect y with P(D1 &gt; y) = p2/p1)
+  p1 = 400
+  p2 = 150
+  mu = 60
+  sigma = 20
+  assumes: 0 &lt; p2 &lt; p1; normally distributed full-fare demand; continuous approximation (no rounding)</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the number of units to reserve for high-value customers, known as the protection level. Comparing the discount fare 150 to the full fare 400 establishes a critical fractile that guides how much demand to protect against early sell-outs. The resulting protection level is 66.3728, which balances the risk of turning away full-fare buyers against the opportunity cost of leaving seats empty or selling them at a lower price.</p>
+<h3>Scheduling (6)</h3>
+<h4 id="edd_max_lateness">Earliest due date rule (minimum maximum lateness) — <code>edd_max_lateness</code></h4>
+<p>The job order that minimises the maximum lateness (and so the maximum tardiness) on one machine.</p>
+<div class="math">\[\min L_{\max} = \min \max_j (C_j - d_j):\; d_{[1]} \le d_{[2]} \le \dots\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>p</code></td><td>in</td><td>processing time of each job</td><td>—</td></tr><tr><td><code>d</code></td><td>in</td><td>due date of each job</td><td>—</td></tr><tr><td><code>max_lateness</code></td><td>out</td><td>minimum possible maximum lateness</td><td>—</td></tr><tr><td><code>max_tardiness</code></td><td>out</td><td>minimum possible maximum tardiness</td><td>—</td></tr><tr><td><code>sequence</code></td><td>out</td><td>optimal order (earliest due date first; ties in job-number order)</td><td>—</td></tr><tr><td><code>tardy_jobs_in_sequence</code></td><td>out</td><td>number of late jobs in this sequence (not minimised)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> all jobs available at time 0.</p>
+<pre><code class="shell">$ optimization solve edd_max_lateness &quot;p=[2, 4, 1, 3]&quot; &quot;d=[5, 6, 3, 9]&quot;
+sequence = [3,1,2,4]
+max_lateness = 1
+max_tardiness = 1
+tardy_jobs_in_sequence = 2
+  by: Earliest due date rule (minimum maximum lateness)  (sort by due date (Jackson&#x27;s rule))
+  assumes: all jobs available at time 0</code></pre>
+<p><strong>What the worked example means:</strong> By sorting jobs by due date, the algorithm determines the sequence [3, 1, 2, 4] that minimizes the worst-case delay. This results in a maximum lateness of 1 and a maximum tardiness of 1, with 2 jobs finishing late.</p>
+<h4 id="johnson_two_machine">Johnson&#x27;s rule (two-machine flow shop) — <code>johnson_two_machine</code></h4>
+<p>The job order that minimises the makespan when every job is processed first on machine 1 and then on machine 2.</p>
+<div class="math">\[\min C_{\max} \text{ for } F2 \| C_{\max}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>a</code></td><td>in</td><td>processing time of each job on machine 1</td><td>—</td></tr><tr><td><code>b</code></td><td>in</td><td>processing time of each job on machine 2</td><td>—</td></tr><tr><td><code>makespan</code></td><td>out</td><td>minimum makespan</td><td>—</td></tr><tr><td><code>sequence</code></td><td>out</td><td>Johnson order (a &lt; b by increasing a, then the rest by decreasing b; ties by job number)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> same job order on both machines; all jobs available at time 0.</p>
+<pre><code class="shell">$ optimization solve johnson_two_machine &quot;a=[5, 2, 6, 7]&quot; &quot;b=[3, 4, 8, 2]&quot;
+makespan = 22
+sequence = [2,3,1,4]
+  by: Johnson&#x27;s rule (two-machine flow shop)  (Johnson&#x27;s rule)
+  assumes: same job order on both machines; all jobs available at time 0</code></pre>
+<p><strong>What the worked example means:</strong> Johnson&#x27;s rule determines the best order for jobs in a two-machine flow shop to minimize total completion time. By comparing processing times on machine one and machine two, it assigns jobs with shorter first-stage times early and those with shorter second-stage times late. The resulting schedule achieves a makespan of 22, ensuring efficient resource utilization under the assumption that all jobs are available at the start and follow the same routing path.</p>
+<h4 id="parallel_machine_makespan">Minimum makespan on identical parallel machines — <code>parallel_machine_makespan</code></h4>
+<p>Assign jobs to m identical machines so that the last machine finishes as early as possible (P||Cmax), exactly.</p>
+<div class="math">\[\min_{\text{assignment}} \max_k \sum_{j \to k} p_j\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>p</code></td><td>in</td><td>processing time of each job</td><td>—</td></tr><tr><td><code>m</code></td><td>in</td><td>number of identical machines</td><td>—</td></tr><tr><td><code>makespan</code></td><td>out</td><td>minimum makespan</td><td>—</td></tr><tr><td><code>machine_of_job</code></td><td>out</td><td>one optimal assignment: machine number of each job</td><td>—</td></tr><tr><td><code>lower_bound</code></td><td>out</td><td>the bound max(longest job, total / m)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> at most 12 jobs and 6 machines; jobs are not split.</p>
+<pre><code class="shell">$ optimization solve parallel_machine_makespan &quot;p=[7, 5, 4, 3, 3, 2]&quot; m=2
+makespan = 12
+machine_of_job = [1,2,2,1,2,1]
+lower_bound = 12
+  by: Minimum makespan on identical parallel machines  (exact depth-first branch and bound (longest job first, symmetric machines skipped), started from the LPT schedule)
+  assumes: at most 12 jobs and 6 machines; jobs are not split</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the optimal schedule for identical parallel machines using an exact branch and bound algorithm. Given processing times of [7, 5, 4, 3, 3, 2] on 2 machines, it finds the assignment that minimizes the maximum completion time across all machines. The resulting minimum makespan is 12, with the lower bound estimated at 12. This ensures no other valid assignment can finish earlier than this value.</p>
+<h4 id="moore_hodgson_tardy_jobs">Moore-Hodgson algorithm (minimum number of tardy jobs) — <code>moore_hodgson_tardy_jobs</code></h4>
+<p>The smallest possible number of late jobs on one machine, with an order of the on-time jobs and the set of late jobs.</p>
+<div class="math">\[\min \sum_j U_j\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>p</code></td><td>in</td><td>processing time of each job</td><td>—</td></tr><tr><td><code>d</code></td><td>in</td><td>due date of each job</td><td>—</td></tr><tr><td><code>min_tardy_jobs</code></td><td>out</td><td>minimum number of tardy jobs</td><td>—</td></tr><tr><td><code>on_time_sequence</code></td><td>out</td><td>on-time jobs in due-date order</td><td>—</td></tr><tr><td><code>tardy_jobs</code></td><td>out</td><td>jobs scheduled late (one optimal choice: the longest job removed, ties the higher job number)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> all jobs available at time 0.</p>
+<pre><code class="shell">$ optimization solve moore_hodgson_tardy_jobs &quot;p=[4, 3, 2, 5, 6]&quot; &quot;d=[5, 6, 8, 12, 15]&quot;
+min_tardy_jobs = 2
+on_time_sequence = [2,3,4]
+tardy_jobs = [1,5]
+  by: Moore-Hodgson algorithm (minimum number of tardy jobs)  (EDD order; whenever a job is late remove the longest job scheduled so far)
+  assumes: all jobs available at time 0</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the smallest possible count of late jobs using the Moore-Hodgson algorithm. Starting from an Earliest Due Date order, it removes the job with the longest processing time whenever a lateness occurs. The result shows that only 2 jobs must be delayed, while the remaining tasks in the sequence [2, 3, 4] finish on time.</p>
+<h4 id="spt_mean_flow_time">Shortest processing time rule (minimum mean flow time) — <code>spt_mean_flow_time</code></h4>
+<p>The job order that minimises the mean flow (completion) time on one machine, and that minimum.</p>
+<div class="math">\[\min \tfrac{1}{n}\sum_j C_j:\; p_{[1]} \le p_{[2]} \le \dots\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>p</code></td><td>in</td><td>processing time of each job (jobs numbered 1, 2, ...)</td><td>—</td></tr><tr><td><code>mean_flow_time</code></td><td>out</td><td>minimum mean completion time</td><td>—</td></tr><tr><td><code>total_completion_time</code></td><td>out</td><td>minimum total completion time</td><td>—</td></tr><tr><td><code>sequence</code></td><td>out</td><td>optimal job order (shortest first; equal times in job-number order)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> all jobs available at time 0; processing times &gt;= 0.</p>
+<pre><code class="shell">$ optimization solve spt_mean_flow_time &quot;p=[4, 2, 6, 3]&quot;
+sequence = [2,4,1,3]
+total_completion_time = 31
+mean_flow_time = 7.75
+  by: Shortest processing time rule (minimum mean flow time)  (sort by processing time (SPT); optimal by the exchange argument)
+  assumes: all jobs available at time 0; processing times &gt;= 0</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the job order that minimizes the average completion time on a single machine. Sorting jobs by processing time from shortest to longest gives the sequence [2, 4, 1, 3]. This arrangement yields a total completion time of 31 and a minimum mean flow time of 7.75, ensuring the most efficient use of the machine for this specific objective.</p>
+<h4 id="wspt_weighted_completion">Weighted shortest processing time (Smith&#x27;s rule) — <code>wspt_weighted_completion</code></h4>
+<p>The job order that minimises the total weighted completion time on one machine, and that minimum.</p>
+<div class="math">\[\min \sum_j w_j C_j:\; \frac{p_{[1]}}{w_{[1]}} \le \frac{p_{[2]}}{w_{[2]}} \le \dots\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>p</code></td><td>in</td><td>processing time of each job</td><td>—</td></tr><tr><td><code>w</code></td><td>in</td><td>weight (importance) of each job</td><td>—</td></tr><tr><td><code>weighted_completion_time</code></td><td>out</td><td>minimum total weighted completion time</td><td>—</td></tr><tr><td><code>sequence</code></td><td>out</td><td>optimal order (ratio p/w ascending; ties in job-number order)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> weights &gt; 0; all jobs available at time 0.</p>
+<pre><code class="shell">$ optimization solve wspt_weighted_completion &quot;p=[3, 1, 4]&quot; &quot;w=[1, 2, 3]&quot;
+sequence = [2,3,1]
+weighted_completion_time = 25
+  by: Weighted shortest processing time (Smith&#x27;s rule)  (sort by p_j / w_j (Smith&#x27;s ratio rule))
+  assumes: weights &gt; 0; all jobs available at time 0</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the job order that minimizes the sum of each job&#x27;s weight multiplied by its completion time. By sorting jobs based on the ratio of processing time to weight, the algorithm identifies the most efficient schedule. The resulting sequence is [2, 3, 1], which achieves a total weighted completion time of 25. This means that high-weight jobs with short processing times are prioritized to reduce overall cost.</p>
+<h3>Unconstrained optimisation (1)</h3>
+<h4 id="quadratic_optimum">Optimum of a quadratic function — <code>quadratic_optimum</code></h4>
+<p>The minimum or maximum of f(x) = a x^2 + b x + c: where it occurs and its value.</p>
+<div class="math">\[x^* = -\frac{b}{2a}, \quad f^* = c - \frac{b^2}{4a}\]</div>
+<table><thead><tr><th>symbol</th><th></th><th>meaning</th><th>SI unit</th></tr></thead><tbody><tr><td><code>a</code></td><td>in</td><td>coefficient of x^2</td><td>—</td></tr><tr><td><code>b</code></td><td>in</td><td>coefficient of x</td><td>—</td></tr><tr><td><code>c</code></td><td>in</td><td>constant term</td><td>—</td></tr><tr><td><code>goal</code></td><td>in</td><td>minimum, maximum or optimum (default optimum) (optional)</td><td>—</td></tr><tr><td><code>x_opt</code></td><td>out</td><td>x at the optimum</td><td>—</td></tr><tr><td><code>f_opt</code></td><td>out</td><td>optimal value f(x*)</td><td>—</td></tr><tr><td><code>type</code></td><td>out</td><td>minimum (a &gt; 0) or maximum (a &lt; 0)</td><td>—</td></tr></tbody></table>
+<p><strong>Applies when:</strong> a != 0; a minimum asked needs a &gt; 0, a maximum a &lt; 0.</p>
+<pre><code class="shell">$ optimization solve quadratic_optimum a=2 b=-8 c=3 goal=minimum
+x_opt = 2
+f_opt = -5
+type = minimum
+  by: Optimum of a quadratic function  (first-order condition f&#x27;(x) = 2ax + b = 0, exact fractions)
+  a = 2
+  b = -8
+  c = 3
+  goal = minimum
+  assumes: a != 0; a minimum asked needs a &gt; 0, a maximum a &lt; 0</code></pre>
+<p><strong>What the worked example means:</strong> This calculation determines the vertex of the parabolic curve defined by the coefficients a, b, and c. Applying the first-order condition shows that the extremum is located at x equals 2. The corresponding optimal value of the function is computed as -5. Depending on the sign of the leading coefficient, this point represents either a minimum or a maximum.</p>
+<p>Questions and reports: support@ai999x.com. AI999X — The Future Is Self-Improving.</p></body></html>

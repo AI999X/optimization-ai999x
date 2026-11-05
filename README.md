@@ -2,7 +2,7 @@
 
 [![tests](https://github.com/AI999X/optimization-ai999x/actions/workflows/ci.yml/badge.svg)](https://github.com/AI999X/optimization-ai999x/actions/workflows/ci.yml) [![PyPI](https://img.shields.io/pypi/v/optimization-ai999x)](https://pypi.org/project/optimization-ai999x/) [![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97-Hugging%20Face-yellow)](https://huggingface.co/AI999X/optimization-ai999x)
 
-**[Install](https://pypi.org/project/optimization-ai999x/)** · **[Capability guide](https://huggingface.co/AI999X/optimization-ai999x/tree/main/docs)** · **[Evaluation](https://huggingface.co/AI999X/optimization-ai999x/tree/main/evaluation)** · **[AI999X on Hugging Face](https://huggingface.co/AI999X)** · **[Website](https://ai999x.com)** · **[Support: Buy Me a Coffee](https://buymeacoffee.com/ibnuljaiffarabi)**
+**[Desktop app & command line](https://www.ai999x.com/desktop-cli/)** · **[Compute in your browser](https://www.ai999x.com/models/optimization-ai999x/#try)** · **[Install (Python)](https://pypi.org/project/optimization-ai999x/)** · **[Guides](https://huggingface.co/AI999X/optimization-ai999x/tree/main/docs)** · **[Evaluation](https://huggingface.co/AI999X/optimization-ai999x/tree/main/evaluation)** · **[AI999X on Hugging Face](https://huggingface.co/AI999X)** · **[Website](https://ai999x.com)** · **[Support: Buy Me a Coffee](https://buymeacoffee.com/ibnuljaiffarabi)**
 
 License: Apache-2.0 · Author: Ibnul Jaif Farabi (creator and engineer) · Organization: AI999X · Version 1.0.3
 
@@ -12,7 +12,303 @@ optimization-ai999x is an offline, deterministic Python solver that answers opti
 
 **optimization-ai999x** is a compact, deterministic optimization engine for Python. It reads a question in plain English (or a typed call), picks a certified optimization capability, computes the answer exactly, checks it, and returns the result with its steps, units, LaTeX and assumptions — or an honest refusal that says what is missing. It runs fully offline on any CPU, needs no GPU, no API key and no internet, and is built to give **zero wrong answers**: when it is not sure, it refuses instead of guessing.
 
-[![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-support%20development-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/ibnuljaiffarabi) ![License](https://img.shields.io/badge/license-Apache--2.0-blue) ![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue) ![Offline](https://img.shields.io/badge/runs-offline%20on%20CPU-green)
+[![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-support%20development-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/ibnuljaiffarabi) ![License](https://img.shields.io/badge/license-Apache--2.0-blue) ![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue) ![Offline](https://img.shields.io/badge/runs-offline%20on%20CPU-green) ![Rust](https://img.shields.io/badge/Rust-Windows%20%7C%20Linux%20%7C%20WebAssembly-orange)
+
+**Run it your way.** optimization-ai999x comes as the AI999X desktop app and as the command-line program `optimization` for Windows and Linux, runs in your browser as WebAssembly, and installs as a Python package. The desktop app, the command line and the browser run the same compiled Rust program on your own device: offline, no Python needed.
+
+## Get it
+
+| Way to run it | For | Get it |
+|---|---|---|
+| **AI999X Optimization desktop app** 1.2.0 | Windows, Linux — this model in its own app: search, ask in words, forms, live figures, explanations, offline | [Windows (x86-64)](https://www.ai999x.com/downloads/desktop/1.2.0/ai999x-optimization-1.2.0-windows-x86_64.zip) · [Linux (x86-64)](https://www.ai999x.com/downloads/desktop/1.2.0/ai999x-optimization-1.2.0-linux-x86_64.tar.gz) |
+| **AI999X desktop app** 1.2.0 | Windows, Linux — every AI999X model in one app: search, ask in words, forms, live figures, explanations, offline | [Windows (x86-64)](https://www.ai999x.com/downloads/desktop/1.2.0/ai999x-1.2.0-windows-x86_64.zip) · [Linux (x86-64)](https://www.ai999x.com/downloads/desktop/1.2.0/ai999x-1.2.0-linux-x86_64.tar.gz) |
+| **Command line** (`optimization`) | Windows, Linux — one program per model, offline, no Python | [Windows (x86-64)](https://www.ai999x.com/downloads/desktop/1.2.0/ai999x-cli-1.2.0-windows-x86_64.zip) · [Linux (x86-64)](https://www.ai999x.com/downloads/desktop/1.2.0/ai999x-cli-1.2.0-linux-x86_64.tar.gz) |
+| **In your browser** | any device — nothing to install | [Compute on the model page](https://www.ai999x.com/models/optimization-ai999x/#try) |
+| **Python** | Python 3.10+ | `pip install optimization-ai999x` |
+
+Checksums: [SHA256SUMS](https://www.ai999x.com/downloads/desktop/1.2.0/SHA256SUMS) · every version: [https://www.ai999x.com/downloads/desktop/latest/](https://www.ai999x.com/downloads/desktop/latest/) · install guide: [desktop & command line](https://www.ai999x.com/desktop-cli/)
+
+## Rust versions
+
+Optimization also comes as native programs compiled from Rust, version 1.2.0 of the AI999X desktop app and command line: they run offline on your computer and need no Python. Each file is in this repository's `rust/` folder, on the [GitHub release v1.0.3](https://github.com/AI999X/optimization-ai999x/releases/tag/v1.0.3) and on the website.
+
+| Program | System | File | Size | Download | Use |
+|---|---|---|---|---|---|
+| Desktop app (Optimization) | Windows x86-64 | `ai999x-optimization-1.2.0-windows-x86_64.zip` | 7.8 MB | [Hub](https://huggingface.co/AI999X/optimization-ai999x/resolve/main/rust/ai999x-optimization-1.2.0-windows-x86_64.zip) · [GitHub](https://github.com/AI999X/optimization-ai999x/releases/download/v1.0.3/ai999x-optimization-1.2.0-windows-x86_64.zip) · [website](https://www.ai999x.com/downloads/desktop/1.2.0/ai999x-optimization-1.2.0-windows-x86_64.zip) | unzip, then double-click `ai999x-optimization.exe` (no installer) |
+| Desktop app (Optimization) | Linux x86-64 | `ai999x-optimization-1.2.0-linux-x86_64.tar.gz` | 8.7 MB | [Hub](https://huggingface.co/AI999X/optimization-ai999x/resolve/main/rust/ai999x-optimization-1.2.0-linux-x86_64.tar.gz) · [GitHub](https://github.com/AI999X/optimization-ai999x/releases/download/v1.0.3/ai999x-optimization-1.2.0-linux-x86_64.tar.gz) · [website](https://www.ai999x.com/downloads/desktop/1.2.0/ai999x-optimization-1.2.0-linux-x86_64.tar.gz) | extract, then run `./ai999x-optimization` (X11 or Wayland desktop) |
+| Command line (`optimization`) | Windows x86-64 | `ai999x-optimization-cli-1.2.0-windows-x86_64.zip` | 3.5 MB | [Hub](https://huggingface.co/AI999X/optimization-ai999x/resolve/main/rust/ai999x-optimization-cli-1.2.0-windows-x86_64.zip) · [GitHub](https://github.com/AI999X/optimization-ai999x/releases/download/v1.0.3/ai999x-optimization-cli-1.2.0-windows-x86_64.zip) · [website (all models)](https://www.ai999x.com/downloads/desktop/1.2.0/ai999x-cli-1.2.0-windows-x86_64.zip) | unzip, then `optimization.exe ask "<question>"` or `optimization.exe solve <capability> name=value` |
+| Command line (`optimization`) | Linux x86-64 | `ai999x-optimization-cli-1.2.0-linux-x86_64.tar.gz` | 3.5 MB | [Hub](https://huggingface.co/AI999X/optimization-ai999x/resolve/main/rust/ai999x-optimization-cli-1.2.0-linux-x86_64.tar.gz) · [GitHub](https://github.com/AI999X/optimization-ai999x/releases/download/v1.0.3/ai999x-optimization-cli-1.2.0-linux-x86_64.tar.gz) · [website (all models)](https://www.ai999x.com/downloads/desktop/1.2.0/ai999x-cli-1.2.0-linux-x86_64.tar.gz) | extract, then `./optimization ask "<question>"` or `./optimization solve <capability> name=value` |
+
+The command-line archive holds `optimization` with a README of its commands and examples, the licence and the notice. Checksums: [`rust/SHA256SUMS`](https://huggingface.co/AI999X/optimization-ai999x/resolve/main/rust/SHA256SUMS) (`sha256sum -c SHA256SUMS`).
+
+## Quick start
+
+### Desktop app
+
+Download **AI999X Optimization** for your system (above), unpack it and start it; type a question in words or pick a capability, fill in the form and press Compute. Figures and an explanation of the answer appear beside it. The AI999X desktop app has the same, with Optimization among all AI999X models.
+
+Linux, from a terminal:
+
+```bash
+curl -LO https://www.ai999x.com/downloads/desktop/1.2.0/ai999x-optimization-1.2.0-linux-x86_64.tar.gz
+curl -LO https://www.ai999x.com/downloads/desktop/1.2.0/SHA256SUMS
+sha256sum -c --ignore-missing SHA256SUMS
+tar xzf ai999x-optimization-1.2.0-linux-x86_64.tar.gz
+./ai999x-optimization-1.2.0-linux-x86_64/ai999x-optimization
+```
+
+### Command line
+
+Linux:
+
+```bash
+curl -LO https://www.ai999x.com/downloads/desktop/1.2.0/ai999x-cli-1.2.0-linux-x86_64.tar.gz
+curl -LO https://www.ai999x.com/downloads/desktop/1.2.0/SHA256SUMS
+sha256sum -c --ignore-missing SHA256SUMS
+mkdir -p ~/.local/share && tar xzf ai999x-cli-1.2.0-linux-x86_64.tar.gz -C ~/.local/share
+echo 'export PATH="$HOME/.local/share/ai999x-cli-1.2.0-linux-x86_64:$PATH"' >> ~/.bashrc && source ~/.bashrc
+optimization --version
+```
+
+Windows (PowerShell):
+
+```powershell
+$F = "ai999x-cli-1.2.0-windows-x86_64.zip"
+Invoke-WebRequest "https://www.ai999x.com/downloads/desktop/1.2.0/$F" -OutFile $F
+Invoke-WebRequest "https://www.ai999x.com/downloads/desktop/1.2.0/SHA256SUMS" -OutFile SHA256SUMS
+(Get-FileHash $F -Algorithm SHA256).Hash.ToLower() -eq ((Select-String -SimpleMatch $F SHA256SUMS).Line -split ' ')[0]
+Expand-Archive $F -DestinationPath "$env:LOCALAPPDATA\AI999X" -Force
+$D = "$env:LOCALAPPDATA\AI999X\ai999x-cli-1.2.0-windows-x86_64"; $env:Path += ";$D"
+[Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", "User") + ";$D", "User")
+optimization --version
+```
+
+Every command below was run as shown; the text under it is what the program printed.
+
+**Ask in words** — Write the question as you would say it: the program reads the quantities and their units, picks the capability and answers.
+
+```console
+$ optimization ask "Solve the transportation problem with supply [20, 30], demand [10, 25, 15] and cost matrix [[2, 3, 1], [5, 4, 8]]."
+Read as: Transportation problem (minimum shipping cost)
+min_cost = 150
+shipments = [[5.0,0.0,15.0],[5.0,25.0,0.0]]
+plan_unique = yes
+dual = [-3.0,0.0,5.0,4.0,4.0]
+  by: Transportation problem (minimum shipping cost)  (the transportation LP solved exactly (rational simplex), certified by its dual (u_i + v_j <= c_ij))
+  assumes: total supply >= total demand (surplus stays at the sources at no cost); at most 60 routes
+```
+
+**What a capability needs** — The equation or method, every input and output with its SI unit. Read this before solve: it tells you the input names.
+
+```console
+$ optimization info eoq
+Economic order quantity (EOQ)
+  minimise D S / Q + H Q / 2 (at the optimum ordering cost equals holding cost)
+  in   D        demand per period (units, e.g. per year) [1]
+  in   S        fixed cost per order [1]
+  in   H        holding cost per unit per period [1]
+  out  Q        economic order quantity [1]
+  out  total_cost minimum ordering + holding cost per period [1]
+  out  orders_per_period number of orders per period [1]
+  out  cycle_time time between orders (in periods) [1]
+```
+
+**Solve** — Inputs as name=value, each with any unit of the right kind. The answer lists every output, the method used, each input converted to SI, and the conditions the answer assumes.
+
+```console
+$ optimization solve eoq D=1200 S=50 H=3
+Q = 200
+total_cost = 600
+orders_per_period = 6
+cycle_time = 0.1666666667
+  by: Economic order quantity (EOQ)  (minimise D S / Q + H Q / 2 (at the optimum ordering cost equals holding cost))
+  D = 1200
+  S = 50
+  H = 3
+  assumes: D, S, H > 0; constant demand, instant replenishment, no shortages
+```
+
+**Draw the figures** — The live figures for your own inputs, written as SVG files into the folder given with --out (here the current folder); open them in any browser. Without --out the SVG text comes back as JSON.
+
+```console
+$ optimization figures eoq D=1200 S=50 H=3 --out .
+[
+  {
+    "slug": "eoq-live-1",
+    "title": "Economic order quantity as holding cost per unit per period varies",
+    "caption": "Economic order quantity as H runs from 0.75 to 5.25, every other input as you entered it (41 solutions). Marked: your H = 3 gives Q = 200. Your inputs: D = 1200, S = 50, H = 3.",
+    "file": "./eoq-live-1.svg"
+  },
+  {
+    "slug": "eoq-live-2",
+    "title": "Economic order quantity as fixed cost per order varies",
+    "caption": "Economic order quantity as S runs from 12.5 to 87.5, every other input as you entered it (29 solutions). Marked: your S = 50 gives Q = 200. Your inputs: D = 1200, S = 50, H = 3.",
+    "file": "./eoq-live-2.svg"
+  }
+]
+```
+
+**Many questions at once** — One JSON request per line in, one JSON answer per line out, in order: for scripts, notebooks and agents (the program starts once). In PowerShell: Get-Content cases.jsonl | optimization batch
+
+`cases.jsonl`:
+
+```json
+{"key": "eoq", "inputs": {"D": 1200, "S": 50, "H": 3}}
+{"key": "ahp_consistency_ratio", "inputs": {"judgments": "[3, 5, 2]"}}
+```
+
+```console
+$ optimization batch < cases.jsonl
+{"outcome":"SOLVED","message":"","value":200.0,"unit":"","solved_for":"Q","si":[["D",1200.0],["S",50.0],["H",3.0]],"values":[["Q",200.0,""],["total_cost",600.0,""],["orders_per_period",6.0,""],["cycle_time",0.16666666666666666,""]],"target":"Q","phrase":"economic order quantity","assumptions":["D, S, H > 0","constant demand, instant replenishment, no shortages"],"name":"Economic order quantity (EOQ)","equation":"minimise D S / Q + H Q / 2 (at the optimum ordering cost equals holding cost)"}
+{"outcome":"SOLVED","message":"","value":0.0031849983307239735,"unit":"","solved_for":"CR","values":[["CR",0.0031849983307239735,""],["CI",0.0018472990318199045,""],["lambda_max",3.00369459806364,""],["weights",[0.6483290138222366,0.2296507940626371,0.12202019211512621],""],["acceptable","yes",""]],"target":"CR","phrase":"consistency ratio","assumptions":["3 to 10 criteria","RI = 0.58, 0.90, 1.12, 1.24, 1.32, 1.41, 1.45, 1.49 for n = 3..10 (Saaty)"],"name":"AHP consistency ratio","equation":"principal eigenpair by power iteration (certified as an eigenpair), then CI and CR"}
+```
+
+### In your browser
+
+Open [Optimization on ai999x.com](https://www.ai999x.com/models/optimization-ai999x/#try), choose a capability and press **Compute**: the model runs on your own device as WebAssembly; nothing is sent anywhere. Change any input (any unit of the right kind) and the answer, its explanation and the figures follow.
+
+In your own page: `optimization_ai999x.wasm` and the loader `ax-wasm.js` (https://www.ai999x.com/compute/rust/ax-wasm.js).
+
+### Python
+
+```bash
+pip install optimization-ai999x
+```
+
+## Worked examples in every form
+
+The same worked example from the command line, from Python and in the browser. Each command-line output is what the program printed.
+
+### Absolute extrema of a polynomial on a closed interval
+
+The absolute minimum and maximum of a polynomial on [lo, hi] (closed-interval method: endpoints and critical points), and where they are attained.
+
+Command line:
+
+```console
+$ optimization solve polynomial_extrema_interval "coefficients=[1, -3, 0, 2]" lo=-1 hi=3
+min_value = -2
+max_value = 2
+argmin_example = -1
+argmax_example = 0
+  by: Absolute extrema of a polynomial on a closed interval  (real roots of f' in [lo, hi] (monotone pieces between the roots of f'' bisected to the last float), compared with the endpoints)
+  lo = -1
+  hi = 3
+  assumes: lo < hi; degree 1 to 5
+```
+
+Python:
+
+```python
+import optimization_ai999x as m
+
+a = m.solve("polynomial_extrema_interval", coefficients=[1, -3, 0, 2], lo="-1", hi="3")
+print(a.values or (a.value, a.unit))
+```
+
+Browser: [open this capability on the model page](https://www.ai999x.com/models/optimization-ai999x/#cap-polynomial_extrema_interval) and press **Compute in your browser**.
+
+_What this means:_ This calculation determines the global extrema of a polynomial on the closed interval from -1 to 3. It evaluates the function at the endpoints and all real critical points where the derivative is zero within the interval. The smallest resulting value is reported as the absolute minimum, -2, attained at -1, while the largest is the absolute maximum, 2, found at 0.
+
+### Closed cylinder of least surface area for a given volume
+
+The radius, height and surface area of the closed cylindrical can that holds a volume V with the least material.
+
+Command line:
+
+```console
+$ optimization solve can_min_surface V=500
+radius = 4.301270069
+height = 8.602540138
+min_area = 348.7342055
+  by: Closed cylinder of least surface area for a given volume  (A(r) = 2 pi r^2 + 2V/r; A'(r) = 0)
+  V = 500
+  assumes: V > 0; closed top and bottom
+```
+
+Python:
+
+```python
+import optimization_ai999x as m
+
+a = m.solve("can_min_surface", V="500")
+print(a.values or (a.value, a.unit))
+```
+
+Browser: [open this capability on the model page](https://www.ai999x.com/models/optimization-ai999x/#cap-can_min_surface) and press **Compute in your browser**.
+
+_What this means:_ This calculation determines the dimensions for a closed cylindrical container that holds a specific volume while using the least amount of material. Given an input volume of 500, the method finds the optimal radius to be 4.30127 and the corresponding height to be 8.60254. The resulting minimum surface area required is 348.734. This ensures efficient packaging design by balancing the top, bottom, and side surfaces.
+
+### Critical point of a two-variable quadratic and its classification
+
+For f(x, y) = a x^2 + b xy + c y^2 + d x + e y + f0: the critical point, its value and whether it is a local minimum, a local maximum or a saddle point (second-derivative test).
+
+Command line:
+
+```console
+$ optimization solve critical_point_two_variables a=3 b=2 c=1 d=-4 e=6 f0=1
+f_value = -20.5
+x = 2.5
+y = -5.5
+type = local minimum
+  by: Critical point of a two-variable quadratic and its classification  (grad f = 0 solved exactly; D = f_xx f_yy - f_xy^2 = 4ac - b^2 classifies it)
+  a = 3
+  b = 2
+  c = 1
+  d = -4
+  e = 6
+  f0 = 1
+  assumes: 4ac - b^2 != 0 (an isolated critical point)
+```
+
+Python:
+
+```python
+import optimization_ai999x as m
+
+a = m.solve("critical_point_two_variables", a="3", b="2", c="1", d="-4", e="6", f0="1")
+print(a.values or (a.value, a.unit))
+```
+
+Browser: [open this capability on the model page](https://www.ai999x.com/models/optimization-ai999x/#cap-critical_point_two_variables) and press **Compute in your browser**.
+
+_What this means:_ This calculation identifies the stationary point for the quadratic function defined by coefficients 3, 2, 1, -4, 6, and 1. Solving the gradient equal to zero shows that the critical point occurs at coordinates x equals 2.5 and y equals -5.5. The value of the function at this specific location is -20.5. Based on the second derivative test, which examines the curvature using the determinant of the Hessian matrix, the nature of this point is classified as a local minimum. This classification indicates whether the surface curves upward like a bowl, downward like a dome, or forms a saddle shape at this coordinate.
+
+### Largest rectangle for a given length of fencing
+
+The dimensions and maximum area of a rectangle enclosed by a fence of length L, on four sides or on three sides with a wall or river as the fourth.
+
+Command line:
+
+```console
+$ optimization solve fence_max_area wall=False L=200
+width = 50
+length = 50
+max_area = 2500
+  by: Largest rectangle for a given length of fencing  (area as a function of one side, derivative set to zero)
+  L = 200
+  assumes: L > 0
+```
+
+Python:
+
+```python
+import optimization_ai999x as m
+
+a = m.solve("fence_max_area", wall="False", L="200")
+print(a.values or (a.value, a.unit))
+```
+
+Browser: [open this capability on the model page](https://www.ai999x.com/models/optimization-ai999x/#cap-fence_max_area) and press **Compute in your browser**.
+
+_What this means:_ This calculation finds the largest rectangular area possible for a given fencing length. Using the total fence amount 200, it determines the optimal side dimensions. The resulting maximum area is 2500, achieved when the perpendicular side is 50 and the parallel side is 50. This ensures the most efficient use of boundary materials.
+
+## Documentation
+
+- **Rust user guide** — the command line, every capability with a command and what it printed: [PDF](https://huggingface.co/AI999X/optimization-ai999x/blob/main/docs/optimization_ai999x_rust_guide.pdf) · [Markdown](https://huggingface.co/AI999X/optimization-ai999x/blob/main/docs/optimization_ai999x_rust_guide.md)
+- **Python guide** — every capability with a Python example: [PDF](https://huggingface.co/AI999X/optimization-ai999x/blob/main/docs/optimization_ai999x_capabilities.pdf) · [Markdown](https://huggingface.co/AI999X/optimization-ai999x/blob/main/docs/optimization_ai999x_capabilities.md)
+- **Desktop app & command line** — downloads, install, ask and search, figures, offline use, checksums: https://www.ai999x.com/desktop-cli/
+- **Model page** — compute in your browser, every capability explained: https://www.ai999x.com/models/optimization-ai999x/
 
 ## Highlights
 
@@ -20,6 +316,7 @@ optimization-ai999x is an offline, deterministic Python solver that answers opti
 - **Zero wrong answers by design.** Seven explicit outcomes — SOLVED, NEEDS_INPUT, AMBIGUOUS, INVALID_INPUT, OUT_OF_SCOPE, UNRECOGNIZED_FORMAT, INTERNAL_ERROR — never a silent guess. Every one of its 240 documented answers is reproduced exactly on every tested platform.
 - **Plain-English questions and a guaranteed typed interface.** `ask()` reads documented question forms; `solve(capability_id, **inputs)` always solves a supported task with valid inputs.
 - **Explains itself.** Steps, formulas in LaTeX, units, assumptions and the model used, ready for notebooks, tutoring apps and homework checkers.
+- **Native and in the browser.** Every capability also computes natively in Rust: the desktop app and the `optimization` command line for Windows and Linux, and WebAssembly on the model page — no Python, no network.
 - **Small and portable.** Pure Python (sympy, mpmath); identical answers on Windows and Linux (Python 3.10, 3.11, 3.12, 3.13, 3.14).
 - **Coverage:** linear and integer programming, convex and nonlinear optimisation, assignment, transportation and shortest-route problems, scheduling, inventory, queueing, game theory and multi-criteria decisions.
 
@@ -38,7 +335,7 @@ optimization-ai999x is an offline, deterministic Python solver that answers opti
 | Creator / engineer | Ibnul Jaif Farabi |
 | Organization | AI999X |
 
-## Quickstart
+## Python quick start
 
 ```bash
 pip install optimization-ai999x
@@ -61,7 +358,7 @@ optimization.ask("Who created you?").message
 # -> optimization-ai999x was created and engineered by Ibnul Jaif Farabi at AI999X.
 ```
 
-Command line: `optimization-ai999x "<question>"`, `optimization-ai999x --capabilities`. The outputs above were produced by running this exact code on optimization-ai999x 1.0.3.
+The Python package also installs a Python command, `optimization-ai999x "<question>"`; for the native program use `optimization` (above). The outputs above were produced by running this exact code on optimization-ai999x 1.0.3.
 
 ## Find the right capability, and draw it
 
@@ -83,7 +380,7 @@ optimization.search("Solve x^2 - 5x + 6 = 0", k=2)
 
 Capabilities are certified before they ship: each must reproduce hand-worked reference cases, reject a deliberately wrong variant (a control), and leave every benchmark answer unchanged.
 
-## Worked examples
+## Python worked examples, with their steps
 
 Each question was put to `optimization-ai999x`; the answer is the one it returned, with the steps it took.
 

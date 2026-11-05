@@ -62,6 +62,52 @@ class QuantityError(ValueError):
 class Product:
     def __init__(self, domain: str, folders):
         self.domain, self._folders, self._pack = domain, [Path(f) for f in folders], None
+        self._native_engine = None                       # runtime/native.py: resolved on first use (False: none)
+
+    # --- the Rust engine (a platform wheel's native library; runtime/native.py, docs/PYTHON_ON_RUST.md) ---------
+    def _native(self):
+        """The model's Rust engine when this installation carries it (and AI999X_ENGINE allows), else None. Installed,
+        the first folder is the package's `pack/`; the library sits beside it, in the package folder."""
+        if self._native_engine is None:
+            from .native import load
+            self._native_engine = load(self._folders[0].parent if self._folders else None) or False
+        return self._native_engine or None
+
+    def engine(self) -> str:
+        """Which engine computes this installation's answers: "rust" (a platform wheel) or "python"."""
+        return "rust" if self._native() is not None else "python"
+
+    def figures(self, find, given: dict | None = None, *, target: str | None = None, **inputs) -> list:
+        """The live figures of a capability for these inputs (or of an Answer from solve()/ask()), drawn by the Rust
+        engine exactly as on the website and in the desktop app: [{"slug", "kind", "title", "svg", "caption"}], the
+        model's own figures (a circuit, a Bode diagram ...) first. Needs a platform wheel (Windows or Linux x86_64)."""
+        eng = self._native()
+        if eng is None:
+            from .native import NativeUnavailable
+            raise NativeUnavailable("live figures are drawn by the Rust engine, which this installation does not carry "
+                                    "(platform wheels: Windows x86_64 and Linux x86_64; AI999X_ENGINE=python turns it off)")
+        from .native import request
+        if not isinstance(find, str):                    # an Answer: the request it was computed from
+            req = (getattr(find, "uncertainty", None) or {}).get("request") \
+                or ((getattr(find, "uncertainty", None) or {}).get("reading") or {}).get("request")
+            if not req:
+                raise ValueError("this answer was not computed by the Rust engine from a capability: pass the capability "
+                                 "id and its inputs")
+        else:
+            given = {**(given or {}), **inputs}
+            p = self.pack()
+            if find in p.by_key:
+                given, target = self._native_names(p.by_key[find], given, target)
+            req = request(find, given, target if find in p.by_key else None)
+        # no wall-clock limit: the browser module's figures, the same on every machine and run (rust figures.rs)
+        return eng.call_json("figures", {**req, "clock": False})
+
+    def _native_names(self, rel, given: dict, target):
+        """A formula's inputs named as solve() allows (symbol, kind, kind/role, a phrase) -> the relation's symbols."""
+        named = {}
+        for name, v in given.items():
+            named[self._symbol_of(rel, name) or name] = v
+        return named, (self._symbol_of(rel, target) or target) if target is not None else None
 
     # --- the pack ----------------------------------------------------------------------------------------------
     def pack(self) -> Pack:
@@ -77,6 +123,18 @@ class Product:
     # --- derivations and proofs (certified capabilities; runtime/derivations.py) -------------------------------
     def _pack_folder(self) -> Path | None:
         return next((f for f in self._folders if (f / "knowledge" / "relations.json").exists()), None)
+
+    def explanation(self, answer, level: str = "standard") -> str | None:
+        """Plain-language explanation of a solved answer, from the capability's template (knowledge/explanations.json)
+        filled with this answer's own values; None when the model has no template for it (runtime/explanations.py)."""
+        from .explanations import explain
+        if getattr(self, "_explanations", None) is None:
+            import json
+            folder = self._pack_folder()
+            f = folder / "knowledge" / "explanations.json" if folder else None
+            self._explanations = json.loads(f.read_text(encoding="utf-8")) if f and f.exists() else {}
+        key = (answer.models or [None])[0] if getattr(answer, "solved", False) else None
+        return explain(self._explanations.get(key) or {}, answer, level) if key else None
 
     def about(self) -> dict:
         """Who made this package (runtime/identity.py): creator, role, company — the same answer every time."""
@@ -119,9 +177,20 @@ class Product:
         if not hasattr(self, "_search"):
             pkg = self.domain.replace("_", "-") + "-ai999x"
             self._search = CapabilitySearch.find(self._folders, self.domain, pkg)
-        if self._search is None:
-            raise SearchUnavailable("this installation has no capability search index")
-        return self._search.search(question, k=k, domain=domain)
+        try:
+            if self._search is None:
+                raise SearchUnavailable("this installation has no capability search index")
+            return self._search.search(question, k=k, domain=domain)
+        except SearchUnavailable:
+            eng = self._native()
+            if eng is None or domain not in (None, self.domain):
+                raise
+            # no semantic search here ([search] not installed): the Rust engine's word search over this model's
+            # capabilities (the website's and the desktop app's search), in the same shape
+            pkg = self.domain.replace("_", "-") + "-ai999x"
+            return [{"domain": self.domain, "key": h["key"], "name": h["name"], "score": h["score"], "package": pkg,
+                     "here": True, "example": "", "kind": h.get("kind"), "topic": h.get("topic")}
+                    for h in eng.call_json("search", {"q": question, "limit": int(k)})]
 
     def ask(self, question, suggest: bool = False) -> Answer:
         """As _ask; with suggest=True a question that is not answered also carries the capabilities it is most likely
@@ -168,6 +237,29 @@ class Product:
             proved = self._derivation(question)            # "Prove that ...", "Derive ...", "Show that ..."
             if proved is not None:
                 return proved
+            eng = self._native()
+            if eng is not None:                            # the Rust engine's reader (ask.rs): the website's answers
+                from .native import ask_answer
+                try:
+                    rust = ask_answer(self, eng.call_json("ask", question), question)
+                except Exception as exc:                   # a reply that cannot be read is a defect, never a guess
+                    return self._internal_error(question, exc)
+                if rust.solved or rust.outcome in ("INVALID_INPUT", "AMBIGUOUS", "INTERNAL_ERROR"):
+                    return rust                            # answered, or read and declined: as on the website
+                # the Rust reader could not read it (NEEDS_INPUT, UNRECOGNIZED_FORMAT, OUT_OF_SCOPE): the package's
+                # own documented readers, as in 1.0.x, so no question it answered before is lost; a procedure they
+                # read is still computed by the Rust engine (_solve_procedure). Only an answer replaces the refusal.
+                own = self._ask_python(question)
+                if own.solved:
+                    own.uncertainty = {**(own.uncertainty or {}), "reading_provenance": "package_reader",
+                                       "rust_reader": {"outcome": rust.outcome, "message": rust.message}}
+                    return own
+                return rust
+        return self._ask_python(question)
+
+    def _ask_python(self, question) -> Answer:
+        """The package's own readers (documented procedure forms, then the physical-quantity reader)."""
+        if isinstance(question, str):
             # a domain's documented forms for its algorithms. Every parser is asked; an exact documented template
             # (rank 0) outranks a hand-written parser (rank 1), which outranks a 'with a = .., b = ..' reading
             # (rank 2). Two different capabilities at the best rank is an AMBIGUOUS question, never a guess.
@@ -274,7 +366,10 @@ class Product:
         p = self.pack()
         rel = p.by_key[key]
         q = f"solve({key!r})"
-        takes = ", ".join(f"{n} ({s.kind.replace('_', ' ')}{'/' + s.role if s.role != 'plain' else ''}, {p.kinds[s.kind].unit})"
+        eng = self._native()
+        if eng is not None and not conditions:          # the Rust engine (it takes no stated conditions: those stay here)
+            return self._native_solve(eng, key, *self._native_names(rel, given, target), q)
+        takes =", ".join(f"{n} ({s.kind.replace('_', ' ')}{'/' + s.role if s.role != 'plain' else ''}, {p.kinds[s.kind].unit})"
                           for n, s in rel.symbols.items())
 
         def refuse(outcome, cause, message, **extra):
@@ -488,6 +583,9 @@ class Product:
         from fractions import Fraction
         spec = self.pack().procedures[key]
         q = question or f"solve({key!r})"
+        eng = self._native()
+        if eng is not None:                              # the Rust engine: the answers of the website and the apps
+            return self._native_solve(eng, key, given, None, q)
         names = [i["symbol"] for i in spec["inputs"]]
 
         def refuse(outcome, cause, message, **extra):
@@ -639,6 +737,15 @@ class Product:
             return hit[0] if len(hit) == 1 else None
         by_desc = [n for n, s in rel.symbols.items() if s.desc and low == s.desc.lower()]
         return by_desc[0] if len(by_desc) == 1 and p else None
+
+    def _native_solve(self, eng, key: str, given: dict, target, question: str) -> Answer:
+        """One capability solved by the Rust engine (solve_json), as the package's Answer (runtime/native.py)."""
+        from .native import request, to_answer
+        req = request(key, given, target)
+        try:
+            return to_answer(self, eng.call_json("solve", req), question, key, given, {"request": req})
+        except Exception as exc:                        # a reply that cannot be read is a defect, never a guess
+            return self._internal_error(question, exc)
 
     def _internal_error(self, question, exc) -> Answer:
         import traceback

@@ -104,8 +104,11 @@ class Answer:
         if self.assumptions:
             lines.append("Assumptions: " + "; ".join(self.assumptions))
         v = self.verification
-        lines.append(f"Verification: {v.get('status', 'not run')} (residual {v.get('max_residual', 0):.1e}, "
-                     f"{v.get('independent_paths', 1)} derivation path(s))")
+        if "max_residual" in v:
+            lines.append(f"Verification: {v.get('status', 'not run')} (residual {v.get('max_residual', 0):.1e}, "
+                         f"{v.get('independent_paths', 1)} derivation path(s))")
+        else:                                         # the Rust engine checks before it answers; it reports no residual
+            lines.append(f"Verification: {v.get('status', 'not run')} ({v.get('scope', 'checked')})")
         lines += [f"Warning: {w}" for w in self.warnings]
         return "\n".join(lines)
 
