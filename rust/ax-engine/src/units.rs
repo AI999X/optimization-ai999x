@@ -130,6 +130,15 @@ fn atom_table(name: &str) -> Option<(f64, [i64; 8], bool)> {
         "VA" | "var" | "VAr" => (1.0, W, true),
         "S" => (1.0, [-1, -2, 3, 2, 0, 0, 0, 0], true),
         "mho" => (1.0, [-1, -2, 3, 2, 0, 0, 0, 0], false),
+        // as runtime/quantity.py (2026-11-13): mM to pM (no bare "M": "M/S" stays refused), the day as "d", the barn,
+        // the gray, the sievert
+        "mM" => (1.0, [0, -3, 0, 0, 0, 1, 0, 0], false),
+        "uM" | "µM" | "μM" => (1e-3, [0, -3, 0, 0, 0, 1, 0, 0], false),
+        "nM" => (1e-6, [0, -3, 0, 0, 0, 1, 0, 0], false),
+        "pM" => (1e-9, [0, -3, 0, 0, 0, 1, 0, 0], false),
+        "d" => (86400.0, b(2, 1), false),
+        "b" => (1e-28, b(1, 2), false),
+        "Gy" | "Sv" => (1.0, [0, 2, -2, 0, 0, 0, 0, 0], true),
         _ => return None,
     })
 }

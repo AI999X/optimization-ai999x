@@ -1,5 +1,5 @@
 {
- "package": "1.5.0",
+ "package": "1.6.0",
  "pack": "1.0.1",
  "knowledge_db": null,
  "files": {
@@ -7,8 +7,8 @@
   "dictionary/terms.json": "b2d8da1d78769f517c23c6ea61c20fc6a48166102bca0adc66f36fb5f54d905d",
   "knowledge/relations.json": "1b0d63365e5e2d6c19f86ccc18e8522a73252dd5be6c1be6a41ef472a10a8c87",
   "knowledge/reference_cases.json": "7414a14e2c4202a7fae8cdd14e1a2ef7267f35a9665b0633001349c698d4e4e7",
-  "capabilities/procedures.py": "4f6da52008d37b87e4e5a0ebdabab7e71eb1221db1d2b9aa956d35215399eaf1",
-  "capabilities/procedures_certified.json": "55697ecbc4b1d6babea042c54018de7a836b3619504ee837bf7e19eca157483b",
+  "capabilities/procedures.py": "b7194ddb3d2158e4f1e7f1d79d69ab65703595538d1a60c05faa19d92569d9e5",
+  "capabilities/procedures_certified.json": "a40d39b4b2ebda5b67ee9e40c6e3dc4a32dea057ef20b7a0644d6573c08a979d",
   "optimization_knowledge_public.sqlite": "6405deb500b2e7b858c5764924fbf99b99d75281acc174fb891f9aff711c7821"
  },
  "engine": [

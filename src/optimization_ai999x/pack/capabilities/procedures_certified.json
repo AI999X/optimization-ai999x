@@ -71,9 +71,10 @@
   "wagner_whitin_lot_sizing",
   "mdp_discounted",
   "graph_coloring",
-  "minimum_vertex_cover"
+  "minimum_vertex_cover",
+  "lp_duality_sensitivity"
  ],
- "generated": "2026-10-24",
+ "generated": "2026-11-13",
  "tool": "tools/certify_procedures.py",
  "report": "release/procedure_certification.json"
 }

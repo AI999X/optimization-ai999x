@@ -20,7 +20,10 @@ _CUE = re.compile(r"^\s*(?:what\s+(?:is|are|does|do)|what's|whats|explain|define
                   r"list\s+the|give\s+the\s+(?:assumptions|limitations)|what\s+assumptions|which\s+assumptions)\b", re.I)
 FACETS = (("assumptions", re.compile(r"\bassum|\bcondition|\brequire", re.I)),
           ("when_it_fails", re.compile(r"\bfail|\blimitation|\bnot\s+(?:valid|apply|work)|\bbreak[s]?\s+down|\binvalid", re.I)),
-          ("common_mistakes", re.compile(r"\bmistake|\berror[s]?\b|\bpitfall|\bwrong", re.I)))
+          # ("error" alone is usually a quantity: bit error rate, standard error, steady-state error — only an error a
+          # person makes asks for the common mistakes; signal_processing acceptance 2026-11-12)
+          ("common_mistakes", re.compile(r"\bmistake|\b(?:common|typical|frequent|usual|classic)\s+errors?\b|"
+                                         r"\berrors?\s+(?:to\s+avoid|people|students|made|make)\b|\bpitfall|\bwrong", re.I)))
 _STOP = set("a an the of in on for to and or is are was be what whats explain define describe tell me about why when "
             "does do how meaning definition list give which it its this that with by as at from used use using "
             "formula equation law method rule theorem calculate compute find common mistake mistakes error errors "

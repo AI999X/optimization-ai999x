@@ -95,6 +95,14 @@ _ATOMS = {
     # electrical engineering (2026-10-22): apparent and reactive power have the dimension of power; the siemens is 1/ohm
     "VA": (1.0, _W, True), "var": (1.0, _W, True), "VAr": (1.0, _W, True),
     "S": (1.0, _dim(kg=-1, m=-2, s=3, A=2), True), "mho": (1.0, _dim(kg=-1, m=-2, s=3, A=2), False),
+    # laboratory and field units the documented templates use (2026-11-13: "100 mM", "10000 m^3/d", "37 b", "1 mSv/h"
+    # were refused): millimolar to picomolar (no bare "M": "M/S" is a mistyped m/s and must stay refused), the day as
+    # "d", the barn, the gray and the sievert
+    "mM": (1.0, _dim(mol=1, m=-3), False), "uM": (1e-3, _dim(mol=1, m=-3), False),
+    "µM": (1e-3, _dim(mol=1, m=-3), False), "μM": (1e-3, _dim(mol=1, m=-3), False),
+    "nM": (1e-6, _dim(mol=1, m=-3), False), "pM": (1e-9, _dim(mol=1, m=-3), False),
+    "d": (86400.0, _dim(s=1), False),
+    "b": (1e-28, _dim(m=2), False), "Gy": (1.0, _dim(m=2, s=-2), True), "Sv": (1.0, _dim(m=2, s=-2), True),
 }
 _AFFINE = {"°C": (1.0, _dim(K=1), 273.15), "degC": (1.0, _dim(K=1), 273.15)}
 _PI_UNITS = {"deg": Fraction(1, 180), "°": Fraction(1, 180), "rev": Fraction(2)}

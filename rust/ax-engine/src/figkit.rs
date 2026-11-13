@@ -698,9 +698,35 @@ pub fn field(xs: &[f64], ys: &[f64], vals: &[Vec<Option<f64>>], mine: (f64, f64)
     let (px, py) = (xa.px(mine.0), ya.px(mine.1));
     out.push_str(&format!("<circle class=\"axp-k\" cx=\"{px:.1}\" cy=\"{py:.1}\" r=\"8\"/>\
                            <circle class=\"axp-m\" cx=\"{px:.1}\" cy=\"{py:.1}\" r=\"4\"/>"));
-    // the scale: light to dark
-    out.push_str(&format!("<text class=\"axp-lt\" x=\"{}\" y=\"37\" text-anchor=\"end\">light {} to dark {}</text>",
-                          f::X1, f::esc(&num(lo)), f::esc(&num(hi))));
+    // the scale: a shaded bar from the smallest to the largest value, its two ends written beside it (a caption
+    // "light a to dark b" alone could not be read; math foundations review, 2026-11-13)
+    let (tl, th) = (num(lo), num(hi));
+    let bw = 96.0;
+    let bx = f::X1 - bw - 6.0 - 7.4 * th.chars().count() as f64;
+    for k in 0..8 {
+        let op = 0.08 + 0.82 * k as f64 / 7.0;
+        out.push_str(&format!("<rect class=\"axp-hp\" x=\"{:.1}\" y=\"27\" width=\"{:.1}\" height=\"11\" fill-opacity=\"{op:.2}\"/>",
+                              bx + bw * k as f64 / 8.0, bw / 8.0 + 0.4));
+    }
+    out.push_str(&format!("<rect x=\"{bx:.1}\" y=\"27\" width=\"{bw:.1}\" height=\"11\" fill=\"none\" stroke=\"#7f7c8a\" stroke-width=\"0.6\"/>"));
+    // (data-scale marks the two ends for a caller that shades by a transformed value: civil engineering's log maps)
+    out.push_str(&format!("<text class=\"axp-lt\" data-scale=\"lo\" x=\"{:.1}\" y=\"37\" text-anchor=\"end\">{}</text>",
+                          bx - 5.0, f::esc(&tl)));
+    out.push_str(&format!("<text class=\"axp-lt\" data-scale=\"hi\" x=\"{:.1}\" y=\"37\" text-anchor=\"start\">{}</text>",
+                          bx + bw + 5.0, f::esc(&th)));
+    out
+}
+
+/// A field's scale ends rewritten (a caller that shades by a transformed value writes the real values): the texts of
+/// the two labels marked data-scale="lo" / "hi" replaced by `lo` and `hi` (escaped here).
+pub fn relabel_scale(body: &str, lo: &str, hi: &str) -> String {
+    let mut out = body.to_string();
+    for (mark, text) in [("data-scale=\"lo\"", lo), ("data-scale=\"hi\"", hi)] {
+        let Some(at) = out.find(mark) else { continue };
+        let Some(open) = out[at..].find('>').map(|i| at + i + 1) else { continue };
+        let Some(close) = out[open..].find("</text>").map(|i| open + i) else { continue };
+        out.replace_range(open..close, &f::esc(text));
+    }
     out
 }
 
@@ -897,7 +923,11 @@ mod tests {
         let fd = field(&[1.0, 2.0, 3.0], &[1.0, 2.0], &[vec![Some(1.0), Some(2.0)], vec![Some(3.0), None],
                                                          vec![Some(5.0), Some(6.0)]], (2.0, 1.5), "x", "y", "h",
                        (false, false));
-        assert_eq!(fd.matches("axp-hp").count(), 5);
+        // 5 shaded cells (one refused) and the 8 steps of the scale bar, whose two ends are written beside it
+        assert_eq!(fd.matches("axp-hp").count(), 5 + 8);
+        assert!(fd.contains("data-scale=\"lo\"") && fd.contains("data-scale=\"hi\""));
+        let re = relabel_scale(&fd, "10", "1000 (log scale)");
+        assert!(re.contains(">10</text>") && re.contains(">1000 (log scale)</text>"));
         let (t, _) = table(&["a".into(), "b".into()], &[vec!["1".into(), "2".into()]], Some(0), "");
         assert!(t.contains("axp-ka"));
         let (st, h) = stack(&[l.clone(), l]);

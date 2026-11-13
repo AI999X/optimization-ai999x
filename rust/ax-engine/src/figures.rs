@@ -265,6 +265,118 @@ struct Out {
     meaning: String,
 }
 
+/// What a relation's symbol means in words: its description, or else its kind in plain words ("moment_of_inertia"
+/// -> "moment of inertia"), so a chart never titles itself with a bare id ("L as ir varies"; review 2026-11-12).
+fn sym_words(name: &str, desc: &str, kind: &str) -> String {
+    if !desc.trim().is_empty() {
+        return desc.to_string();
+    }
+    if name == "g" && kind == "acceleration" {
+        return "gravitational acceleration".into();
+    }
+    if kind.is_empty() || kind == "number" {
+        return name.to_string();
+    }
+    kind.replace('_', " ")
+}
+
+/// The unit a chart axis reads a value in, when its SI unit is awkward: the unit the meaning names ("partial pressure
+/// of CO2 (e.g. in mmHg)", "volume [L]"), else the first of the usual reading units in which the value lies between
+/// 0.1 and 10,000. None keeps SI. Returns the unit's text and its factor/offset to SI.
+fn reading_unit(si: &str, meaning: &str, v: f64) -> Option<(String, crate::units::Unit)> {
+    use crate::units::parse_unit;
+    let base = parse_unit(si).ok()?;
+    if si.is_empty() || si == "1" || !v.is_finite() {
+        return None;
+    }
+    let same = |t: &str| parse_unit(t).ok().filter(|u| u.dim == base.dim && t != si);
+    // 1. the unit the meaning names: "in X" or "[X]"
+    let m = meaning.replace(['(', ')', ',', ';'], " ");
+    let words: Vec<&str> = m.split_whitespace().collect();
+    for (i, w) in words.iter().enumerate() {
+        let cand = if *w == "in" { words.get(i + 1).copied() } else if w.starts_with('[') && w.ends_with(']') {
+            Some(w.trim_matches(|c| c == '[' || c == ']'))
+        } else { None };
+        if let Some(c) = cand {
+            if let Some(u) = same(c) {
+                return Some((c.to_string(), u));
+            }
+        }
+    }
+    // 1b. a unit of the same dimension named inside the meaning's parentheses ("rupture time (hours, h)", "formation
+    // energy (per vacancy, e.g. eV)"): materials review, 2026-11-12, axes in s and J against wording in h and eV
+    for part in meaning.split('(').skip(1) {
+        let inner = part.split(')').next().unwrap_or("");
+        for w in inner.split(|c: char| c == ',' || c == ';' || c.is_whitespace()) {
+            let w = w.trim_matches(|c: char| c == '.' || c == '[' || c == ']');
+            if w.is_empty() || w == "e.g" || w == "i.e" {
+                continue;
+            }
+            if let Some(u) = same(w) {
+                return Some((w.to_string(), u));
+            }
+        }
+    }
+    // 2. by size, only when the SI number itself is awkward to read
+    let a = (v - base.offset).abs() * base.factor;
+    if a == 0.0 || (0.1..1e4).contains(&a) {
+        return None;
+    }
+    let list: &[&str] = match si {
+        "s" => &["min", "h", "day", "yr", "ms", "us"],
+        "kg" => &["g", "mg", "ug", "t"],
+        "m" => &["km", "mm", "um", "nm"],
+        "m^2" => &["cm^2", "mm^2", "km^2"],
+        "m^3" => &["L", "mL", "uL", "km^3"],
+        "m^3/s" => &["L/s", "L/min", "mL/min", "mL/s", "m^3/h", "m^3/day"],
+        "Pa" => &["kPa", "MPa", "GPa", "mPa"],
+        "J" => &["kJ", "MJ", "GJ", "mJ", "eV"],
+        "W" => &["kW", "MW", "GW", "mW", "uW"],
+        "kg/m^3" => &["g/L", "mg/L", "ug/L"],
+        "mol/m^3" => &["mol/L", "mmol/L", "umol/L", "nmol/L"],
+        "kg/s" => &["g/s", "kg/h", "kg/day", "mg/s", "t/day"],
+        "1/s" => &["1/min", "1/h", "1/day"],
+        "V" => &["kV", "mV", "uV"],
+        "A" => &["mA", "uA", "kA"],
+        "F" => &["uF", "nF", "pF", "mF"],
+        "H" => &["mH", "uH"],
+        "Hz" => &["kHz", "MHz", "GHz"],
+        "N" => &["kN", "MN", "mN"],
+        _ => &[],
+    };
+    for t in list {
+        if let Some(u) = same(t) {
+            let d = (v * base.factor + base.offset - u.offset) / u.factor;
+            if (0.1..1e4).contains(&d.abs()) {
+                return Some((t.to_string(), u));
+            }
+        }
+    }
+    None
+}
+
+/// A symbol as it is printed on a chart: Greek names as Greek letters ("lam" -> "λ", "omega_r" -> "ω_r"),
+/// everything else as written.
+pub(crate) fn pretty_sym(s: &str) -> String {
+    const G: &[(&str, &str)] = &[("lambda", "λ"), ("lam", "λ"), ("omega", "ω"), ("theta", "θ"), ("rho", "ρ"),
+        ("sigma", "σ"), ("alpha", "α"), ("beta", "β"), ("gamma", "γ"), ("delta", "δ"), ("epsilon", "ε"), ("eps", "ε"),
+        ("eta", "η"), ("mu", "μ"), ("nu", "ν"), ("phi", "φ"), ("psi", "ψ"), ("tau", "τ"), ("kappa", "κ"), ("chi", "χ"),
+        ("xi", "ξ"), ("zeta", "ζ"), ("pi", "π")];
+    let (head, tail) = match s.find('_') {
+        Some(i) => (&s[..i], &s[i..]),
+        None => {
+            let i = s.trim_end_matches(|c: char| c.is_ascii_digit()).len();
+            (&s[..i], &s[i..])
+        }
+    };
+    for (n, g) in G {
+        if head == *n {
+            return format!("{g}{tail}");
+        }
+    }
+    s.to_string()
+}
+
 fn outs_of(p: &Pack, key: &str, a: &Answer) -> Vec<Out> {
     if let Some(pr) = p.procedure(key) {
         return a.values.iter().map(|(s, v, u)| Out {
@@ -273,11 +385,19 @@ fn outs_of(p: &Pack, key: &str, a: &Answer) -> Vec<Out> {
         }).collect();
     }
     let sym = a.target.clone().unwrap_or_default();
-    let meaning = p.relation(key).and_then(|r| r.sym(&sym)).map(|s| s.desc.clone()).unwrap_or_default();
+    let meaning = p.relation(key).and_then(|r| r.sym(&sym)).map(|s| sym_words(&s.name, &s.desc, &s.kind)).unwrap_or_default();
     match a.value {
         Some(v) => vec![Out { sym, val: json!(v), unit: a.unit.clone().unwrap_or_default(), meaning }],
         None => vec![],
     }
+}
+
+/// The kind of a capability's output (a procedure's declared output kind, a relation's symbol kind), "" if unknown.
+fn out_kind(p: &Pack, key: &str, sym: &str) -> String {
+    if let Some(pr) = p.procedure(key) {
+        return pr.outputs.iter().find(|o| o.symbol == sym).map(|o| o.kind.clone()).unwrap_or_default();
+    }
+    p.relation(key).and_then(|r| r.sym(sym)).map(|s| s.kind.clone()).unwrap_or_default()
 }
 
 fn numv(v: &Value) -> Option<f64> {
@@ -346,10 +466,10 @@ fn track_val(outs: &[Out], t: &Track) -> Option<f64> {
 
 fn track_label(outs: &[Out], t: &Track) -> String {
     match t {
-        Track::S(s) => s.clone(),
+        Track::S(s) => pretty_sym(s),
         Track::E(s, i) => {
             let _ = outs;
-            format!("{s}[{}]", i + 1)
+            format!("{}[{}]", pretty_sym(s), i + 1)
         }
     }
 }
@@ -417,22 +537,64 @@ struct InSpec {
 fn in_specs(p: &Pack, key: &str) -> Vec<InSpec> {
     let unit = |k: &str| p.kinds.get(k).map(|x| x.unit.clone()).unwrap_or_default();
     if let Some(pr) = p.procedure(key) {
-        return pr.inputs.iter().map(|i| InSpec {
+        return pr.inputs.iter().map(|i| natural_limits(InSpec {
             sym: i.symbol.clone(), meaning: i.meaning.clone(),
             ty: if i.ty.is_empty() { "number".into() } else { i.ty.clone() },
             unit: if i.kind == "number" { String::new() } else { unit(&i.kind) },
             choices: if i.ty == "boolean" { vec!["true".into(), "false".into()] } else { i.choices.clone() },
             min: i.min.as_ref().map(|x| x.0), max: i.max.as_ref().map(|x| x.0), proc_input: Some(i.clone()),
-        }).collect();
+        }, &i.kind)).collect();
     }
     match p.relation(key) {
-        Some(r) => r.symbols.iter().map(|s| InSpec {
-            sym: s.name.clone(), meaning: s.desc.clone(), ty: "number".into(), unit: unit(&s.kind), choices: vec![],
-            min: if s.sign == "positive" || s.sign == "nonnegative" { Some(0.0) } else { None }, max: None,
+        Some(r) => r.symbols.iter().map(|s| natural_limits(InSpec {
+            sym: s.name.clone(), meaning: sym_words(&s.name, &s.desc, &s.kind), ty: "number".into(), unit: unit(&s.kind), choices: vec![],
+            min: match s.sign.as_str() { "positive" | "nonnegative" | "fraction" => Some(0.0), "at_least_one" => Some(1.0), _ => None },
+            max: if s.sign == "fraction" { Some(1.0) } else { None },
             proc_input: None,
-        }).collect(),
+        }, &s.kind)).collect(),
         None => vec![],
     }
+}
+
+/// The range a quantity of this kind admits, so a chart never sweeps an input into impossible values (an emissivity
+/// of 1.5, a ratio of specific heats of 0.4, a cutoff ratio below 1, a Mach number ahead of a normal shock below 1, a
+/// latitude beyond 90°; thermofluids and earth science reviews, 2026-11-12/13). Only ever tightens the declared range.
+pub(crate) fn kind_range(kind: &str, meaning: &str, unit: &str) -> (Option<f64>, Option<f64>) {
+    let m = meaning.to_lowercase();
+    let deg = unit != "rad";
+    if m.contains("latitude") || m.contains("declination") && m.contains("sun") {
+        let q = if deg { 90.0 } else { std::f64::consts::FRAC_PI_2 };
+        return (Some(-q), Some(q));
+    }
+    if m.contains("longitude") {
+        let q = if deg { 180.0 } else { std::f64::consts::PI };
+        return (Some(-q), Some(q));
+    }
+    match kind {
+        "emissivity" | "absorptivity" | "reflectivity" | "transmissivity" | "efficiency" | "porosity" | "probability" => {
+            (Some(0.0), Some(1.0))
+        }
+        "heat_capacity_ratio" => (Some(1.0), Some(5.0 / 3.0)),
+        "cutoff_ratio" | "compression_ratio" => (Some(1.0), None),
+        "mach_number" if m.contains("ahead of the shock") || m.contains("upstream") || m.contains("before the shock") => {
+            (Some(1.0), None)
+        }
+        _ if m.contains("emissivity") || m.contains("ratio of specific heats") => {
+            if m.contains("emissivity") { (Some(0.0), Some(1.0)) } else { (Some(1.0), Some(5.0 / 3.0)) }
+        }
+        _ => (None, None),
+    }
+}
+
+fn natural_limits(mut s: InSpec, kind: &str) -> InSpec {
+    let (lo, hi) = kind_range(kind, &s.meaning, &s.unit);
+    if let Some(v) = lo {
+        s.min = Some(s.min.map_or(v, |m| m.max(v)));
+    }
+    if let Some(v) = hi {
+        s.max = Some(s.max.map_or(v, |m| m.min(v)));
+    }
+    s
 }
 
 /// The text of an input value as the form sends it.
@@ -555,13 +717,43 @@ fn knobs(specs: &[InSpec], given: &[(String, Input)]) -> Vec<Knob> {
     let mut mats = vec![];
     for (name, v) in given {
         let Some(sp) = specs.iter().find(|s| &s.sym == name) else { continue };
-        let meaning = if sp.meaning.is_empty() { sp.sym.clone() } else { sp.meaning.clone() };
+        let mut meaning = if sp.meaning.is_empty() { sp.sym.clone() } else { sp.meaning.clone() };
+        // an input worded "in per cent" that the engine reads as a fraction (0.009 for 0.9 %): the axis says so, or
+        // 0.004-0.014 read as per cent (cell biology review, 2026-11-13)
+        let low = meaning.to_lowercase();
+        if (low.contains("per cent") || low.contains("percent")) && text_of(v).and_then(|t| lead_num(&t))
+            .is_some_and(|(x, rest)| rest.is_empty() && x.abs() <= 1.0) {
+            let head = meaning.split(" (").next().unwrap_or(&meaning).replace("in per cent ", "").replace("in percent ", "");
+            meaning = format!("{} as a fraction (0.01 = 1 %)", head.trim());
+        }
         match sp.ty.as_str() {
             "number" => {
                 let Some(t) = text_of(v) else { continue };
                 let Some((x, rest)) = lead_num(&t) else { continue };
                 let unit = if rest.is_empty() { sp.unit.clone() } else { rest.clone() };
-                out.push(Knob { rest, lo_lim: sp.min, hi_lim: sp.max, ..Knob::plain(name, x, false, meaning, unit) });
+                // a measured quantity of a procedure with no declared limits (a sodium level, a height) is swept
+                // within 40% of the visitor's value: a quarter to 1.75 times ran into values no body has (heights of
+                // 0.5 m, sodium of 40 mmol/L; physiology review, 2026-11-13)
+                let (lo_n, hi_n) = if sp.proc_input.is_some() && sp.min.is_none() && sp.max.is_none()
+                    && !sp.unit.is_empty() && sp.unit != "1" && x != 0.0 {
+                    // a temperature moves by degrees, not by a share of its absolute value (310 K swept to 520 K)
+                    let (a, b) = if sp.unit == "K" { ((x - 40.0).max(x * 0.5), x + 40.0) } else { (x * 0.6, x * 1.4) };
+                    (Some(a.min(b)), Some(a.max(b)))
+                } else { (None, None) };
+                let sp_min = sp.min.or(lo_n);
+                let sp_max = sp.max.or(hi_n);
+                // a bare SI number (the app's worked examples) is swept in the unit people read it in: the one its
+                // meaning names ("e.g. in mmHg") or one that suits its size (5333 Pa -> 40 mmHg, 8.3e-5 m^3/s ->
+                // 5 L/min); the engine reads "40 mmHg" itself (physiology review, 2026-11-13)
+                if rest.is_empty() {
+                    if let Some((label, u)) = reading_unit(&sp.unit, &meaning, x) {
+                        let to = |v: f64| (v - u.offset) / u.factor;
+                        out.push(Knob { rest: label.clone(), lo_lim: sp_min.map(to), hi_lim: sp_max.map(to),
+                                        ..Knob::plain(name, to(x), false, meaning, label) });
+                        continue;
+                    }
+                }
+                out.push(Knob { rest, lo_lim: sp_min, hi_lim: sp_max, ..Knob::plain(name, x, false, meaning, unit) });
             }
             "integer" => {
                 let Some(t) = text_of(v) else { continue };
@@ -580,7 +772,7 @@ fn knobs(specs: &[InSpec], given: &[(String, Input)]) -> Vec<Knob> {
                 }
                 for (i, x) in vs.iter().enumerate().take(6) {
                     elems.push(Knob { idx: Some(i), base: vs.clone(),
-                                      ..Knob::plain(name, *x, false, format!("{meaning}, entry {}", i + 1), sp.unit.clone()) });
+                                      ..Knob::plain(name, *x, false, entry_label(&meaning, i, vs.len()), sp.unit.clone()) });
                 }
             }
             "matrix" => {
@@ -604,8 +796,22 @@ fn knobs(specs: &[InSpec], given: &[(String, Input)]) -> Vec<Knob> {
                 if t.len() > 400 || assignment_spans(&t).is_some() || formula_vars(&t).is_some() {
                     continue;
                 }
-                for (s, e, n) in text_numbers(&t) {
-                    let label = format!("the number {} in {} ({})", n, name, clip(&t, 24));
+                let nums = text_numbers(&t);
+                for &(s, e, n) in &nums {
+                    // a number written more than once is marked where it is varied: "the number 2 in 2x^2 - 3x + 1"
+                    // swept the exponent under a title that read as the coefficient (math foundations review, 11-13)
+                    let label = if nums.iter().filter(|x| x.2 == n).count() > 1 {
+                        match (t.get(..s), t.get(s..e), t.get(e..)) {
+                            (Some(a), Some(m), Some(z)) => {
+                                let marked = format!("{a}[{m}]{z}");
+                                let shown = if marked.chars().count() <= 40 { marked } else { clip(&marked, 40) };
+                                format!("the number {} marked [ ] in {} ({})", n, name, shown)
+                            }
+                            _ => format!("the number {} in {} ({})", n, name, clip(&t, 24)),
+                        }
+                    } else {
+                        format!("the number {} in {} ({})", n, name, clip(&t, 24))
+                    };
                     elems.push(Knob { text: Some((t.clone(), s, e)), lo_lim: Some(0.0),
                                       ..Knob::plain(name, n as f64, true, label, String::new()) });
                 }
@@ -613,6 +819,18 @@ fn knobs(specs: &[InSpec], given: &[(String, Input)]) -> Vec<Knob> {
             _ => {}
         }
     }
+    // two or more lists of one length are paired measurements (concentrations and rates, cycles and Ct values, times
+    // and densities): a fit through them. Moving one measured point of such a series draws a misleading hump, so their
+    // entries are not swept (Michaelis-Menten, Scatchard, qPCR and growth-fit charts, review 2026-11-13).
+    let mut lens: Vec<(String, usize)> = vec![];
+    for e in &elems {
+        if e.text.is_none() && e.idx.is_some() && !lens.iter().any(|(s, _)| s == &e.sym) {
+            lens.push((e.sym.clone(), e.base.len()));
+        }
+    }
+    let paired: Vec<String> = lens.iter().filter(|(_, n)| *n >= 2 && lens.iter().filter(|(_, m)| m == n).count() >= 2)
+        .map(|(s, _)| s.clone()).collect();
+    elems.retain(|e| !(e.text.is_none() && paired.contains(&e.sym)));
     // single numbers first; entries of lists and numbers inside texts after (at most a few of them)
     let room = MAX_KNOBS.saturating_sub(out.len()).min(8);
     out.extend(elems.into_iter().take(room));
@@ -673,10 +891,11 @@ fn knob_range(k: &Knob) -> (f64, f64) {
     } else {
         (-1.0, 1.0)
     };
-    if let Some(m) = k.lo_lim {
+    // a limit the visitor's own value lies outside is not this value's scale (an efficiency typed in per cent)
+    if let Some(m) = k.lo_lim.filter(|m| k.x0 >= *m) {
         lo = lo.max(m);
     }
-    if let Some(m) = k.hi_lim {
+    if let Some(m) = k.hi_lim.filter(|m| k.x0 <= *m) {
         hi = hi.min(m);
     }
     if hi <= lo {
@@ -708,9 +927,62 @@ fn knob_points(k: &Knob, n: usize) -> Vec<f64> {
     xs
 }
 
+/// A swept line with its jumps left open: a step between two points far larger than the steps either side of it (a
+/// piecewise function's break, a root that switches branch) is a discontinuity, drawn as a gap rather than a steep
+/// line through values the answer never takes (math foundations review, 2026-11-13).
+fn break_jumps(s: Vec<Option<(f64, f64)>>) -> Vec<Option<(f64, f64)>> {
+    let ys: Vec<f64> = s.iter().flatten().map(|p| p.1).collect();
+    if ys.len() < 6 {
+        return s;
+    }
+    let (lo, hi) = minmax(&ys);
+    let r = hi - lo;
+    if !(r > 0.0 && r.is_finite()) {
+        return s;
+    }
+    let mut out = Vec::with_capacity(s.len() + 4);
+    for i in 0..s.len() {
+        if i >= 2 && i + 1 < s.len() {
+            if let (Some(a0), Some(a), Some(b), Some(b1)) = (s[i - 2], s[i - 1], s[i], s[i + 1]) {
+                let d = (b.1 - a.1).abs();
+                let side = (a.1 - a0.1).abs().max((b1.1 - b.1).abs());
+                if d > 0.2 * r && d > 8.0 * side {
+                    out.push(None);
+                }
+            }
+        }
+        out.push(s[i]);
+    }
+    out
+}
+
+/// The words for entry `i` of a list of `n`: the entry's own name when the meaning names them in order ("A, b, c of the
+/// line a x + b y = c" -> "c of the line a x + b y = c"), else "<meaning>, entry i+1" (the axis read "A, b, c of the
+/// line ..., entry 3"; math foundations review, 2026-11-13).
+fn entry_label(meaning: &str, i: usize, n: usize) -> String {
+    if let Some((head, rest)) = meaning.split_once(" of ") {
+        let names: Vec<&str> = head.split(',').map(|s| s.trim()).collect();
+        let short = names.iter().all(|s| !s.is_empty() && s.chars().count() <= 6 && !s.contains(' '));
+        if names.len() == n && n >= 2 && short {
+            // the first name carries the sentence's capital ("A, b, c"): its own case is the following names' case
+            let name = if i == 0 && names.len() > 1 && names[1].chars().all(|c| !c.is_uppercase()) {
+                names[0].to_lowercase()
+            } else {
+                names[i].to_string()
+            };
+            return format!("{name} of {rest}");
+        }
+    }
+    format!("{meaning}, entry {}", i + 1)
+}
+
 fn knob_axis_label(k: &Knob) -> String {
-    let u = if k.unit.is_empty() || k.unit == "1" { String::new() } else { format!(" ({})", k.unit) };
-    format!("{}{}", clip(&cap1(&k.label), 52), u)
+    let pure = k.unit.is_empty() || k.unit == "1";
+    let u = if pure { String::new() } else { format!(" ({})", k.unit) };
+    let label = if pure { k.label.clone() } else { drop_unit_note(&k.label, &k.unit) };
+    // a label that starts with a symbol ("c of the line ...") keeps the symbol's case
+    let symbol_first = label.split_once(" of ").is_some_and(|(h, _)| !h.contains(' ') && h.chars().count() <= 6);
+    format!("{}{}", clip(&if symbol_first { label.clone() } else { cap1(&label) }, 52), u)
 }
 
 // ------------------------------------------------------------------------------------------------ the figures
@@ -1101,9 +1373,33 @@ fn out_label(outs: &[Out], t: &Track) -> String {
         Track::E(s, i) => (s.clone(), format!(", entry {}", i + 1)),
     };
     let o = outs.iter().find(|o| o.sym == sym);
+    let unit = o.map(|o| o.unit.clone()).filter(|u| !u.is_empty() && u != "1");
     let m = o.map(|o| o.meaning.clone()).filter(|m| !m.is_empty()).unwrap_or(sym.clone());
-    let u = o.map(|o| o.unit.clone()).filter(|u| !u.is_empty() && u != "1").map(|u| format!(" ({u})")).unwrap_or_default();
+    let m = match &unit { Some(u) => drop_unit_note(&m, u), None => m };
+    let u = unit.map(|u| format!(" ({u})")).unwrap_or_default();
     format!("{}{extra}{u}", clip(&cap1(&m), 48))
+}
+
+/// A meaning without its own trailing unit note when the axis prints the unit itself: "Coriolis parameter (1/s)"
+/// with unit 1/s once read "Coriolis parameter (1/s) (1/h)" (earth science review, 2026-11-13). The note goes when
+/// it names the unit, a unit of the same dimension, or an example unit ("e.g. eV").
+pub(crate) fn drop_unit_note(meaning: &str, si: &str) -> String {
+    let m = meaning.trim_end();
+    if !m.ends_with(')') {
+        return m.to_string();
+    }
+    let Some(i) = m.rfind('(') else { return m.to_string() };
+    let note = &m[i + 1..m.len() - 1];
+    let base = crate::units::parse_unit(si).ok();
+    let names_unit = note.contains("e.g.") || note.split(|c: char| c == ',' || c == ';' || c.is_whitespace())
+        .map(|w| w.trim_matches(|c: char| c == '.' || c == '[' || c == ']'))
+        .filter(|w| !w.is_empty())
+        .any(|w| w == si || base.as_ref().is_some_and(|b| crate::units::parse_unit(w).is_ok_and(|u| u.dim == b.dim)));
+    if names_unit && i > 0 {
+        m[..i].trim_end().to_string()
+    } else {
+        m.to_string()
+    }
 }
 
 /// The answer as one input sweeps a range around the visitor's value.
@@ -1183,6 +1479,59 @@ fn fig_sweep(cx: &mut Ctx, b: &Base, k: &Knob, n: usize) -> Option<(String, Stri
         let m = cx.share(0.5, 8, 25);
         xs = (1..m).map(|i| lo + (hi - lo) * i as f64 / m as f64).collect();
     }
+    // an absolute temperature, a mass, an amount or a volume below zero is no answer: left out like a refusal
+    for (j, t) in tracks.iter().enumerate() {
+        let u = match t { Track::S(s) | Track::E(s, _) => b.outs.iter().find(|o| &o.sym == s).map(|o| (o.unit.clone(), o.meaning.to_lowercase())) };
+        if let Some((u, m)) = u {
+            let absolute = matches!(u.as_str(), "K" | "kg" | "mol" | "m^3")
+                && !["difference", "change", "rise", "drop", "increase", "decrease", "excess", "loss", "gain"].iter().any(|w| m.contains(w));
+            if absolute && track_val(&b.outs, t).is_some_and(|v| v > 0.0) {
+                for p in pts.iter_mut() {
+                    if p.1[j].is_some_and(|y| y <= 0.0) {
+                        p.1[j] = None;
+                    }
+                }
+            }
+        }
+    }
+    // a result outside the range its kind admits (an efficiency above 1 where the heat taken in is less than the work,
+    // a probability below 0) is no answer either; kept when the visitor's own value lies outside (typed in per cent)
+    for (j, t) in tracks.iter().enumerate() {
+        let (Track::S(s) | Track::E(s, _)) = t;
+        let Some(o) = b.outs.iter().find(|o| &o.sym == s) else { continue };
+        let (lo, hi) = kind_range(&out_kind(cx.p, cx.key, s), &o.meaning, &o.unit);
+        if lo.is_none() && hi.is_none() {
+            continue;
+        }
+        let inside = |v: f64| lo.map_or(true, |m| v >= m - 1e-12) && hi.map_or(true, |m| v <= m + 1e-12);
+        if track_val(&b.outs, t).is_some_and(inside) {
+            for p in pts.iter_mut() {
+                if p.1[j].is_some_and(|y| !inside(y)) {
+                    p.1[j] = None;
+                }
+            }
+        }
+    }
+    // a sweep that runs through a pole (T1 = T2 in a two-point formula: the answer shoots to +infinity and comes back
+    // from -infinity) keeps only the branch the visitor's value is on; the far branch is no answer to their question
+    // (chemistry review, 2026-11-12: negative activation energies drawn beyond T1 = T2)
+    if let Some(y0) = tracks.first().and_then(|t| track_val(&b.outs, t)).filter(|v| *v != 0.0 && v.is_finite()) {
+        let line: Vec<(f64, f64)> = pts.iter().filter_map(|p| p.1.first().copied().flatten().map(|y| (p.0, y))).collect();
+        let (mut cut_lo, mut cut_hi) = (f64::NEG_INFINITY, f64::INFINITY);
+        for w in line.windows(2) {
+            let ((xa, ya), (xb, yb)) = (w[0], w[1]);
+            if ya.signum() != yb.signum() && ya.abs() > 2.0 * y0.abs() && yb.abs() > 2.0 * y0.abs() {
+                if xb <= k.x0 {
+                    cut_lo = cut_lo.max(xb);
+                } else if xa >= k.x0 {
+                    cut_hi = cut_hi.min(xa);
+                }
+            }
+        }
+        if cut_lo.is_finite() || cut_hi.is_finite() {
+            pts.retain(|p| p.0 >= cut_lo && p.0 <= cut_hi);
+        }
+    }
     let solved: Vec<&(f64, Vec<Option<f64>>, Option<String>)> = pts.iter().filter(|p| ok(p)).collect();
     // whole numbers (a flag of 0 or 1, primes among integers) may admit only a few values: two are a comparison
     if solved.len() < if k.int || k.step.is_some() { 2 } else { 3 } {
@@ -1206,18 +1555,28 @@ fn fig_sweep(cx: &mut Ctx, b: &Base, k: &Knob, n: usize) -> Option<(String, Stri
     // only the part of the range that has answers is drawn
     let (x_from, x_to) = (x_lo.min(k.x0), x_hi.max(k.x0));
     pts.retain(|p| p.0 >= x_from && p.0 <= x_to);
+    // the output axis reads in the visitor's kind of unit (mmHg, L/min), not SI, when SI is awkward
+    let o0 = tracks.first().and_then(|t| match t { Track::S(s) | Track::E(s, _) => b.outs.iter().find(|o| &o.sym == s) });
+    let y_mid = {
+        let mut v: Vec<f64> = ys.iter().map(|y| y.abs()).filter(|y| *y > 0.0).collect();
+        v.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
+        v.get(v.len() / 2).copied()
+    };
+    let yu = o0.zip(y_mid).and_then(|(o, m)| reading_unit(&o.unit, &o.meaning, m).map(|r| (o.unit.clone(), r)));
+    let cy = |y: f64| match &yu { Some((_, (_, u))) => (y - u.offset) / u.factor, None => y };
     let mut series = vec![];
     if !flat {
         for (j, t) in tracks.iter().enumerate() {
-            let s: Vec<Option<(f64, f64)>> = pts.iter().map(|p| p.1[j].map(|y| (p.0, y))).collect();
+            let s: Vec<Option<(f64, f64)>> = pts.iter().map(|p| p.1[j].map(|y| (p.0, cy(y)))).collect();
+            let s = if k.int || k.step.is_some() { s } else { break_jumps(s) };
             if s.iter().flatten().count() >= 2 {
                 series.push((track_label(&b.outs, t), s));
             }
         }
     }
     let bands: Vec<(f64, Option<String>)> = if cat_changes { pts.iter().map(|p| (p.0, p.2.clone())).collect() } else { vec![] };
-    let y0 = tracks.first().and_then(|t| track_val(&b.outs, t));
-    let ylab = if series.is_empty() { String::new() } else if tracks.len() == 1 || series.len() == 1 {
+    let y0 = tracks.first().and_then(|t| track_val(&b.outs, t)).map(cy);
+    let mut ylab = if series.is_empty() { String::new() } else if tracks.len() == 1 || series.len() == 1 {
         axis_label_of(&b.outs, &tracks[0])
     } else {
         // several outputs of one unit
@@ -1225,9 +1584,16 @@ fn fig_sweep(cx: &mut Ctx, b: &Base, k: &Knob, n: usize) -> Option<(String, Stri
             .unwrap_or_default();
         if u.is_empty() || u == "1" { "Value".into() } else { format!("Value ({u})") }
     };
+    let y_unit = yu.as_ref().map(|(_, (l, _))| format!(" {l}")).unwrap_or_default();
+    if let Some((si, (label, _))) = &yu {
+        let (from, to) = (format!("({si})"), format!("({label})"));
+        if ylab.ends_with(&from) {
+            ylab = format!("{}{to}", &ylab[..ylab.len() - from.len()]);
+        }
+    }
     let marker = if flat { None } else { y0.map(|y| (k.x0, y)) };
     let mlabel = match (tracks.first(), y0) {
-        (Some(t), Some(y)) if !flat => format!("{} = {} at {} = {}", track_label(&b.outs, t), py_g(y, 4), k_sym(k), py_g(k.x0, 4)),
+        (Some(t), Some(y)) if !flat => format!("{} = {}{y_unit} at {} = {}", track_label(&b.outs, t), py_g(y, 4), k_sym(k), py_g(k.x0, 4)),
         _ => format!("your {} = {}", k_sym(k), py_g(k.x0, 4)),
     };
     let body = line_chart_x(&series, &bands, (x_from, x_to), &knob_axis_label(k), &ylab, marker, &mlabel, &b.header,
@@ -1250,7 +1616,7 @@ fn fig_sweep(cx: &mut Ctx, b: &Base, k: &Knob, n: usize) -> Option<(String, Stri
                                   if costly == 1 { "" } else { "s" }, if costly == 1 { "is" } else { "are" }));
     }
     if let Some(y) = y0.filter(|_| !flat) {
-        caption.push_str(&format!(" Marked: your {} = {}{} gives {} = {}.", k_sym(k), py_g(k.x0, 4), unit_suffix(&k.unit),
+        caption.push_str(&format!(" Marked: your {} = {}{} gives {} = {}{y_unit}.", k_sym(k), py_g(k.x0, 4), unit_suffix(&k.unit),
                                   track_label(&b.outs, &tracks[0]), py_g(y, 4)));
     }
     if cat_changes {
@@ -1287,8 +1653,8 @@ fn k_sym(k: &Knob) -> String {
             let c = k.mat_cols.unwrap_or(1).max(1);
             format!("{}[{},{}]", k.sym, i / c + 1, i % c + 1)
         }
-        Some(i) => format!("{}[{}]", k.sym, i + 1),
-        None => k.sym.clone(),
+        Some(i) => format!("{}[{}]", pretty_sym(&k.sym), i + 1),
+        None => pretty_sym(&k.sym),
     }
 }
 
@@ -1381,6 +1747,9 @@ fn fig_grid(cx: &mut Ctx, b: &Base, k1: &Knob, k2: &Knob) -> Option<(String, Str
     if names.len() < 2 || cells.len() < 8 {
         return None;
     }
+    // one colour per answer in every chart of a capability: by the answer's sorted place, not by the order met
+    // (pink meant "increase" in one chart and "decrease" in the next; math foundations review, 2026-11-13)
+    names.sort();
     let body = grid_chart(&xs, &ys, &cells, &names, (k1.x0, k2.x0), &knob_axis_label(k1), &knob_axis_label(k2),
                           &b.header);
     let cname = out_meaning(&b.outs, k1.cat.as_ref()?);
@@ -1488,6 +1857,19 @@ fn fig_matrix(b: &Base) -> Option<(String, String, String)> {
         let Some(m) = nummat(&o.val) else { continue };
         if m.len() * m[0].len() < 2 {
             continue;
+        }
+        // points (x, y) — the meeting points of two curves, a hole — are drawn where they are, not as a heatmap of their
+        // coordinates (math foundations review, 2026-11-13)
+        let words = format!("{} {}", o.sym, o.meaning).to_lowercase();
+        if m[0].len() == 2 && m.len() <= 400 && (words.contains("point") || words.contains("hole") || words.contains("(x, y)")) {
+            let p: Vec<(f64, f64)> = m.iter().map(|r| (r[0], r[1])).collect();
+            let body = points_chart(&p, None, &[], &[], None, &b.header);
+            let m_ = if o.meaning.is_empty() { o.sym.clone() } else { o.meaning.clone() };
+            let listed: Vec<String> = p.iter().take(6).map(|q| format!("({}, {})", py_g(q.0, 4), py_g(q.1, 4))).collect();
+            let title = computed_title(&clip(&m_, 60));
+            let caption = format!("{} as points in the plane (x across, y up): {}{}.", o.sym, listed.join(", "),
+                                  if p.len() > 6 { ", ..." } else { "" });
+            return Some((title, body, caption));
         }
         let body = heat_chart(&m, &b.header);
         let m_ = if o.meaning.is_empty() { o.sym.clone() } else { o.meaning.clone() };
@@ -1827,6 +2209,13 @@ fn fig_points(b: &Base) -> Option<(String, String, String)> {
     }
     // vectors in the plane: two-entry inputs and answers
     for o in &b.outs {
+        // only an answer that IS a vector or a point: two coefficients (a quotient 2x + 3, a remainder) are not one
+        // (math foundations review, 2026-11-13: polynomial division drawn as plane vectors)
+        let m = format!("{} {}", o.sym, o.meaning).to_lowercase();
+        if ["coefficient", "polynomial", "quotient", "remainder", "roots", "solutions", "interval", "bounds", "range"]
+            .iter().any(|w| m.contains(w)) {
+            continue;
+        }
         if let Some(l) = numlist(&o.val) {
             if l.len() == 2 {
                 vecs2.push((o.sym.clone(), (l[0], l[1]), true));
@@ -1868,6 +2257,11 @@ fn fig_shift(b: &Base) -> Option<(String, String, String)> {
         }
         // the letters only (a cipher may drop spaces and punctuation)
         let t: Vec<char> = text_of(v)?.chars().filter(|c| c.is_ascii_alphabetic()).collect();
+        // a DNA or RNA sequence is no cipher: its complement or transcript does not "shift" letters (biology
+        // reviews, 2026-11-13: "how far each letter moves" for a reverse complement)
+        if t.iter().all(|c| "ACGTUNacgtun".contains(*c)) {
+            continue;
+        }
         for o in &b.outs {
             let Value::String(r) = &o.val else { continue };
             let r: Vec<char> = r.chars().filter(|c| c.is_ascii_alphabetic()).collect();
@@ -1994,12 +2388,27 @@ fn tail(s: &str, n: usize) -> String {
     if c.len() <= n { s.to_string() } else { format!("..{}", c[c.len() - n + 2..].iter().collect::<String>()) }
 }
 
+/// A unit that carries no physical dimension (a pure number).
+fn pure_unit(u: &str) -> bool {
+    let u = u.trim();
+    u.is_empty() || u == "1"
+}
+
 /// Several numeric answers of one unit, side by side (at least `min` of them).
 fn fig_outputs(b: &Base, min: usize) -> Option<(String, String, String)> {
     // answers of one unit (a last resort for pure numbers: only when nothing else could be drawn)
     let nums: Vec<&Out> = b.outs.iter().filter(|o| numv(&o.val).is_some()).collect();
     let mut best: Vec<&Out> = vec![];
     for o in &nums {
+        // pure numbers ("1") are of many kinds: a count, a fraction, a pH, a magnitude, a pressure in mmHg next to
+        // one in atm; side by side on one axis they compare unlike things (computational biology, earth science,
+        // physiology reviews, 2026-11-13), so a pure number stands alone
+        if pure_unit(&o.unit) {
+            if best.is_empty() {
+                best = vec![*o];
+            }
+            continue;
+        }
         let same: Vec<&Out> = nums.iter().filter(|x| x.unit == o.unit).copied().collect();
         if same.len() > best.len() {
             best = same;
@@ -2584,19 +2993,19 @@ pub(crate) const Y0: f64 = 44.0;
 pub(crate) const Y1: f64 = 278.0;
 
 const STYLE: &str = ".axp-g{stroke:#8a879455;stroke-width:1}.axp-f{fill:none;stroke:#8a8794}\
-.axp-t{fill:#85828f;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px}\
-.axp-l{fill:#7f7c8a;font-size:15px;font-weight:600}\
+.axp-t{fill:#55525f;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:16px}\
+.axp-l{fill:#4b4856;font-size:15px;font-weight:600}\
 .axp-c{fill:none;stroke:#e0306f;stroke-width:2.6;stroke-linejoin:round;stroke-linecap:round}\
 .axp-c2,.axp-c3,.axp-c4{fill:none;stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round}\
 .axp-c2{stroke:#18a874}.axp-c3{stroke:#7a5cf0}.axp-c4{stroke:#8a8794;stroke-width:1.8}\
 .axp-m{fill:#18a874;stroke:#8a8794;stroke-width:1}\
-.axp-mt{fill:#18a874;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px;font-weight:600}\
+.axp-mt{fill:#0d7a52;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px;font-weight:600}\
 .axp-d{fill:#e0306f}.axp-d2{fill:#18a874}.axp-d3{fill:#7a5cf0}.axp-d4{fill:#8a8794}\
 .axp-b{fill:#e0306f99}.axp-b2{fill:#18a87499}.axp-b3{fill:#7a5cf099}.axp-b4{fill:#8a879473}\
 .axp-s{fill:#e0306f40}.axp-s2{fill:#18a87440}.axp-s3{fill:#7a5cf040}.axp-s4{fill:#8a879440}\
 .axp-bt{fill:#7f7c8a;font-size:13px;font-weight:600}.axp-lt{fill:#7f7c8a;font-size:13px}\
 .axp-k{fill:none;stroke:#8a8794;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.axp-kd{fill:#8a8794}\
-.axp-ka{fill:#8a879424}.axp-vt{fill:#18a874;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}\
+.axp-ka{fill:#8a879424}.axp-vt{fill:#0d7a52;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}\
 .axp-hp{fill:#e0306f}.axp-hn{fill:#7a5cf0}.axp-ht{fill:#7f7c8a;font-family:ui-monospace,Menlo,Consolas,monospace}";
 
 fn wrap_svg(id: &str, title: &str, caption: &str, body: &str) -> String {
@@ -2618,7 +3027,16 @@ pub(crate) fn esc(s: &str) -> String {
 
 pub(crate) fn clip(s: &str, n: usize) -> String {
     let c: Vec<char> = s.chars().collect();
-    if c.len() <= n { s.to_string() } else { format!("{}...", c[..n.saturating_sub(3)].iter().collect::<String>().trim_end()) }
+    if c.len() <= n {
+        return s.to_string();
+    }
+    // cut at a word break when one is near, never mid-word ("its nat..."; review 2026-11-12)
+    let head: String = c[..n.saturating_sub(3)].iter().collect();
+    let cut = match head.rfind(' ') {
+        Some(i) if head[..i].chars().count() * 3 >= n * 2 => head[..i].trim_end_matches([',', ';', ':']).to_string(),
+        _ => head.trim_end().to_string(),
+    };
+    format!("{cut}...")
 }
 
 fn cap1(s: &str) -> String {
@@ -2724,24 +3142,47 @@ fn nice_ticks(lo: f64, hi: f64, n: usize) -> Vec<f64> {
 }
 
 fn tick_text(v: f64) -> String {
-    py_g(v, 4)
+    tick_text_n(v, 4)
+}
+
+fn tick_text_n(v: f64, digits: usize) -> String {
+    // a true minus sign: the hyphen of "-20" was too thin to see at tick size (chemistry review, 2026-11-12)
+    let t = py_g(v, digits);
+    match t.strip_prefix('-') {
+        Some(rest) => format!("\u{2212}{rest}"),
+        None => t,
+    }
+}
+
+/// The tick labels of one axis, with as many significant digits (4 to 10) as it takes for neighbours to differ: a
+/// nearly flat curve once had every tick read "24.94" (materials review, 2026-11-12).
+fn tick_texts(ts: &[f64]) -> Vec<String> {
+    for digits in 4..=10 {
+        let v: Vec<String> = ts.iter().map(|t| tick_text_n(*t, digits)).collect();
+        if v.windows(2).all(|w| w[0] != w[1]) {
+            return v;
+        }
+    }
+    ts.iter().map(|t| tick_text_n(*t, 10)).collect()
 }
 
 pub(crate) fn frame(out: &mut String, xa: Option<&Ax>, ya: Option<&Ax>, xlab: &str, ylab: &str, header: &str) {
     if let Some(xa) = xa {
-        for t in xa.ticks() {
+        let ts = xa.ticks();
+        for (t, txt) in ts.iter().copied().zip(tick_texts(&ts)) {
             let x = xa.px(t);
             out.push_str(&format!("<line class=\"axp-g\" x1=\"{x:.1}\" y1=\"{Y0}\" x2=\"{x:.1}\" y2=\"{Y1}\"/>\
                                    <text class=\"axp-t\" x=\"{x:.1}\" y=\"{}\" text-anchor=\"middle\">{}</text>",
-                                  Y1 + 20.0, esc(&tick_text(t))));
+                                  Y1 + 20.0, esc(&txt)));
         }
     }
     if let Some(ya) = ya {
-        for t in ya.ticks() {
+        let ts = ya.ticks();
+        for (t, txt) in ts.iter().copied().zip(tick_texts(&ts)) {
             let y = ya.px(t);
             out.push_str(&format!("<line class=\"axp-g\" x1=\"{X0}\" y1=\"{y:.1}\" x2=\"{X1}\" y2=\"{y:.1}\"/>\
                                    <text class=\"axp-t\" x=\"{}\" y=\"{:.1}\" text-anchor=\"end\">{}</text>",
-                                  X0 - 6.0, y + 5.0, esc(&tick_text(t))));
+                                  X0 - 6.0, y + 5.0, esc(&txt)));
         }
     }
     out.push_str(&format!("<rect class=\"axp-f\" x=\"{X0}\" y=\"{Y0}\" width=\"{}\" height=\"{}\"/>", X1 - X0, Y1 - Y0));
@@ -2840,7 +3281,10 @@ pub(crate) fn line_chart_xy(series: &[(String, Vec<Option<(f64, f64)>>)], bands:
     };
     // shaded verdicts first (behind the curves)
     if !bands.is_empty() {
-        let mut names: Vec<String> = vec![];
+        // one colour per answer in every chart of a capability: by the answer's sorted place (as the grid charts)
+        let mut names: Vec<String> = bands.iter().filter_map(|b| b.1.clone()).collect();
+        names.sort();
+        names.dedup();
         let mut i = 0;
         while i < bands.len() {
             let Some(c) = bands[i].1.clone() else { i += 1; continue };
@@ -2848,13 +3292,7 @@ pub(crate) fn line_chart_xy(series: &[(String, Vec<Option<(f64, f64)>>)], bands:
             while j + 1 < bands.len() && bands[j + 1].1.as_ref() == Some(&c) {
                 j += 1;
             }
-            let k = match names.iter().position(|n| n == &c) {
-                Some(k) => k,
-                None => {
-                    names.push(c.clone());
-                    names.len() - 1
-                }
-            };
+            let k = names.iter().position(|n| n == &c).unwrap_or(0);
             let left = if i == 0 { bands[i].0 } else { (bands[i - 1].0 + bands[i].0) / 2.0 };
             let right = if j + 1 >= bands.len() { bands[j].0 } else { (bands[j].0 + bands[j + 1].0) / 2.0 };
             let (l, r) = (xa.px(left).max(X0), xa.px(right).min(X1));
@@ -3305,6 +3743,23 @@ mod tests {
     use super::*;
 
     #[test]
+    fn chart_axes_read_in_everyday_units() {
+        // the meaning names the unit
+        let (l, u) = reading_unit("Pa", "arterial partial pressure of CO2 (e.g. in mmHg)", 5333.0).unwrap();
+        assert_eq!(l, "mmHg");
+        assert!(((5333.0 - u.offset) / u.factor - 40.0).abs() < 0.1);
+        // by size: a cardiac output of 8.3e-5 m^3/s reads as 5 L/min
+        let (l, u) = reading_unit("m^3/s", "cardiac output", 8.333e-5).unwrap();
+        assert!(l == "L/s" || l == "L/min", "{l}");
+        assert!(((8.333e-5 - u.offset) / u.factor) >= 0.1);
+        // a readable SI number stays SI; a pure number never changes
+        assert!(reading_unit("Pa", "pressure", 250.0).is_none());
+        assert!(reading_unit("1", "ratio", 1e-6).is_none());
+        // a word after "in" that is no unit of the same kind is ignored
+        assert!(reading_unit("m", "length in the tube", 3.0).is_none());
+    }
+
+    #[test]
     fn leading_numbers_and_units() {
         assert_eq!(lead_num("3.5 km"), Some((3.5, "km".into())));
         assert_eq!(lead_num("-2e-3 m/s"), Some((-0.002, "m/s".into())));
@@ -3322,6 +3777,9 @@ mod tests {
         let a = Ax::new(1e-6, 1.0, true, Y1, Y0, false);
         assert!(a.ticks().len() <= 7 && a.ticks().iter().all(|x| *x > 0.0));
         assert_eq!(tick_text(0.6000000000000001), "0.6");
+        // neighbours never read the same (a nearly flat curve once read 24.94 at every tick)
+        let t = tick_texts(&[24.9401, 24.9402, 24.9403]);
+        assert!(t.windows(2).all(|w| w[0] != w[1]), "{t:?}");
     }
 
     #[test]
@@ -3416,5 +3874,62 @@ mod tests {
             assert_eq!(o, (0..n).collect::<Vec<_>>());
         }
         assert_eq!(&coarse_to_fine(9)[..3], &[0, 8, 4]);
+    }
+
+    #[test]
+    fn axis_labels_carry_one_unit() {
+        // the meaning's own unit note goes when the axis prints the unit (once "(1/s) (1/h)")
+        assert_eq!(drop_unit_note("Coriolis parameter (1/s)", "1/s"), "Coriolis parameter");
+        assert_eq!(drop_unit_note("discharge (m^3/s)", "m^3/s"), "discharge");
+        assert_eq!(drop_unit_note("formation energy (per vacancy, e.g. eV)", "J"), "formation energy");
+        // a note that is no unit stays
+        assert_eq!(drop_unit_note("inclination (positive downward)", "rad"), "inclination (positive downward)");
+        // a unit named in the meaning's parentheses is the reading unit
+        let (l, _) = reading_unit("s", "rupture time (hours, h)", 3.6e6).unwrap();
+        assert_eq!(l, "h");
+        let (l, _) = reading_unit("J", "vacancy formation energy (per vacancy, e.g. eV)", 1.442e-19).unwrap();
+        assert_eq!(l, "eV");
+    }
+
+    #[test]
+    fn a_jump_is_drawn_as_a_gap_and_a_steep_smooth_curve_is_not() {
+        // a step function: 5 up to x = 2, then 3
+        let step: Vec<Option<(f64, f64)>> = (0..10).map(|i| { let x = i as f64 * 0.5; Some((x, if x <= 2.0 { 5.0 + 0.01 * x } else { 3.0 + 0.01 * x })) }).collect();
+        let out = break_jumps(step);
+        assert_eq!(out.iter().filter(|p| p.is_none()).count(), 1);
+        // a parabola: steep at the end, but every step is close to its neighbours
+        let par: Vec<Option<(f64, f64)>> = (0..20).map(|i| { let x = i as f64; Some((x, x * x)) }).collect();
+        assert_eq!(break_jumps(par).iter().filter(|p| p.is_none()).count(), 0);
+    }
+
+    #[test]
+    fn a_list_entry_is_named_by_the_meaning_when_it_names_its_entries() {
+        assert_eq!(entry_label("A, b, c of the line a x + b y = c", 2, 3), "c of the line a x + b y = c");
+        assert_eq!(entry_label("A, b, c of the line a x + b y = c", 0, 3), "a of the line a x + b y = c");
+        assert_eq!(entry_label("A, B, C of A x^2 + B xy + C y^2", 1, 3), "B of A x^2 + B xy + C y^2");
+        assert_eq!(entry_label("measured heights of the plants", 1, 4), "measured heights of the plants, entry 2");
+        assert_eq!(entry_label("A, b, c of the line", 1, 4), "A, b, c of the line, entry 2");
+    }
+
+    #[test]
+    fn sweeps_stay_in_the_range_a_kind_admits() {
+        assert_eq!(kind_range("emissivity", "emissivity of the second plate", ""), (Some(0.0), Some(1.0)));
+        assert_eq!(kind_range("heat_capacity_ratio", "ratio of specific heats", ""), (Some(1.0), Some(5.0 / 3.0)));
+        assert_eq!(kind_range("cutoff_ratio", "cutoff ratio V3/V2", ""), (Some(1.0), None));
+        assert_eq!(kind_range("mach_number", "Mach number ahead of the shock", ""), (Some(1.0), None));
+        assert_eq!(kind_range("mach_number", "Mach number behind the shock", ""), (None, None));
+        assert_eq!(kind_range("number", "longitude of the first point (degrees)", ""), (Some(-180.0), Some(180.0)));
+        assert_eq!(kind_range("number", "latitude", ""), (Some(-90.0), Some(90.0)));
+        // a limit the visitor's own value lies outside is not applied (an efficiency typed as 85 per cent)
+        let mut k = Knob::plain("eta", 85.0, false, "efficiency".into(), String::new());
+        k.lo_lim = Some(0.0);
+        k.hi_lim = Some(1.0);
+        let (lo, hi) = knob_range(&k);
+        assert!(lo < 85.0 && hi > 85.0);
+        let mut k = Knob::plain("e2", 0.8, false, "emissivity".into(), String::new());
+        k.lo_lim = Some(0.0);
+        k.hi_lim = Some(1.0);
+        assert!(knob_range(&k).1 <= 1.0);
+        assert!(pure_unit("1") && pure_unit("") && !pure_unit("Pa"));
     }
 }

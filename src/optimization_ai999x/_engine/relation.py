@@ -13,7 +13,7 @@ from functools import cached_property
 from . import expr as E
 from ._lazy import sp
 
-SIGNS = ("any", "nonnegative", "positive")
+SIGNS = ("any", "nonnegative", "positive", "fraction", "at_least_one")   # fraction: 0..1 (an efficiency); at_least_one: >= 1 (a refractive index)
 
 
 class RelationError(ValueError):
@@ -81,9 +81,9 @@ class Relation:
         out = {}
         for name, s in self.symbols.items():
             flags = {"real": True}
-            if s.sign == "positive":
+            if s.sign in ("positive", "at_least_one"):
                 flags["positive"] = True
-            elif s.sign == "nonnegative":
+            elif s.sign in ("nonnegative", "fraction"):
                 flags["nonnegative"] = True
             out[name] = sp.Symbol(name, **flags)
         return out
@@ -126,7 +126,9 @@ class Relation:
 
     def _admissible(self, name: str, value: float) -> bool:
         sign = self.symbols[name].sign
-        return not ((sign == "positive" and value <= 0) or (sign == "nonnegative" and value < 0))
+        return not ((sign == "positive" and value <= 0) or (sign == "nonnegative" and value < 0)
+                    or (sign == "fraction" and not 0 <= value <= 1 + 1e-12)
+                    or (sign == "at_least_one" and value < 1 - 1e-12))
 
     def solve(self, target: str, values: dict) -> float:
         """The single admissible value of `target` given every other symbol. `values` maps a symbol name to a

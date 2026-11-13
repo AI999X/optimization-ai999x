@@ -192,6 +192,11 @@ pub struct Pack {
     /// documented questions with the Python package's reading of each (read by ask.rs)
     pub terms: Value,
     pub forms: Vec<Value>,
+    /// which result of one procedure is the quantity an input of another takes (models/<d>/capabilities/links.json,
+    /// reviewed; read by the language layer's two-step readings): (from, output, to, input)
+    pub links: Vec<(String, String, String, String)>,
+    /// words that set a procedure's input to zero ("centreline" -> y = 0): (procedure, input, words)
+    pub zero_words: Vec<(String, String, Vec<String>)>,
 }
 
 fn s(v: &Value, k: &str) -> String {
@@ -325,7 +330,11 @@ impl Pack {
         Ok(Pack { model: s(&doc, "model"), distribution: s(&doc, "distribution"), version: s(&doc, "version"),
                   kinds, relations, procedures, labels, native: None, figures: None,
                   terms: doc.get("terms").cloned().unwrap_or(Value::Null),
-                  forms: doc.get("forms").and_then(|f| f.as_array()).cloned().unwrap_or_default() })
+                  forms: doc.get("forms").and_then(|f| f.as_array()).cloned().unwrap_or_default(),
+                  links: doc["links"]["links"].as_array().cloned().unwrap_or_default().iter()
+                      .map(|l| (s(l, "from"), s(l, "output"), s(l, "to"), s(l, "input"))).collect(),
+                  zero_words: doc["links"]["zero"].as_array().cloned().unwrap_or_default().iter()
+                      .map(|z| (s(z, "capability"), s(z, "input"), strs(z, "words"))).collect() })
     }
 
     pub fn relation(&self, key: &str) -> Option<&Relation> {

@@ -539,7 +539,11 @@ def _structured_lp(q):
     return out
 
 
-def _lp_question(q, need_words=None, forbid=r"\b(integer|whole[- ]number|graphical(?:ly)?|corner[- ]points?|vertex|vertices|shadow prices?|dual values?|knapsack|quadratic|hessian)\b"):
+_LP_SENS_WORDS = (r"\b(sensitivity|ranges? of (?:optimality|feasibility)|ranging|allowable (?:increases?|decreases?)|"
+                  r"dual (?:program|problem|linear program|lp))\b")
+
+
+def _lp_question(q, need_words=None, forbid=r"\b(integer|whole[- ]number|graphical(?:ly)?|corner[- ]points?|vertex|vertices|shadow prices?|dual values?|knapsack|quadratic|hessian|sensitivity|ranges? of (?:optimality|feasibility)|ranging|allowable (?:increases?|decreases?)|dual (?:program|problem|linear program|lp))\b"):
     ql = q.lower()
     if need_words and not re.search(need_words, ql):
         return None
@@ -6050,6 +6054,357 @@ _add("minimum_vertex_cover",
                {"inputs": {"edges": "A-B, A-C, A-D"}, "outputs": {"min_cover_size": 1.0, "cover_example": ["A"]}}],
      questions=[{"q": "Find the minimum vertex cover of the graph with edges A-B, A-C, A-D, B-C, D-E.", "outputs": {"min_cover_size": 3.0}},
                 {"q": "Find the minimum vertex cover of the graph with edges A-B, B-B.", "outcome": "INVALID_INPUT"}])
+
+
+# --- LP duality and sensitivity ranges (one optimal basis, unique and nondegenerate) -----------------------------
+# Conventions: the dual of "maximize c.x s.t. A x (rel) b, x >= 0" is "minimize b.y s.t. A^T y >= c" with y_i >= 0 for a
+# <= row, y_i <= 0 for a >= row and y_i free for an = row; the dual of a minimization is "maximize b.y s.t. A^T y <= c"
+# with y_i >= 0 for a >= row, y_i <= 0 for a <= row, free for =. Its optimal y is the vector of shadow prices dz*/db_i.
+# A range of optimality is the interval of one objective coefficient (the others fixed) over which the current optimal
+# solution stays optimal; a range of feasibility is the interval of one right-hand side over which the current basis
+# stays feasible (the shadow prices stay valid). None marks an unbounded end. Ranges are given only when the optimal
+# basis is unique: the optimum is nondegenerate (every basic variable > 0) and unique (every nonbasic reduced cost > 0);
+# otherwise they depend on which basis is reported and the question is refused with that reason.
+def _binv(Bm):
+    """Inverse of a square matrix of Fractions by Gauss-Jordan elimination; None when singular."""
+    n = len(Bm)
+    M = [list(Bm[i]) + [F(int(k == i)) for k in range(n)] for i in range(n)]
+    for col in range(n):
+        piv = -1
+        for r in range(col, n):
+            if M[r][col] != 0:
+                piv = r
+                break
+        if piv < 0:
+            return None
+        M[col], M[piv] = M[piv], M[col]
+        pv = M[col][col]
+        M[col] = [v / pv for v in M[col]]
+        for r in range(n):
+            if r != col and M[r][col] != 0:
+                f = M[r][col]
+                M[r] = [a - f * bb for a, bb in zip(M[r], M[col])]
+    return [row[n:] for row in M]
+
+
+def lp_sensitivity(sense, c, A, b, relations=None):
+    rel = _relations(relations, len(A))
+    _check_lp(sense, c, A, b, rel)
+    As, bs, cs = _standard(sense, c, A, b, rel)
+    status, _x, _y, basis, redundant = _simplex_eq(As, bs, cs)
+    if status == "infeasible":
+        raise ValueError("the constraints are infeasible: no point satisfies all of them")
+    if status == "unbounded":
+        raise ValueError("the objective is unbounded on the feasible region: there is no finite optimum")
+    if redundant:
+        raise ValueError("an equality constraint is a combination of the others: the shadow prices and ranges are not unique")
+    n, m, N = len(c), len(A), len(cs)
+    Bi = _binv([[As[i][j] for j in basis] for i in range(m)])
+    if Bi is None:
+        raise ValueError("the optimal basis is singular")
+    xB = [sum(Bi[r][i] * bs[i] for i in range(m)) for r in range(m)]
+    for v in xB:
+        if v <= 0:
+            raise ValueError("the optimal solution is degenerate (a basic variable is 0): the shadow prices and ranges "
+                             "depend on the basis, so none are given")
+    pos = [-1] * N
+    for r in range(m):
+        pos[basis[r]] = r
+    cB = [cs[j] for j in basis]
+    yv = [sum(cB[r] * Bi[r][i] for r in range(m)) for i in range(m)]          # min-form dual y = c_B B^-1
+    nonbasic = [j for j in range(N) if pos[j] < 0]
+    red, alpha = {}, {}
+    for j in nonbasic:
+        col = [As[i][j] for i in range(m)]
+        red[j] = cs[j] - sum(yv[i] * col[i] for i in range(m))
+        alpha[j] = [sum(Bi[r][i] * col[i] for i in range(m)) for r in range(m)]
+        if red[j] <= 0:
+            raise ValueError("the optimum is not unique (alternative optimal solutions): the ranges depend on which "
+                             "optimal solution is reported, so none are given")
+    s = F(1) if sense == "minimize" else F(-1)
+    cost_lo, cost_hi = [], []
+    for j in range(n):
+        cj = _fr(c[j])
+        lo_m, hi_m = None, None                               # allowed change of the min-form cost of x_j
+        if pos[j] < 0:
+            lo_m = -red[j]
+        else:
+            r = pos[j]
+            for k in nonbasic:
+                a = alpha[k][r]
+                if a > 0:
+                    t = red[k] / a
+                    if hi_m is None or t < hi_m:
+                        hi_m = t
+                elif a < 0:
+                    t = red[k] / a
+                    if lo_m is None or t > lo_m:
+                        lo_m = t
+        if s == 1:
+            lo, hi = (None if lo_m is None else cj + lo_m), (None if hi_m is None else cj + hi_m)
+        else:
+            lo, hi = (None if hi_m is None else cj - hi_m), (None if lo_m is None else cj - lo_m)
+        cost_lo.append(None if lo is None else float(lo))
+        cost_hi.append(None if hi is None else float(hi))
+    rhs_lo, rhs_hi = [], []
+    for i in range(m):
+        lo_d, hi_d = None, None                               # allowed change of b_i: x_B + d B^-1 e_i >= 0
+        for r in range(m):
+            g = Bi[r][i]
+            if g > 0:
+                t = -xB[r] / g
+                if lo_d is None or t > lo_d:
+                    lo_d = t
+            elif g < 0:
+                t = -xB[r] / g
+                if hi_d is None or t < hi_d:
+                    hi_d = t
+        bi = _fr(b[i])
+        rhs_lo.append(None if lo_d is None else float(bi + lo_d))
+        rhs_hi.append(None if hi_d is None else float(bi + hi_d))
+    p = [s * v for v in yv]
+    x = [F(0)] * n
+    for r in range(m):
+        if basis[r] < n:
+            x[basis[r]] = xB[r]
+    value = s * sum(cB[r] * xB[r] for r in range(m))
+    signs = []
+    for i in range(m):
+        if rel[i] == "=":
+            signs.append("free")
+        elif (rel[i] == "<=") == (sense == "maximize"):
+            signs.append(">= 0")
+        else:
+            signs.append("<= 0")
+    return {"optimal_value": float(value), "x": _fl(x), "dual_solution": _fl(p),
+            "dual_value": float(sum(_fr(b[i]) * p[i] for i in range(m))),
+            "cost_lower": cost_lo, "cost_upper": cost_hi, "rhs_lower": rhs_lo, "rhs_upper": rhs_hi,
+            "dual_sense": "minimize" if sense == "maximize" else "maximize",
+            "dual_objective": [float(_fr(v)) for v in b],
+            "dual_matrix": [[float(_fr(A[i][j])) for i in range(m)] for j in range(n)],
+            "dual_relations": ", ".join([">=" if sense == "maximize" else "<="] * n),
+            "dual_signs": ", ".join(signs)}
+
+
+def _sens_same(a, b):
+    if isinstance(a, str) or isinstance(b, str) or a is None or b is None:
+        return a == b
+    if isinstance(a, (list, tuple)) or isinstance(b, (list, tuple)):
+        if not (isinstance(a, (list, tuple)) and isinstance(b, (list, tuple))) or len(a) != len(b):
+            return False
+        for u, v in zip(a, b):
+            if not _sens_same(u, v):
+                return False
+        return True
+    return abs(a - b) <= 1e-12 * max(1.0, abs(a), abs(b))
+
+
+def verify_lp_sensitivity(inputs, outputs):
+    """The LP optimality certificate (primal and dual feasibility, equal objectives) of the reported solution and dual
+    solution, and every range recomputed from the inputs."""
+    x, p = outputs.get("x"), outputs.get("dual_solution")
+    if x is None or p is None or "optimal_value" not in outputs:
+        return 1.0
+    worst = _lp_certificate_residual(inputs, x, p, outputs["optimal_value"])
+    try:
+        want = lp_sensitivity(inputs["sense"], inputs["c"], inputs["A"], inputs["b"], inputs.get("relations"))
+    except ValueError:
+        return 1.0
+    for k in want:
+        if k not in outputs or not _sens_same(outputs[k], want[k]):
+            return 1.0
+    return worst
+
+
+def reference_lp_sensitivity(sense, c, A, b, relations=None):
+    """INDEPENDENT reference: HiGHS (scipy.optimize.linprog) solves the LP; its marginals give the dual solution; the
+    optimal basis is read from the HiGHS solution (the positive structural and slack values) and the ranges follow from
+    a floating-point numpy inverse of that basis. Every range is then checked by re-solving with HiGHS at a point
+    inside it: inside a range of optimality the optimal point must stay; inside a range of feasibility the marginals
+    must stay."""
+    import numpy as np
+    rel = _relations(relations, len(A))
+    val, res = _scipy_lp(sense, c, A, b, rel)
+    n, m = len(c), len(A)
+    Am, bm, cu = np.array(A, float), np.array(b, float), np.array(c, float)
+    s = 1.0 if sense == "minimize" else -1.0
+    scale = max([1.0] + [abs(v) for v in cu] + [abs(v) for v in bm] + [abs(v) for v in Am.ravel()])
+
+    def duals(r):
+        ub = [i for i, t in enumerate(rel) if t != "="]
+        eq = [i for i, t in enumerate(rel) if t == "="]
+        p = [0.0] * m
+        for k, i in enumerate(ub):
+            p[i] = s * float(r.ineqlin.marginals[k]) * (1 if rel[i] == "<=" else -1)
+        for k, i in enumerate(eq):
+            p[i] = s * float(r.eqlin.marginals[k])
+        return p
+
+    x = np.array(res.x, float)
+    cols, costs, vals = [Am[:, j] for j in range(n)], [s * cu[j] for j in range(n)], list(x)
+    for i, t in enumerate(rel):
+        if t == "=":
+            continue
+        e = np.zeros(m)
+        e[i] = 1.0 if t == "<=" else -1.0
+        cols.append(e)
+        costs.append(0.0)
+        vals.append(float(bm[i] - Am[i] @ x) if t == "<=" else float(Am[i] @ x - bm[i]))
+    order = sorted(range(len(vals)), key=lambda j: -vals[j])
+    basis = sorted(order[:m])                             # nondegenerate: exactly m values are positive
+    assert vals[order[m - 1]] > 1e-12 * scale and (len(order) == m or vals[order[m]] <= 1e-9 * scale), \
+        "the HiGHS solution does not show one nondegenerate basis"
+    Bi = np.linalg.inv(np.column_stack([cols[j] for j in basis]))
+    xB = Bi @ bm
+    y = np.array([costs[j] for j in basis]) @ Bi
+    p = [s * float(v) for v in y]
+    assert max(abs(u - v) for u, v in zip(p, duals(res))) <= 1e-6 * scale, "marginals differ from c_B B^-1"
+    nonbasic = [j for j in range(len(cols)) if j not in basis]
+    red = {j: costs[j] - float(y @ cols[j]) for j in nonbasic}
+    alpha = {j: Bi @ cols[j] for j in nonbasic}
+
+    def snap(v):
+        return None if v is None else (0.0 if abs(v) <= 1e-11 * scale else float(v))
+
+    clo, chi = [], []
+    for j in range(n):
+        lo_m = hi_m = None
+        if j not in basis:
+            lo_m = -red[j]
+        else:
+            r = basis.index(j)
+            for k in nonbasic:
+                a = alpha[k][r]
+                if a > 1e-12:
+                    hi_m = red[k] / a if hi_m is None else min(hi_m, red[k] / a)
+                elif a < -1e-12:
+                    lo_m = red[k] / a if lo_m is None else max(lo_m, red[k] / a)
+        if s > 0:
+            lo, hi = (None if lo_m is None else cu[j] + lo_m), (None if hi_m is None else cu[j] + hi_m)
+        else:
+            lo, hi = (None if hi_m is None else cu[j] - hi_m), (None if lo_m is None else cu[j] - lo_m)
+        clo.append(snap(lo))
+        chi.append(snap(hi))
+    rlo, rhi = [], []
+    for i in range(m):
+        lo_d = hi_d = None
+        for r in range(m):
+            g = Bi[r, i]
+            if g > 1e-12:
+                lo_d = -xB[r] / g if lo_d is None else max(lo_d, -xB[r] / g)
+            elif g < -1e-12:
+                hi_d = -xB[r] / g if hi_d is None else min(hi_d, -xB[r] / g)
+        rlo.append(snap(None if lo_d is None else bm[i] + lo_d))
+        rhi.append(snap(None if hi_d is None else bm[i] + hi_d))
+
+    def solve(cc, bb):
+        try:
+            return _scipy_lp(sense, list(cc), A, list(bb), rel)[1]
+        except ValueError:
+            return None
+
+    for j in range(n):                                   # ranges of optimality, checked by re-solving
+        lo, hi = clo[j], chi[j]
+        step = 1e-3 * (1.0 + abs(cu[j]))
+        inside = (lo + hi) / 2 if lo is not None and hi is not None else (
+            (lo + step) if lo is not None else ((hi - step) if hi is not None else cu[j]))
+        cc = cu.copy()
+        cc[j] = inside
+        r = solve(cc, bm)
+        assert r is not None and np.max(np.abs(r.x - x)) <= 1e-6 * scale, "optimum moved inside the range"
+    for i in range(m):                                  # ranges of feasibility: the marginals stay inside
+        lo, hi = rlo[i], rhi[i]
+        step = 1e-3 * (1.0 + abs(bm[i]))
+        inside = (lo + hi) / 2 if lo is not None and hi is not None else (
+            (lo + step) if lo is not None else ((hi - step) if hi is not None else bm[i]))
+        bb = bm.copy()
+        bb[i] = inside
+        r = solve(cu, bb)
+        assert r is not None and max(abs(u - v) for u, v in zip(duals(r), p)) <= 1e-6 * scale, "shadow prices changed inside the range"
+    return {"optimal_value": val, "x": [float(v) for v in x], "dual_solution": p,
+            "dual_value": float(bm @ np.array(p)),
+            "cost_lower": clo, "cost_upper": chi, "rhs_lower": rlo, "rhs_upper": rhi,
+            "dual_sense": "minimize" if sense == "maximize" else "maximize", "dual_objective": [float(v) for v in bm],
+            "dual_matrix": Am.T.tolist(), "dual_relations": ", ".join([">=" if sense == "maximize" else "<="] * n)}
+
+
+def wrong_lp_sensitivity(sense, c, A, b, relations=None):
+    """A plausible mistake: the allowable increase and decrease interchanged (the signs of a maximization's ratio test
+    taken as for a minimization)."""
+    o = lp_sensitivity(sense, c, A, b, relations)
+
+    def flip(vals, lo, hi):
+        nlo = [None if h is None else v - (h - v) for v, h in zip(vals, hi)]
+        nhi = [None if l_ is None else v + (v - l_) for v, l_ in zip(vals, lo)]
+        return nlo, nhi
+    clo, chi = flip([float(v) for v in c], o["cost_lower"], o["cost_upper"])
+    rlo, rhi = flip([float(v) for v in b], o["rhs_lower"], o["rhs_upper"])
+    return dict(o, cost_lower=clo, cost_upper=chi, rhs_lower=rlo, rhs_upper=rhi)
+
+
+_add("lp_duality_sensitivity",
+     name="LP duality and sensitivity ranges", topic="linear programming / sensitivity analysis",
+     purpose="The dual of a linear program and its optimal solution (the shadow prices), the range of optimality of every "
+             "objective coefficient and the range of feasibility of every right-hand side, for an optimum with a unique "
+             "nondegenerate basis.",
+     inputs=_LP_IN,
+     outputs=[_O("cost_lower", "lowest value of each objective coefficient keeping the solution optimal (None: no limit)"),
+              _O("cost_upper", "highest value of each objective coefficient keeping the solution optimal (None: no limit)"),
+              _O("rhs_lower", "lowest value of each right-hand side keeping the shadow prices valid (None: no limit)"),
+              _O("rhs_upper", "highest value of each right-hand side keeping the shadow prices valid (None: no limit)"),
+              _O("optimal_value", "optimal value of the objective"),
+              _O("x", "the optimal solution, variables in order of first appearance"),
+              _O("dual_solution", "optimal dual variables = shadow prices, one per constraint"),
+              _O("dual_value", "optimal value of the dual (equal to the primal's: strong duality)"),
+              _O("dual_sense", "the dual's objective sense", "text"),
+              _O("dual_objective", "the dual's objective coefficients (the primal right-hand sides)"),
+              _O("dual_matrix", "the dual's constraint rows (the primal's columns: A transposed)"),
+              _O("dual_relations", "relation of each dual constraint", "text"),
+              _O("dual_signs", "sign of each dual variable (>= 0, <= 0 or free)", "text")],
+     primary="cost_lower",
+     conditions=["all variables >= 0", "a feasible LP with a finite optimum",
+                 "a nondegenerate optimum (every basic variable > 0)", "a unique optimum (every reduced cost > 0)",
+                 "no redundant equality constraint", "at most 12 variables and constraints"],
+     method="exact two-phase simplex; with the optimal basis B: y = c_B B^-1, reduced costs d_j = c_j - y A_j; range of a "
+            "nonbasic cost from its reduced cost, of a basic cost from the ratio test d_k / (B^-1 A_k)_r over the nonbasic "
+            "columns; range of b_i from the ratio test -x_B / (B^-1 e_i)",
+     latex=r"\max c^\top x\ \text{s.t.}\ A x \le b,\ x \ge 0 \;\Longleftrightarrow\; \min b^\top y\ \text{s.t.}\ A^\top y \ge c,\ y \ge 0;"
+           r"\quad x_B + \delta\,B^{-1}e_i \ge 0,\quad d_k - \Delta\,(B^{-1}A_k)_r \ge 0",
+     run=lp_sensitivity, verify=verify_lp_sensitivity, reference=reference_lp_sensitivity, wrong=wrong_lp_sensitivity,
+     parse=lambda q: _lp_question(q, _LP_SENS_WORDS,
+                                  r"\b(integer|whole[- ]number|graphical(?:ly)?|corner[- ]points?|vertex|vertices|"
+                                  r"shadow prices?|dual values?|dual prices?|knapsack|quadratic|hessian)\b"),
+     random_inputs=lambda rng: _random_lp(rng),
+     keywords=["sensitivity analysis", "range of optimality", "range of feasibility", "dual program", "allowable increase"],
+     templates=["Find the ranges of optimality and feasibility and the dual program: maximize 3x + 5y subject to x <= 4, "
+                "2y <= 12, 3x + 2y <= 18, x, y >= 0.",
+                "Do the sensitivity analysis: minimize 2x + 3y subject to x + y >= 4, x + 3y >= 6, x, y >= 0."],
+     examples=[{"inputs": {"sense": "maximize", "c": [3, 5], "A": [[1, 0], [0, 2], [3, 2]], "b": [4, 12, 18]},
+                "outputs": {"optimal_value": 36.0, "x": [2.0, 6.0], "dual_solution": [0.0, 1.5, 1.0], "dual_value": 36.0,
+                            "cost_lower": [0.0, 2.0], "cost_upper": [7.5, None],
+                            "rhs_lower": [2.0, 6.0, 12.0], "rhs_upper": [None, 18.0, 24.0],
+                            "dual_sense": "minimize", "dual_objective": [4.0, 12.0, 18.0],
+                            "dual_matrix": [[1.0, 0.0, 3.0], [0.0, 2.0, 2.0]], "dual_relations": ">=, >=",
+                            "dual_signs": ">= 0, >= 0, >= 0"}},
+               {"inputs": {"sense": "minimize", "c": [2, 3], "A": [[1, 1], [1, 3]], "b": [4, 6], "relations": ">=, >="},
+                "outputs": {"optimal_value": 9.0, "x": [3.0, 1.0], "dual_solution": [1.5, 0.5], "dual_value": 9.0,
+                            "cost_lower": [1.0, 2.0], "cost_upper": [3.0, 6.0],
+                            "rhs_lower": [2.0, 4.0], "rhs_upper": [6.0, 12.0],
+                            "dual_sense": "maximize", "dual_objective": [4.0, 6.0],
+                            "dual_matrix": [[1.0, 1.0], [1.0, 3.0]], "dual_relations": "<=, <=",
+                            "dual_signs": ">= 0, >= 0"}}],
+     questions=[{"q": "Find the ranges of optimality and feasibility and the dual program: maximize 3x + 5y subject to "
+                      "x <= 4, 2y <= 12, 3x + 2y <= 18, x, y >= 0.",
+                 "outputs": {"cost_lower": [0.0, 2.0], "cost_upper": [7.5, None], "rhs_lower": [2.0, 6.0, 12.0],
+                             "rhs_upper": [None, 18.0, 24.0], "dual_sense": "minimize"}},
+                {"q": "Do the sensitivity analysis: minimize 2x + 3y subject to x + y >= 4, x + 3y >= 6, x, y >= 0.",
+                 "outputs": {"cost_lower": [1.0, 2.0], "cost_upper": [3.0, 6.0], "rhs_lower": [2.0, 4.0],
+                             "rhs_upper": [6.0, 12.0], "dual_solution": [1.5, 0.5]}},
+                {"q": "Find the ranges of optimality: maximize 2x + 4y subject to x + 2y <= 8, x <= 5, x, y >= 0.",
+                 "outcome": "INVALID_INPUT"},
+                {"q": "Find the dual program: maximize x + y subject to x + y <= 2, x + y >= 5, x, y >= 0.",
+                 "outcome": "INVALID_INPUT"},
+                {"q": "Find the ranges of optimality: maximize 3x + 5y subject to x + 2y <= 14.", "outcome": "OUT_OF_SCOPE"}])
 
 
 # ==================================================================================================================

@@ -54,13 +54,17 @@ pub struct Answer {
     pub equation: String,
     #[serde(skip)]
     pub inputs: Vec<(String, f64, String, String)>, // symbol, SI value, SI unit, as given
+    /// every structured input (whole number, list, matrix, text, choice) as typed: for the desktop's live scenes
+    /// (n, k, data lists, truss nodes); never serialised nor printed, so the command line and parity are unchanged
+    #[serde(skip)]
+    pub given: Vec<(String, String)>,
 }
 
 impl Answer {
     fn refuse(outcome: &str, message: String) -> Answer {
         Answer { outcome: outcome.into(), message, value: None, unit: None, solved_for: None, si: vec![], values: vec![],
                  target: None, phrase: String::new(),
-                 assumptions: vec![], name: String::new(), equation: String::new(), inputs: vec![] }
+                 assumptions: vec![], name: String::new(), equation: String::new(), inputs: vec![], given: vec![] }
     }
     pub fn solved(&self) -> bool {
         self.outcome == "SOLVED"
@@ -81,7 +85,9 @@ enum Why {
 }
 
 fn admissible(sign: &str, v: f64) -> bool {
-    !((sign == "positive" && v <= 0.0) || (sign == "nonnegative" && v < 0.0))
+    // fraction: 0..1 (an efficiency); at_least_one: 1 or more (a refractive index) — relation.py _admissible
+    !((sign == "positive" && v <= 0.0) || (sign == "nonnegative" && v < 0.0)
+      || (sign == "fraction" && !(0.0..=1.0 + 1e-12).contains(&v)) || (sign == "at_least_one" && v < 1.0 - 1e-12))
 }
 
 /// The equation's residual lhs - rhs (summed terms) with `target` = x, and a bound on its rounding error.
@@ -365,6 +371,8 @@ fn must(sign: &str) -> &'static str {
     match sign {
         "positive" => "greater than zero",
         "nonnegative" => "zero or more",
+        "fraction" => "between 0 and 1",
+        "at_least_one" => "1 or more",
         _ => "valid",
     }
 }
@@ -383,6 +391,8 @@ fn plain_refusal(rel: &Relation, p: &Pack, why: &Why, sources: &HashMap<String, 
     match why {
         Why::InputSign { value, .. } => {
             let given = sources.get(name).cloned().unwrap_or_else(|| amount(*value));
+            // a pure number's unit "1" is not printed ("0.5", not "0.5 1")
+            let given = given.strip_suffix(" 1").map(str::to_string).unwrap_or(given);
             format!("{what} ({name}) must be {}, but it was given as {given}. Check this input.", must(&s.sign))
         }
         Why::ResultSign { values, .. } if !values.is_empty() => format!(
@@ -523,6 +533,8 @@ pub fn solve_procedure(p: &Pack, key: &str, given: &[(String, Input)]) -> Answer
     };
     let mut values: HashMap<String, f64> = HashMap::new();
     let mut texts: HashMap<String, String> = HashMap::new();
+    // the structured inputs as typed (Answer.given, for the desktop's live scenes)
+    let mut structured: Vec<(String, String)> = vec![];
     // every input as read (numbers in SI, and the structured ones): what a native procedure receives
     let mut vals: HashMap<String, Val> = HashMap::new();
     let mut order: Vec<String> = vec![];
@@ -533,6 +545,8 @@ pub fn solve_procedure(p: &Pack, key: &str, given: &[(String, Input)]) -> Answer
                                                            takes.join(", ")));
         };
         if !matches!(inp.ty.as_str(), "number" | "") {
+            // (text exactly as typed, without the Python quotes repr() adds: "0 0; 4 0; 2 3", not "'0 0; 4 0; 2 3'")
+            structured.push((name.clone(), match v { Input::Text(t) => t.clone(), other => other.repr() }));
             // runtime/inputs.py coerce: a whole number, a list, a matrix, text, one of the choices, true or false
             if inp.ty != "choice" && !pr.native {
                 return Answer::refuse("INVALID_INPUT", format!("{name}: a {} input is not supported by this build.",
@@ -631,7 +645,9 @@ pub fn solve_procedure(p: &Pack, key: &str, given: &[(String, Input)]) -> Answer
             let kind = pr.outputs.iter().find(|o| o.symbol == s).map(|o| o.kind.clone()).unwrap_or_default();
             (s, v, unit_of(&kind))
         }).collect();
-        return finish(p, pr, outs, residual, si, &order, &values, &texts, unit_of);
+        let mut a = finish(p, pr, outs, residual, si, &order, &values, &texts, unit_of);
+        a.given = structured;
+        return a;
     }
     let mut outs: Vec<(String, serde_json::Value, String)> = vec![];
     for o in &pr.outputs {
@@ -672,7 +688,9 @@ pub fn solve_procedure(p: &Pack, key: &str, given: &[(String, Input)]) -> Answer
             _ => worst = f64::INFINITY,
         }
     }
-    finish(p, pr, outs, worst, si, &order, &values, &texts, unit_of)
+    let mut a = finish(p, pr, outs, worst, si, &order, &values, &texts, unit_of);
+    a.given = structured;
+    a
 }
 
 /// The answer of a procedure from its outputs and the residual of its check (shared by both kinds of procedure).
@@ -896,5 +914,6 @@ pub fn solve(p: &Pack, key: &str, given: &[(String, Input)], target: Option<&str
         name: rel.name.clone(),
         equation: rel.equation.clone(),
         inputs,
+        given: vec![],
     }
 }

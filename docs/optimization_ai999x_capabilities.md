@@ -37,7 +37,7 @@ result.show()
 | Inventory management | [Economic order quantity (EOQ)](#eoq), [EOQ with planned backorders](#eoq_planned_shortages), [Economic production quantity (EPQ)](#epq_production_lot), [Order quantity with quantity discounts (all-units)](#eoq_quantity_discount), [Reorder point with safety stock](#reorder_point), [Periodic-review order-up-to level](#order_up_to_level) |
 | Inventory management / single-period | [Newsvendor order quantity (normal demand)](#newsvendor_normal), [Newsvendor order quantity (uniform demand)](#newsvendor_uniform), [Newsvendor order quantity (discrete demand)](#newsvendor_discrete) |
 | Linear programming | [Linear program (simplex method)](#linear_program), [Two-variable linear program (graphical corner-point method)](#lp_two_variable_graphical) |
-| Linear programming / sensitivity analysis | [Shadow prices of a linear program](#lp_shadow_prices) |
+| Linear programming / sensitivity analysis | [Shadow prices of a linear program](#lp_shadow_prices), [LP duality and sensitivity ranges](#lp_duality_sensitivity) |
 | Multi-criteria decision analysis | [TOPSIS ranking (closeness to the ideal solution)](#topsis), [Weighted sum model (simple additive weighting)](#weighted_sum_model), [Weighted product model](#weighted_product_model) |
 | Multi-criteria decision analysis / AHP | [AHP priority vector (principal eigenvector)](#ahp_priority_vector), [AHP consistency ratio](#ahp_consistency_ratio), [AHP weights by the geometric mean method](#ahp_geometric_mean) |
 | Network optimisation / assignment | [Assignment problem (Hungarian method), minimum total cost](#assignment_min_cost), [Assignment problem (Hungarian method), maximum total value](#assignment_max_profit) |
@@ -169,6 +169,7 @@ Call `solve("<id>", **inputs)` with plain numbers; the result's `values` holds e
 | mdp_discounted | Discounted Markov decision process (optimal values and policy) | R, T, gamma | value_state_1, values, policy |
 | graph_coloring | Chromatic number (minimum graph colouring) | edges | chromatic_number, coloring_example, nodes |
 | minimum_vertex_cover | Minimum vertex cover (and maximum independent set) | edges | min_cover_size, cover_example, max_independent_set_size |
+| lp_duality_sensitivity | LP duality and sensitivity ranges | sense, c, A, b, relations | cost_lower, cost_upper, rhs_lower, rhs_upper, optimal_value, x, dual_solution, dual_value, dual_sense, dual_objective, dual_matrix, dual_relations, dual_signs |
 
 <a id="linear_program"></a>
 
@@ -3518,3 +3519,69 @@ optimization_ai999x.solve('minimum_vertex_cover', edges='A-B, A-C, A-D')
 |---|---|---|
 | Find the minimum vertex cover of the graph with edges A-B, A-C, A-D, B-C, D-E. | SOLVED | min_cover_size = 3, cover_example = ['A', 'C', 'E'], max_independent_set_size = 2 |
 | Find the minimum vertex cover of the graph with edges A-B, B-B. | INVALID_INPUT | Minimum vertex cover (and maximum independent set): a node cannot be joined to itself. |
+
+<a id="lp_duality_sensitivity"></a>
+
+### LP duality and sensitivity ranges: `lp_duality_sensitivity`
+
+The dual of a linear program and its optimal solution (the shadow prices), the range of optimality of every objective coefficient and the range of feasibility of every right-hand side, for an optimum with a unique nondegenerate basis.
+
+$$
+\max c^\top x\ \text{s.t.}\ A x \le b,\ x \ge 0 \;\Longleftrightarrow\; \min b^\top y\ \text{s.t.}\ A^\top y \ge c,\ y \ge 0;\quad x_B + \delta\,B^{-1}e_i \ge 0,\quad d_k - \Delta\,(B^{-1}A_k)_r \ge 0
+$$
+
+| input | meaning | condition |
+|---|---|---|
+| `sense` | maximize or minimize |  |
+| `c` | objective coefficients, one per variable |  |
+| `A` | constraint coefficients, one row per constraint |  |
+| `b` | right-hand sides, one per constraint |  |
+| `relations` | relation of each constraint: <=, >= or = (default all <=) |  |
+
+| output | meaning |
+|---|---|
+| `cost_lower` | lowest value of each objective coefficient keeping the solution optimal (None: no limit) |
+| `cost_upper` | highest value of each objective coefficient keeping the solution optimal (None: no limit) |
+| `rhs_lower` | lowest value of each right-hand side keeping the shadow prices valid (None: no limit) |
+| `rhs_upper` | highest value of each right-hand side keeping the shadow prices valid (None: no limit) |
+| `optimal_value` | optimal value of the objective |
+| `x` | the optimal solution, variables in order of first appearance |
+| `dual_solution` | optimal dual variables = shadow prices, one per constraint |
+| `dual_value` | optimal value of the dual (equal to the primal's: strong duality) |
+| `dual_sense` | the dual's objective sense |
+| `dual_objective` | the dual's objective coefficients (the primal right-hand sides) |
+| `dual_matrix` | the dual's constraint rows (the primal's columns: A transposed) |
+| `dual_relations` | relation of each dual constraint |
+| `dual_signs` | sign of each dual variable (>= 0, <= 0 or free) |
+
+- **Method:** exact two-phase simplex; with the optimal basis B: $y = c_B$ $B^{-1}$, reduced costs $d_j = c_j - y$ A_j; range of a nonbasic cost from its reduced cost, of a basic cost from the ratio test d_k / (B^-1 A_k)_r over the nonbasic columns; range of b_i from the ratio test -x_B / (B^-1 e_i)
+- **Assumes:** all variables >= 0; a feasible LP with a finite optimum; a nondegenerate optimum (every basic variable > 0); a unique optimum (every reduced cost > 0); no redundant equality constraint; at most 12 variables and constraints
+- **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
+
+![optimal dual variables = shadow prices, one per constraint (dual_solution) returned by optimization-ai999x for the worked example, one value for each b (right-hand sides, one per constraint) (3 values, first 0, last 1, largest 1](https://www.ai999x.com/?ax_fig=optimization-ai999x/lp-duality-sensitivity-series)
+
+*optimal dual variables = shadow prices, one per constraint (dual_solution) returned by optimization-ai999x for the worked example, one value for each b (right-hand sides, one per constraint) (3 values, first 0, last 1, largest 1.5); with rhs_lower (lowest value of each right-hand side keeping the shadow prices valid (None: no limit)), dual_objective (the dual's objective coefficients (the primal right-hand sides)). Inputs: sense = maximize, c = [3, 5], A = [[1, 0], [0, 2], [3, 2]], b = [4, 12, 18].*
+
+![The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): A (input); dual_matrix (returned)](https://www.ai999x.com/?ax_fig=optimization-ai999x/lp-duality-sensitivity-matrix)
+
+*The matrices of the worked example as heatmaps (rows and columns numbered; each cell shaded by its magnitude, negative values in the second colour; each panel shaded by its own largest magnitude): A (input); dual_matrix (returned). Returned with them by optimization-ai999x: optimal_value = 36, dual_value = 36. Other inputs: sense = maximize, c = [3, 5], b = [4, 12, 18].*
+
+```python
+optimization_ai999x.solve('lp_duality_sensitivity', sense='maximize', c=[3, 5], A=[[1, 0], [0, 2], [3, 2]], b=[4, 12, 18])
+# -> optimal_value = 36, x = [2.0, 6.0], dual_solution = [0.0, 1.5, 1.0], dual_value = 36, cost_lower = [0.0, 2.0], cost_upper = [7.5, None], rhs_lower = [2.0, 6.0, 12.0], rhs_upper = [None, 18.0, 24.0], dual_sense = minimize, dual_objective = [4.0, 12.0, 18.0], dual_matrix = [[1.0, 0.0, 3.0], [0.0, 2.0, 2.0]], dual_relations = >=, >=, dual_signs = >= 0, >= 0, >= 0   (SOLVED)
+```
+
+```python
+optimization_ai999x.solve('lp_duality_sensitivity', sense='minimize', c=[2, 3], A=[[1, 1], [1, 3]], b=[4, 6], relations='>=, >=')
+# -> optimal_value = 9, x = [3.0, 1.0], dual_solution = [1.5, 0.5], dual_value = 9, cost_lower = [1.0, 2.0], cost_upper = [3.0, 6.0], rhs_lower = [2.0, 4.0], rhs_upper = [6.0, 12.0], dual_sense = maximize, dual_objective = [4.0, 6.0], dual_matrix = [[1.0, 1.0], [1.0, 3.0]], dual_relations = <=, <=, dual_signs = >= 0, >= 0   (SOLVED)
+```
+
+**Questions in words (documented forms), as executed:**
+
+| question | outcome | result |
+|---|---|---|
+| Find the ranges of optimality and feasibility and the dual program: maximize 3x + 5y subject to x <= 4, 2y <= 12, 3x + 2y <= 18, x, y >= 0. | SOLVED | optimal_value = 36, x = [2.0, 6.0], dual_solution = [0.0, 1.5, 1.0], dual_value = 36, cost_lower = [0.0, 2.0], cost_upper = [7.5, None], rhs_lower = [2.0, 6.0, 12.0], rhs_upper = [None, 18.0, 24.0], dual_sense = minimize, dual_objective = [4.0, 12.0, 18.0], dual_matrix = [[1.0, 0.0, 3.0], [0.0, 2.0, 2.0]], dual_relations = >=, >=, dual_signs = >= 0, >= 0, >= 0 |
+| Do the sensitivity analysis: minimize 2x + 3y subject to x + y >= 4, x + 3y >= 6, x, y >= 0. | SOLVED | optimal_value = 9, x = [3.0, 1.0], dual_solution = [1.5, 0.5], dual_value = 9, cost_lower = [1.0, 2.0], cost_upper = [3.0, 6.0], rhs_lower = [2.0, 4.0], rhs_upper = [6.0, 12.0], dual_sense = maximize, dual_objective = [4.0, 6.0], dual_matrix = [[1.0, 1.0], [1.0, 3.0]], dual_relations = <=, <=, dual_signs = >= 0, >= 0 |
+| Find the ranges of optimality: maximize 2x + 4y subject to x + 2y <= 8, x <= 5, x, y >= 0. | INVALID_INPUT | LP duality and sensitivity ranges: the optimum is not unique (alternative optimal solutions): the ranges depend on which |
+| Find the dual program: maximize x + y subject to x + y <= 2, x + y >= 5, x, y >= 0. | INVALID_INPUT | LP duality and sensitivity ranges: the constraints are infeasible: no point satisfies all of them. |
+| Find the ranges of optimality: maximize 3x + 5y subject to x + 2y <= 14. | OUT_OF_SCOPE | Out of scope: variables without a stated sign (state x >= 0 for every variable; free variables are not supported). |

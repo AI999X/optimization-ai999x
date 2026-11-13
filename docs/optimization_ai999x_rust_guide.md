@@ -1,8 +1,8 @@
 # optimization: the Optimization program, user guide
 
-**optimization-ai999x 1.1.0**, Rust build: command line, desktop app and browser. **Creator / engineer:** Ibnul Jaif Farabi · **Company:** AI999X · support@ai999x.com
+**optimization-ai999x 1.6.0**, Rust build: command line, desktop app and browser. **Creator / engineer:** Ibnul Jaif Farabi · **Company:** AI999X · support@ai999x.com
 
-Optimization covers linear and integer programming, convex and nonlinear optimisation, assignment, transportation and shortest-route problems, scheduling, inventory, queueing, game theory and multi-criteria decisions. This guide is about `optimization`, the model as a self-contained program for Windows and Linux: 72 capabilities in 16 topics, answered on your own computer with no network, no Python and nothing else to install. The same compiled model runs in the AI999X desktop app and in the browser on the model's page (https://www.ai999x.com/models/optimization-ai999x/); the Python package (`pip install optimization-ai999x`) has its own guide. Every command output printed here is what the program printed.
+Optimization covers linear and integer programming, convex and nonlinear optimisation, assignment, transportation and shortest-route problems, scheduling, inventory, queueing, game theory and multi-criteria decisions. This guide is about `optimization`, the model as a self-contained program for Windows and Linux: 73 capabilities in 16 topics, answered on your own computer with no network, no Python and nothing else to install. The same compiled model runs in the AI999X desktop app and in the browser on the model's page (https://www.ai999x.com/models/optimization-ai999x/); the Python package (`pip install optimization-ai999x`) has its own guide. Every command output printed here is what the program printed.
 
 ## Contents
 
@@ -17,37 +17,37 @@ Optimization covers linear and integer programming, convex and nonlinear optimis
 
 ## 1. Get it
 
-Version 1.5.0 of the AI999X desktop app and of the command-line bundle. Checksums for every file: https://downloads.ai999x.com/desktop/1.5.0/SHA256SUMS; the newest version is always under https://downloads.ai999x.com/desktop/latest/. Full instructions: https://www.ai999x.com/desktop-cli/
+Version 1.6.0 of the AI999X desktop app and of the command-line bundle. Checksums for every file: https://downloads.ai999x.com/desktop/1.6.0/SHA256SUMS; the newest version is always under https://downloads.ai999x.com/desktop/latest/. Full instructions: https://www.ai999x.com/desktop-cli/
 
 | what | system | download |
 |---|---|---|
-| Desktop app: Optimization | Windows x86-64 | https://downloads.ai999x.com/desktop/1.5.0/ai999x-optimization-1.5.0-windows-x86_64.zip |
-| Desktop app: Optimization | Linux x86-64 | https://downloads.ai999x.com/desktop/1.5.0/ai999x-optimization-1.5.0-linux-x86_64.tar.gz |
-| Desktop app: all models | Windows x86-64 | https://downloads.ai999x.com/desktop/1.5.0/ai999x-1.5.0-windows-x86_64.zip |
-| Desktop app: all models | Linux x86-64 | https://downloads.ai999x.com/desktop/1.5.0/ai999x-1.5.0-linux-x86_64.tar.gz |
-| Command line | Windows x86-64 | https://downloads.ai999x.com/desktop/1.5.0/ai999x-cli-1.5.0-windows-x86_64.zip |
-| Command line | Linux x86-64 | https://downloads.ai999x.com/desktop/1.5.0/ai999x-cli-1.5.0-linux-x86_64.tar.gz |
+| Desktop app: Optimization | Windows x86-64 | https://downloads.ai999x.com/desktop/1.6.0/ai999x-optimization-1.6.0-windows-x86_64.zip |
+| Desktop app: Optimization | Linux x86-64 | https://downloads.ai999x.com/desktop/1.6.0/ai999x-optimization-1.6.0-linux-x86_64.tar.gz |
+| Desktop app: all models | Windows x86-64 | https://downloads.ai999x.com/desktop/1.6.0/ai999x-1.6.0-windows-x86_64.zip |
+| Desktop app: all models | Linux x86-64 | https://downloads.ai999x.com/desktop/1.6.0/ai999x-1.6.0-linux-x86_64.tar.gz |
+| Command line | Windows x86-64 | https://downloads.ai999x.com/desktop/1.6.0/ai999x-cli-1.6.0-windows-x86_64.zip |
+| Command line | Linux x86-64 | https://downloads.ai999x.com/desktop/1.6.0/ai999x-cli-1.6.0-linux-x86_64.tar.gz |
 
 ### Desktop app
 
-Optimization in its own app: search, questions in words, input forms, live figures and explanations. Windows: Download ai999x-optimization-1.5.0-windows-x86_64.zip, right-click it → Extract All, then open the folder and start ai999x-optimization.exe. If Windows SmartScreen asks, choose More info → Run anyway. Linux:
+Optimization in its own app: search, questions in words, input forms, live figures and explanations. Windows: Download ai999x-optimization-1.6.0-windows-x86_64.zip, right-click it → Extract All, then open the folder and start ai999x-optimization.exe. If Windows SmartScreen asks, choose More info → Run anyway. Linux:
 
 ```shell
-curl -LO https://downloads.ai999x.com/desktop/1.5.0/ai999x-optimization-1.5.0-linux-x86_64.tar.gz
-curl -LO https://downloads.ai999x.com/desktop/1.5.0/SHA256SUMS
+curl -LO https://downloads.ai999x.com/desktop/1.6.0/ai999x-optimization-1.6.0-linux-x86_64.tar.gz
+curl -LO https://downloads.ai999x.com/desktop/1.6.0/SHA256SUMS
 sha256sum -c --ignore-missing SHA256SUMS
-tar xzf ai999x-optimization-1.5.0-linux-x86_64.tar.gz
-./ai999x-optimization-1.5.0-linux-x86_64/ai999x-optimization
+tar xzf ai999x-optimization-1.6.0-linux-x86_64.tar.gz
+./ai999x-optimization-1.6.0-linux-x86_64/ai999x-optimization
 ```
 
-It opens on this model: type a question or pick a capability, fill in the form and press Compute. The AI999X desktop app with every model works the same way (choose the model first). Windows: Download ai999x-1.5.0-windows-x86_64.zip, right-click it → Extract All, then open the folder and start ai999x.exe. If Windows SmartScreen asks, choose More info → Run anyway. Linux:
+It opens on this model: type a question or pick a capability, fill in the form and press Compute. The AI999X desktop app with every model works the same way (choose the model first). Windows: Download ai999x-1.6.0-windows-x86_64.zip, right-click it → Extract All, then open the folder and start ai999x.exe. If Windows SmartScreen asks, choose More info → Run anyway. Linux:
 
 ```shell
-curl -LO https://downloads.ai999x.com/desktop/1.5.0/ai999x-1.5.0-linux-x86_64.tar.gz
-curl -LO https://downloads.ai999x.com/desktop/1.5.0/SHA256SUMS
+curl -LO https://downloads.ai999x.com/desktop/1.6.0/ai999x-1.6.0-linux-x86_64.tar.gz
+curl -LO https://downloads.ai999x.com/desktop/1.6.0/SHA256SUMS
 sha256sum -c --ignore-missing SHA256SUMS
-tar xzf ai999x-1.5.0-linux-x86_64.tar.gz
-./ai999x-1.5.0-linux-x86_64/ai999x
+tar xzf ai999x-1.6.0-linux-x86_64.tar.gz
+./ai999x-1.6.0-linux-x86_64/ai999x
 ```
 
 ### Command line: Linux
@@ -55,11 +55,11 @@ tar xzf ai999x-1.5.0-linux-x86_64.tar.gz
 The bundle holds one program per model; `optimization` is this one. The checksum line should print OK.
 
 ```shell
-curl -LO https://downloads.ai999x.com/desktop/1.5.0/ai999x-cli-1.5.0-linux-x86_64.tar.gz
-curl -LO https://downloads.ai999x.com/desktop/1.5.0/SHA256SUMS
+curl -LO https://downloads.ai999x.com/desktop/1.6.0/ai999x-cli-1.6.0-linux-x86_64.tar.gz
+curl -LO https://downloads.ai999x.com/desktop/1.6.0/SHA256SUMS
 sha256sum -c --ignore-missing SHA256SUMS
-mkdir -p ~/.local/share && tar xzf ai999x-cli-1.5.0-linux-x86_64.tar.gz -C ~/.local/share
-echo 'export PATH="$HOME/.local/share/ai999x-cli-1.5.0-linux-x86_64:$PATH"' >> ~/.bashrc && source ~/.bashrc
+mkdir -p ~/.local/share && tar xzf ai999x-cli-1.6.0-linux-x86_64.tar.gz -C ~/.local/share
+echo 'export PATH="$HOME/.local/share/ai999x-cli-1.6.0-linux-x86_64:$PATH"' >> ~/.bashrc && source ~/.bashrc
 optimization --version
 ```
 
@@ -68,12 +68,12 @@ optimization --version
 The fourth line should print True.
 
 ```powershell
-$F = "ai999x-cli-1.5.0-windows-x86_64.zip"
-Invoke-WebRequest "https://downloads.ai999x.com/desktop/1.5.0/$F" -OutFile $F
-Invoke-WebRequest "https://downloads.ai999x.com/desktop/1.5.0/SHA256SUMS" -OutFile SHA256SUMS
+$F = "ai999x-cli-1.6.0-windows-x86_64.zip"
+Invoke-WebRequest "https://downloads.ai999x.com/desktop/1.6.0/$F" -OutFile $F
+Invoke-WebRequest "https://downloads.ai999x.com/desktop/1.6.0/SHA256SUMS" -OutFile SHA256SUMS
 (Get-FileHash $F -Algorithm SHA256).Hash.ToLower() -eq ((Select-String -SimpleMatch $F SHA256SUMS).Line -split ' ')[0]
 Expand-Archive $F -DestinationPath "$env:LOCALAPPDATA\AI999X" -Force
-$D = "$env:LOCALAPPDATA\AI999X\ai999x-cli-1.5.0-windows-x86_64"; $env:Path += ";$D"
+$D = "$env:LOCALAPPDATA\AI999X\ai999x-cli-1.6.0-windows-x86_64"; $env:Path += ";$D"
 [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", "User") + ";$D", "User")
 optimization --version
 ```
@@ -96,7 +96,7 @@ Prints the model, its version and that this is the Rust build.
 
 ```shell
 $ optimization --version
-optimization-ai999x 1.5.0 (Rust build, ax-engine 1.5.0)
+optimization-ai999x 1.6.0 (Rust build, ax-engine 1.6.0)
 ```
 
 ### 2.2 Ask in words
@@ -145,7 +145,7 @@ assignment_max_profit                    Assignment problem (Hungarian method), 
 assignment_min_cost                      Assignment problem (Hungarian method), minimum total cost
 bellman_ford_shortest_path               Shortest path with negative weights (Bellman-Ford)
 bin_packing                              Bin packing (minimum number of bins)
-… 64 more
+… 65 more
 ```
 
 ### 2.5 What a capability needs
@@ -1370,7 +1370,7 @@ lead_time_demand = 360
 
 **What the worked example means:** This calculation determines the inventory level that triggers a new order to achieve a cycle service level of 0.95. The result, 399.476, consists of two parts: the expected demand during the lead time, which is 360, and the safety stock buffer, calculated as 39.4765. This buffer accounts for demand variability using a standard normal quantile of 1.64485, ensuring that stockouts are unlikely under normal conditions.
 
-### Linear programming (3)
+### Linear programming (4)
 
 <a id="linear_program"></a>
 
@@ -1409,6 +1409,62 @@ shadow_prices = [0.0,1.5,1.0]
 ```
 
 In the worked example, sense = maximize, c = [3, 5], A = [1 0; 0 2; 3 2], b = [4, 12, 18], relations = <=,<=,<= go through the equation above and give optimal_value = 36, x = [2, 6], solution_unique = yes, shadow_prices = [0, 1.5, 1]. It applies only when all variables >= 0; the LP is feasible and bounded (otherwise INVALID_INPUT says which); at most 12 variables and constraints: outside that it says what is wrong instead of returning a number.
+
+<a id="lp_duality_sensitivity"></a>
+
+#### LP duality and sensitivity ranges: `lp_duality_sensitivity`
+
+The dual of a linear program and its optimal solution (the shadow prices), the range of optimality of every objective coefficient and the range of feasibility of every right-hand side, for an optimum with a unique nondegenerate basis.
+
+$$
+\max c^\top x\ \text{s.t.}\ A x \le b,\ x \ge 0 \;\Longleftrightarrow\; \min b^\top y\ \text{s.t.}\ A^\top y \ge c,\ y \ge 0;\quad x_B + \delta\,B^{-1}e_i \ge 0,\quad d_k - \Delta\,(B^{-1}A_k)_r \ge 0
+$$
+
+| symbol |  | meaning | SI unit |
+|---|---|---|---|
+| `sense` | in | maximize or minimize | - |
+| `c` | in | objective coefficients, one per variable | - |
+| `A` | in | constraint coefficients, one row per constraint | - |
+| `b` | in | right-hand sides, one per constraint | - |
+| `relations` | in | relation of each constraint: <=, >= or = (default all <=) (optional) | - |
+| `cost_lower` | out | lowest value of each objective coefficient keeping the solution optimal (None: no limit) | - |
+| `cost_upper` | out | highest value of each objective coefficient keeping the solution optimal (None: no limit) | - |
+| `rhs_lower` | out | lowest value of each right-hand side keeping the shadow prices valid (None: no limit) | - |
+| `rhs_upper` | out | highest value of each right-hand side keeping the shadow prices valid (None: no limit) | - |
+| `optimal_value` | out | optimal value of the objective | - |
+| `x` | out | the optimal solution, variables in order of first appearance | - |
+| `dual_solution` | out | optimal dual variables = shadow prices, one per constraint | - |
+| `dual_value` | out | optimal value of the dual (equal to the primal's: strong duality) | - |
+| `dual_sense` | out | the dual's objective sense | - |
+| `dual_objective` | out | the dual's objective coefficients (the primal right-hand sides) | - |
+| `dual_matrix` | out | the dual's constraint rows (the primal's columns: A transposed) | - |
+| `dual_relations` | out | relation of each dual constraint | - |
+| `dual_signs` | out | sign of each dual variable (>= 0, <= 0 or free) | - |
+
+**Applies when:** all variables >= 0; a feasible LP with a finite optimum; a nondegenerate optimum (every basic variable > 0); a unique optimum (every reduced cost > 0); no redundant equality constraint; at most 12 variables and constraints.
+
+```shell
+$ optimization solve lp_duality_sensitivity sense=maximize "c=[3, 5]" "A=[[1, 0], [0, 2], [3, 2]]" "b=[4, 12, 18]" "relations=<=,<=,<="
+optimal_value = 36
+x = [2.0,6.0]
+dual_solution = [0.0,1.5,1.0]
+dual_value = 36
+cost_lower = [0.0,2.0]
+cost_upper = [7.5,null]
+rhs_lower = [2.0,6.0,12.0]
+rhs_upper = [null,18.0,24.0]
+dual_sense = minimize
+dual_objective = [4.0,12.0,18.0]
+dual_matrix = [[1.0,0.0,3.0],[0.0,2.0,2.0]]
+dual_relations = >=, >=
+dual_signs = >= 0, >= 0, >= 0
+  by: LP duality and sensitivity ranges  (exact two-phase simplex; with the optimal basis B: y = c_B B^-1, reduced costs d_j = c_j - y A_j; range of a nonbasic cost from its reduced cost, of a basic cost from the ratio test d_k / (B^-1 A_k)_r over the nonbasic columns; range of b_i from the ratio test -x_B / (B^-1 e_i))
+  sense = maximize
+  relations = <=,<=,<=
+  assumes: all variables >= 0; a feasible LP with a finite optimum; a nondegenerate optimum (every basic variable > 0); a unique optimum (every reduced cost > 0); no redundant equality constraint; at most 12 variables and constraints
+```
+
+In the worked example, sense = maximize, c = [3, 5], A = [1 0; 0 2; 3 2], b = [4, 12, 18], relations = <=,<=,<= go through the equation above and give optimal_value = 36, x = [2, 6], dual_solution = [0, 1.5, 1], dual_value = 36. It applies only when all variables >= 0; a feasible LP with a finite optimum; a nondegenerate optimum (every basic variable > 0); a unique optimum (every reduced cost > 0); no redundant equality constraint; at most 12 variables and constraints: outside that it says what is wrong instead of returning a number.
 
 <a id="lp_shadow_prices"></a>
 

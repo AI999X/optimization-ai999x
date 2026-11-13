@@ -21,7 +21,8 @@ from .engine import ask as _ask
 from .pack import Pack
 
 
-_MUST = {"positive": "greater than zero", "nonnegative": "zero or more"}
+_MUST = {"positive": "greater than zero", "nonnegative": "zero or more", "fraction": "between 0 and 1",
+         "at_least_one": "1 or more"}
 
 
 def _plain_refusal(rel, p, info: dict, sources: dict) -> str:

@@ -3,7 +3,7 @@ members = ["ax-engine", "optimization"]
 resolver = "2"
 
 [workspace.package]
-version = "1.5.0"
+version = "1.6.0"
 edition = "2021"
 license = "Apache-2.0"
 authors = ["AI999X Labs <support@ai999x.com>", "Ibnul Jaif Farabi <ibnuljaiffarabi@ai999x.com>"]
@@ -19,3 +19,11 @@ strip = true
 [profile.wasm-size]
 inherits = "release"
 opt-level = "z"
+
+# fast iteration on the desktop's live scenes (not for releases): no LTO, parallel codegen, incremental
+[profile.scene]
+inherits = "release"
+lto = false
+codegen-units = 16
+incremental = true
+strip = false
