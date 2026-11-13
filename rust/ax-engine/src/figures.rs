@@ -737,11 +737,17 @@ fn knobs(specs: &[InSpec], given: &[(String, Input)]) -> Vec<Knob> {
                 let (lo_n, hi_n) = if sp.proc_input.is_some() && sp.min.is_none() && sp.max.is_none()
                     && !sp.unit.is_empty() && sp.unit != "1" && x != 0.0 {
                     // a temperature moves by degrees, not by a share of its absolute value (310 K swept to 520 K)
-                    let (a, b) = if sp.unit == "K" { ((x - 40.0).max(x * 0.5), x + 40.0) } else { (x * 0.6, x * 1.4) };
+                    // ... near everyday temperatures; a plasma or a star at 1e5 K moves by a share (±40 K left a
+                    // Debye-length curve changing in its 5th digit; astronomy review, 2026-11-13)
+                    let (a, b) = if sp.unit == "K" && x < 2000.0 { ((x - 40.0).max(x * 0.5), x + 40.0) } else { (x * 0.6, x * 1.4) };
                     (Some(a.min(b)), Some(a.max(b)))
                 } else { (None, None) };
-                let sp_min = sp.min.or(lo_n);
-                let sp_max = sp.max.or(hi_n);
+                // a Julian date is a day count of about 2.45 million: a share of it spans millennia and turns anything
+                // that repeats daily (sidereal time) into a zigzag; it is swept over ±20 days (astronomy review)
+                let julian = meaning.to_lowercase().contains("julian") && x > 1e5;
+                let (lo_n, hi_n) = if julian { (Some(x - 20.0), Some(x + 20.0)) } else { (lo_n, hi_n) };
+                let sp_min = if julian { lo_n } else { sp.min.or(lo_n) };
+                let sp_max = if julian { hi_n } else { sp.max.or(hi_n) };
                 // a bare SI number (the app's worked examples) is swept in the unit people read it in: the one its
                 // meaning names ("e.g. in mmHg") or one that suits its size (5333 Pa -> 40 mmHg, 8.3e-5 m^3/s ->
                 // 5 L/min); the engine reads "40 mmHg" itself (physiology review, 2026-11-13)
@@ -770,9 +776,12 @@ fn knobs(specs: &[InSpec], given: &[(String, Input)]) -> Vec<Knob> {
                 if vs.is_empty() || vs.len() > 64 {
                     continue;
                 }
+                // a list of whole numbers (data 3, 3, 7, 2, 9, 7) is swept over whole numbers: a sweep between them
+                // never lands on a tie and missed the mode changing (statistics review, 2026-11-13)
+                let whole = vs.iter().all(|v| v.fract() == 0.0);
                 for (i, x) in vs.iter().enumerate().take(6) {
                     elems.push(Knob { idx: Some(i), base: vs.clone(),
-                                      ..Knob::plain(name, *x, false, entry_label(&meaning, i, vs.len()), sp.unit.clone()) });
+                                      ..Knob::plain(name, *x, whole, entry_label(&meaning, i, vs.len()), sp.unit.clone()) });
                 }
             }
             "matrix" => {
@@ -783,9 +792,14 @@ fn knobs(specs: &[InSpec], given: &[(String, Input)]) -> Vec<Knob> {
                     continue;
                 }
                 let flat: Vec<f64> = m.iter().flatten().copied().collect();
+                // a distance (a travel matrix) is never swept below zero (the tour chart swept D[1,4] to -20)
+                let ml = meaning.to_lowercase();
+                let nonneg = (ml.contains("distance") || ml.contains("travel time") || ml.contains("duration"))
+                    && flat.iter().all(|v| *v >= 0.0);
                 for (i, x) in flat.iter().enumerate().take(4) {
                     let (r, c) = (i / m[0].len(), i % m[0].len());
                     mats.push(Knob { idx: Some(i), base: flat.clone(), mat_cols: Some(m[0].len()),
+                                     lo_lim: if nonneg { Some(0.0) } else { None },
                                      ..Knob::plain(name, *x, false, format!("{meaning}, row {} column {}", r + 1, c + 1),
                                                    sp.unit.clone()) });
                 }
@@ -818,8 +832,12 @@ fn knobs(specs: &[InSpec], given: &[(String, Input)]) -> Vec<Knob> {
                     } else {
                         format!("the number {} in {} ({})", n, name, clip(&t, 24))
                     };
+                    // an exponent stays whole (x^2.5 is another kind of expression); any other number in the text is
+                    // swept smoothly (a rate in exp(3t) sampled at whole values misdrew 2/(5 - a)^3 between them;
+                    // differential equations review, 2026-11-13)
+                    let exponent = t[..s].trim_end().ends_with('^') || t[..s].trim_end().ends_with("**");
                     elems.push(Knob { text: Some((t.clone(), s, e)), lo_lim: Some(0.0),
-                                      ..Knob::plain(name, n as f64, true, label, String::new()) });
+                                      ..Knob::plain(name, n as f64, exponent, label, String::new()) });
                 }
             }
             _ => {}
@@ -849,7 +867,15 @@ fn knobs(specs: &[InSpec], given: &[(String, Input)]) -> Vec<Knob> {
 
 fn apply(given: &[(String, Input)], k: &Knob, x: f64) -> Vec<(String, Input)> {
     let text = match (&k.text, k.idx) {
-        (Some((t, s, e)), _) => format!("{}{}{}", &t[..*s], x.round() as i64, &t[*e..]),
+        (Some((t, s, e)), _) if k.int => format!("{}{}{}", &t[..*s], x.round() as i64, &t[*e..]),
+        // a smooth sweep writes the number with up to 6 decimals, no exponent notation (the reader takes "3.25")
+        (Some((t, s, e)), _) => {
+            let v = format!("{:.6}", x);
+            let v = v.trim_end_matches('0').trim_end_matches('.').to_string();
+            // a negative value written after an operator keeps the expression readable: "x - -1" becomes "x - (-1)"
+            let v = if v.starts_with('-') { format!("({v})") } else { v };
+            format!("{}{}{}", &t[..*s], v, &t[*e..])
+        }
         (None, Some(i)) => {
             let mut v = k.base.clone();
             v[i] = x;
@@ -936,7 +962,10 @@ fn knob_points(k: &Knob, n: usize) -> Vec<f64> {
 /// A swept line with its jumps left open: a step between two points far larger than the steps either side of it (a
 /// piecewise function's break, a root that switches branch) is a discontinuity, drawn as a gap rather than a steep
 /// line through values the answer never takes (math foundations review, 2026-11-13).
-fn break_jumps(s: Vec<Option<(f64, f64)>>) -> Vec<Option<(f64, f64)>> {
+/// `mid(x)` is the answer halfway between two points (one more solve): a candidate step is a jump only when the value
+/// there lies at one end of the step, not in between (a steep but continuous curve — a titration's equivalence point —
+/// stays joined); a refused midpoint is a gap too.
+fn break_jumps(s: Vec<Option<(f64, f64)>>, mid: &mut dyn FnMut(f64) -> Option<f64>) -> Vec<Option<(f64, f64)>> {
     let ys: Vec<f64> = s.iter().flatten().map(|p| p.1).collect();
     if ys.len() < 6 {
         return s;
@@ -950,10 +979,22 @@ fn break_jumps(s: Vec<Option<(f64, f64)>>) -> Vec<Option<(f64, f64)>> {
     for i in 0..s.len() {
         if i >= 2 && i + 1 < s.len() {
             if let (Some(a0), Some(a), Some(b), Some(b1)) = (s[i - 2], s[i - 1], s[i], s[i + 1]) {
-                let d = (b.1 - a.1).abs();
-                let side = (a.1 - a0.1).abs().max((b1.1 - b.1).abs());
-                if d > 0.2 * r && d > 8.0 * side {
-                    out.push(None);
+                // a step far larger than both neighbouring steps (a smooth curve's steps change gradually, even where
+                // it is steep), and not a hair: a jump. (The first rule asked 20 % of the whole range and 8 times the
+                // neighbours: a piecewise function's 5 -> 3 step on a curve rising to 24 stayed joined.)
+                // the step breaks the trend from both sides: its difference from each neighbouring step is far larger
+                // than the change between those neighbours (which is all a smooth curve's curvature gives)
+                let (d1, d2, d3) = (a.1 - a0.1, b.1 - a.1, b1.1 - b.1);
+                let d = d2.abs();
+                let bend = (d3 - d1).abs();
+                if d > 0.02 * r && (d2 - d1).abs().min((d3 - d2).abs()) > 2.0 * bend + 0.02 * r {
+                    let at_an_end = match mid((a.0 + b.0) / 2.0) {
+                        Some(m) => (m - a.1).abs().min((m - b.1).abs()) < 0.2 * d,
+                        None => true,
+                    };
+                    if at_an_end {
+                        out.push(None);
+                    }
                 }
             }
         }
@@ -1233,7 +1274,11 @@ fn figures_from(p: &Pack, key: &str, given: &[(String, Input)], target: Option<&
             // review, 2026-11-13)
             if let (Some(i), Some(Track::E(s, _))) = (k.idx, k.tracks.first().cloned()) {
                 let n = b.outs.iter().find(|o| o.sym == s).and_then(|o| numlist(&o.val)).map(|l| l.len()).unwrap_or(0);
-                if n == k.base.len() && i < n {
+                // ... only when that entry does follow it (a central difference's derivative[2] does not depend on
+                // y[2]: it stayed flat when marked; linear algebra verification, 2026-11-13)
+                let follows = cands.iter().position(|c| matches!(c, Track::E(ss, j) if *ss == s && *j == i))
+                    .is_some_and(|j| moved[j] > 1e-9);
+                if n == k.base.len() && i < n && follows {
                     let mut t = vec![Track::E(s.clone(), i)];
                     t.extend(k.tracks.iter().filter(|x| !matches!(x, Track::E(ss, j) if *ss == s && *j == i)).cloned());
                     t.truncate(4);
@@ -1385,6 +1430,15 @@ fn cx_text(re: f64, im: f64) -> String {
     format!("{} {} {}i", py_g(re, 4), if im < 0.0 { "-" } else { "+" }, py_g(im.abs(), 4))
 }
 
+/// Whether a meaning is a formula rather than words: the part before its first " (" has operators, "pi", "sqrt", or
+/// at most two letters ("2 pi r (r + h)", "pi (R^2 - r^2)", "r (1 - cos(theta/2))", "ab / (...)").
+pub(crate) fn formula_like(m: &str) -> bool {
+    let head = m.split(" (").next().unwrap_or(m).trim();
+    head.contains('^') || head.contains('*') || head.contains('|') || head.contains('=') || head.contains("sqrt")
+        || head.contains(" / ") || head == "pi" || head.starts_with("pi ") || head.contains(" pi ") || head.ends_with(" pi")
+        || head.ends_with(['/', '+', '-', '(']) || head.chars().filter(|c| c.is_alphabetic()).count() <= 2
+}
+
 fn out_label(outs: &[Out], t: &Track) -> String {
     let (sym, extra) = match t {
         Track::S(s) => (s.clone(), String::new()),
@@ -1392,7 +1446,10 @@ fn out_label(outs: &[Out], t: &Track) -> String {
     };
     let o = outs.iter().find(|o| o.sym == sym);
     let unit = o.map(|o| o.unit.clone()).filter(|u| !u.is_empty() && u != "1");
-    let m = o.map(|o| o.meaning.clone()).filter(|m| !m.is_empty()).unwrap_or(sym.clone());
+    // a meaning that is a formula ("pi (R^2 - r^2)", "|y''| / (1 + y'^2)^(3/2)") names nothing: the symbol's words do
+    // (chart titles read "Pi as outer radius varies"; geometry verification, 2026-11-13)
+    let m = o.map(|o| o.meaning.clone()).filter(|m| !m.is_empty() && !formula_like(m))
+        .unwrap_or_else(|| sym.replace('_', " "));
     let m = match &unit { Some(u) => drop_unit_note(&m, u), None => m };
     let u = unit.map(|u| format!(" ({u})")).unwrap_or_default();
     format!("{}{extra}{u}", clip(&cap1(&m), 48))
@@ -1586,7 +1643,17 @@ fn fig_sweep(cx: &mut Ctx, b: &Base, k: &Knob, n: usize) -> Option<(String, Stri
     if !flat {
         for (j, t) in tracks.iter().enumerate() {
             let s: Vec<Option<(f64, f64)>> = pts.iter().map(|p| p.1[j].map(|y| (p.0, cy(y)))).collect();
-            let s = if k.int || k.step.is_some() { s } else { break_jumps(s) };
+            let s = if k.int || k.step.is_some() { s } else {
+                // one more solve at the midpoint of a candidate jump (within the budget; none left: drawn as a gap)
+                let mut mid = |x: f64| -> Option<f64> {
+                    if !cx.left() {
+                        return None;
+                    }
+                    let a = cx.run(&apply(b.given, k, x))?;
+                    track_val(&outs_of(cx.p, cx.key, &a), t).map(cy)
+                };
+                break_jumps(s, &mut mid)
+            };
             if s.iter().flatten().count() >= 2 {
                 series.push((track_label(&b.outs, t), s));
             }
@@ -1610,8 +1677,14 @@ fn fig_sweep(cx: &mut Ctx, b: &Base, k: &Knob, n: usize) -> Option<(String, Stri
         }
     }
     let marker = if flat { None } else { y0.map(|y| (k.x0, y)) };
+    // an input and an answer of one name (circle intersections: y2 a centre in, a meeting point out) are told apart
+    // ("y2 = 4 at y2 = 0" read as a contradiction; geometry review, 2026-11-13)
+    let (ks, tl) = {
+        let (a, o) = (k_sym(k), tracks.first().map(|t| track_label(&b.outs, t)).unwrap_or_default());
+        if a == o { (format!("{a} (given)"), format!("{o} (computed)")) } else { (a, o) }
+    };
     let mlabel = match (tracks.first(), y0) {
-        (Some(t), Some(y)) if !flat => format!("{} = {}{y_unit} at {} = {}", track_label(&b.outs, t), py_g(y, 4), k_sym(k), py_g(k.x0, 4)),
+        (Some(_), Some(y)) if !flat => format!("{} = {}{y_unit} at {} = {}", tl, py_g(y, 4), ks, py_g(k.x0, 4)),
         _ => format!("your {} = {}", k_sym(k), py_g(k.x0, 4)),
     };
     let body = line_chart_x(&series, &bands, (x_from, x_to), &knob_axis_label(k), &ylab, marker, &mlabel, &b.header,
@@ -1634,8 +1707,8 @@ fn fig_sweep(cx: &mut Ctx, b: &Base, k: &Knob, n: usize) -> Option<(String, Stri
                                   if costly == 1 { "" } else { "s" }, if costly == 1 { "is" } else { "are" }));
     }
     if let Some(y) = y0.filter(|_| !flat) {
-        caption.push_str(&format!(" Marked: your {} = {}{} gives {} = {}{y_unit}.", k_sym(k), py_g(k.x0, 4), unit_suffix(&k.unit),
-                                  track_label(&b.outs, &tracks[0]), py_g(y, 4)));
+        caption.push_str(&format!(" Marked: your {} = {}{} gives {} = {}{y_unit}.", ks, py_g(k.x0, 4), unit_suffix(&k.unit),
+                                  tl, py_g(y, 4)));
     }
     if cat_changes {
         let mut seen: Vec<String> = vec![];
@@ -1744,8 +1817,20 @@ fn fig_grid(cx: &mut Ctx, b: &Base, k1: &Knob, k2: &Knob) -> Option<(String, Str
     }
     let xs = knob_points(k1, side - 1);
     let ys = knob_points(k2, side - 1);
-    let xs: Vec<f64> = sample(&xs, side);
-    let ys: Vec<f64> = sample(&ys, side);
+    let mut xs: Vec<f64> = sample(&xs, side);
+    let mut ys: Vec<f64> = sample(&ys, side);
+    // the grid point nearest the visitor's inputs IS the visitor's inputs: its cell shows their own verdict (the worked
+    // example sat in a "none" cell computed at a neighbouring grid point while its answer was "upper"; time series
+    // review, 2026-11-13)
+    for (v, x0) in [(&mut xs, k1.x0), (&mut ys, k2.x0)] {
+        if let Some(i) = (0..v.len()).min_by(|a, b| (v[*a] - x0).abs().partial_cmp(&(v[*b] - x0).abs()).unwrap_or(std::cmp::Ordering::Equal)) {
+            let lo = if i > 0 { v[i - 1] } else { f64::NEG_INFINITY };
+            let hi = if i + 1 < v.len() { v[i + 1] } else { f64::INFINITY };
+            if x0.is_finite() && x0 > lo && x0 < hi {
+                v[i] = x0;
+            }
+        }
+    }
     let mut cells: Vec<(usize, usize, String)> = vec![];
     let mut names: Vec<String> = vec![];
     for (j, y) in ys.iter().enumerate() {
@@ -1888,6 +1973,22 @@ fn fig_matrix(b: &Base) -> Option<(String, String, String)> {
             let caption = format!("{} as points in the plane (x across, y up): {}{}.", o.sym, listed.join(", "),
                                   if p.len() > 6 { ", ..." } else { "" });
             return Some((title, body, caption));
+        }
+        // pairs [label, value] — a prime and its exponent, a node and its degree — whose first entries are distinct
+        // whole numbers: one bar per label (they were drawn as a heatmap of the pairs; discrete math review, 11-13)
+        let firsts: Vec<f64> = m.iter().map(|r| r[0]).collect();
+        let distinct = firsts.iter().enumerate().all(|(i, a)| firsts[..i].iter().all(|b| b != a));
+        let pairish = ["pair", "factor", "exponent", "degree", "count", "frequenc", "multiplicit", "(value,", "[value,"]
+            .iter().any(|w| words.contains(w)) && !words.contains("matrix");
+        if pairish && m[0].len() == 2 && m.len() <= 30 && distinct && firsts.iter().all(|a| a.fract() == 0.0) {
+            let names: Vec<String> = firsts.iter().map(|a| py_g(*a, 6)).collect();
+            let vals: Vec<Option<f64>> = m.iter().map(|r| Some(r[1])).collect();
+            let m_ = if o.meaning.is_empty() { o.sym.clone() } else { o.meaning.clone() };
+            let body = bar_chart(&names, &[(o.sym.clone(), vals)], None, "", &clip(&m_, 40), &b.header);
+            let caption = format!("{} for your inputs, one bar per pair (first entry under the bar, second its height): {}.",
+                                  cap1(&clip(&m_, 60)),
+                                  m.iter().take(12).map(|r| format!("{} → {}", py_g(r[0], 6), py_g(r[1], 4))).collect::<Vec<_>>().join(", "));
+            return Some((computed_title(&clip(&m_, 60)), body, caption));
         }
         let body = heat_chart(&m, &b.header);
         let m_ = if o.meaning.is_empty() { o.sym.clone() } else { o.meaning.clone() };
@@ -2121,10 +2222,16 @@ fn fig_graph(b: &Base) -> Option<(String, String, String)> {
     }
     // a directed graph (its direction is what the answer depends on: a topological order, strong components) gets
     // arrowheads (discrete math review, 2026-11-13)
-    let words: String = b.specs.iter().map(|s| s.meaning.to_lowercase()).chain(b.outs.iter().map(|o| o.meaning.to_lowercase()))
+    let words: String = b.specs.iter().filter(|s| s.sym != "directed").map(|s| s.meaning.to_lowercase())
+        .chain(b.outs.iter().map(|o| o.meaning.to_lowercase()))
         .chain(std::iter::once(b.header.to_lowercase())).collect::<Vec<_>>().join(" ");
-    let directed = !words.contains("undirected")
-        && ["directed", "topolog", "strongly connected", "digraph", " dag", "arcs", "u -> v", "u→v", "from u to v"].iter().any(|w| words.contains(w));
+    // an input that says it ("directed": true/false) decides; its description ("true for a directed graph (edges
+    // u->v)") is no evidence (an undirected triangle got arrowheads; discrete math verification, 2026-11-13)
+    let flag = b.given.iter().find(|(n, _)| n == "directed").and_then(|(_, v)| text_of(v))
+        .map(|t| matches!(t.trim().to_lowercase().as_str(), "true" | "yes" | "1"));
+    let directed = flag.unwrap_or_else(|| !words.contains("undirected")
+        && ["topolog", "strongly connected", "digraph", " dag", "arcs", "u -> v", "u→v", "from u to v", "directed graph"]
+            .iter().any(|w| words.contains(w)));
     let body = graph_chart(&nodes, &edges, pos.as_deref(), &marked, &given_nodes, per_node.as_ref(), &b.header, directed);
     let title = if from_output { format!("The computed {} as a graph", gname) } else {
         format!("The network of {} ({} nodes, {} edges)", gname, nodes.len(), edges.len())
@@ -2154,7 +2261,11 @@ fn fig_points(b: &Base) -> Option<(String, String, String)> {
         let Some(pi) = &sp.proc_input else { continue };
         match crate::coerce::coerce(pi, v) {
             Ok(Val::Mat(m)) if m[0].len() == 2 && m.len() >= 3 && m.len() <= 400 && pts.is_none() => {
-                pts = Some((name.clone(), m.iter().map(|r| (r[0], r[1])).collect()));
+                // (latitude, longitude) rows are drawn as a map: longitude across, latitude up (they were swapped;
+                // geometry review, 2026-11-13)
+                let ml = sp.meaning.to_lowercase();
+                let latlon = ml.find("lat").zip(ml.find("lon")).is_some_and(|(a, o)| a < o);
+                pts = Some((name.clone(), m.iter().map(|r| if latlon { (r[1], r[0]) } else { (r[0], r[1]) }).collect()));
             }
             Ok(Val::Vec(x)) if x.len() == 2 => vecs2.push((name.clone(), (x[0], x[1]), false)),
             _ => {}
@@ -2215,7 +2326,13 @@ fn fig_points(b: &Base) -> Option<(String, String, String)> {
         let query: Vec<(String, (f64, f64))> = vecs2.iter().filter(|(n, _, _)| n != "w").map(|(n, z, _)| (n.clone(), *z)).collect();
         let body = points_chart(&p, labels.as_ref(), &centres, &query, line, &b.header);
         let title = format!("The points of {} in the plane", pname);
-        let mut caption = format!("The {n} rows of {pname} as points (first column across, second up)");
+        let latlon = b.specs.iter().find(|s| s.sym == pname).map(|s| s.meaning.to_lowercase())
+            .is_some_and(|ml| ml.find("lat").zip(ml.find("lon")).is_some_and(|(a, o)| a < o));
+        let mut caption = if latlon {
+            format!("The {n} rows of {pname} as points on a map (longitude across, latitude up)")
+        } else {
+            format!("The {n} rows of {pname} as points (first column across, second up)")
+        };
         if let Some((s, _)) = &labels {
             caption.push_str(&format!(", coloured by {s}"));
         }
@@ -3207,8 +3324,12 @@ pub(crate) fn frame(out: &mut String, xa: Option<&Ax>, ya: Option<&Ax>, xlab: &s
         let ts = xa.ticks();
         for (t, txt) in ts.iter().copied().zip(tick_texts(&ts)) {
             let x = xa.px(t);
+            // a label is never cut at the figure's edge (520 wide): a cut "0.014" read "0.01" after "0.012", a cut
+            // "1.1e-07" read "1.1e-0" (civil engineering review, 2026-11-13); it moves inward, whole
+            let half = 3.9 * txt.chars().count() as f64;
+            let tx = x.min(518.0 - half).max(2.0 + half);
             out.push_str(&format!("<line class=\"axp-g\" x1=\"{x:.1}\" y1=\"{Y0}\" x2=\"{x:.1}\" y2=\"{Y1}\"/>\
-                                   <text class=\"axp-t\" x=\"{x:.1}\" y=\"{}\" text-anchor=\"middle\">{}</text>",
+                                   <text class=\"axp-t\" x=\"{tx:.1}\" y=\"{}\" text-anchor=\"middle\">{}</text>",
                                   Y1 + 20.0, esc(&txt)));
         }
     }
@@ -3305,7 +3426,10 @@ pub(crate) fn line_chart_xy(series: &[(String, Vec<Option<(f64, f64)>>)], bands:
         }
         // a sweep over whole numbers (a gcd as n steps) has no pole: every value is shown, none clipped (the gcd's
         // spikes of 46 and 23 were cut at an axis ending at 3; discrete math review, 2026-11-13)
-        if !log && !int_x && ys.len() >= 10 {
+        // values that all lie in [0, 1] (a probability, a p-value) have no pole: never clipped (a p-value curve reaching
+        // 1 at x̄ = μ0 was cut to a spike that made the observed p look like the maximum; statistics review, 11-13)
+        let unit_interval = ys.iter().all(|y| (0.0..=1.0).contains(y));
+        if !log && !int_x && !unit_interval && ys.len() >= 10 {
             // a curve that shoots off near a pole: the axis follows the bulk of the values (and the marked one);
             // the rest is clipped at the frame
             let mut s = ys.clone();
@@ -3783,8 +3907,9 @@ fn graph_chart(nodes: &[String], edges: &[(String, String, Option<f64>)], pos: O
             out.push_str(&format!("<circle class=\"axp-k\" cx=\"{x:.1}\" cy=\"{y:.1}\" r=\"{:.1}\"/>", r + 5.0));
         }
         out.push_str(&format!("<circle class=\"{class}\" cx=\"{x:.1}\" cy=\"{y:.1}\" r=\"{r}\"/>\
-                               <text class=\"axp-bt\" x=\"{x:.1}\" y=\"{:.1}\" text-anchor=\"middle\">{}</text>",
-                              y + 4.5, esc(&clip(s, 4))));
+                               <text class=\"axp-bt\" x=\"{x:.1}\" y=\"{:.1}\" text-anchor=\"middle\" fill=\"#ffffff\" \
+                               style=\"fill:#ffffff\">{}</text>",
+                              y + 4.5, esc(&clip(s, 4))));   // white on the disc (grey on grey could not be read)
         if let Some((_, vals)) = per_node {
             if let Some(v) = vals.get(i) {
                 out.push_str(&format!("<text class=\"axp-vt\" x=\"{x:.1}\" y=\"{:.1}\" text-anchor=\"middle\">{}</text>",
@@ -3951,12 +4076,29 @@ mod tests {
     #[test]
     fn a_jump_is_drawn_as_a_gap_and_a_steep_smooth_curve_is_not() {
         // a step function: 5 up to x = 2, then 3
-        let step: Vec<Option<(f64, f64)>> = (0..10).map(|i| { let x = i as f64 * 0.5; Some((x, if x <= 2.0 { 5.0 + 0.01 * x } else { 3.0 + 0.01 * x })) }).collect();
-        let out = break_jumps(step);
-        assert_eq!(out.iter().filter(|p| p.is_none()).count(), 1);
+        let gaps = |s: Vec<Option<(f64, f64)>>, f: &dyn Fn(f64) -> f64| {
+            let mut mid = |x: f64| Some(f(x));
+            break_jumps(s, &mut mid).iter().filter(|p| p.is_none()).count()
+        };
+        let curve = |f: &dyn Fn(f64) -> f64, x0: f64, dx: f64, n: usize| -> Vec<Option<(f64, f64)>> {
+            (0..n).map(|i| { let x = x0 + i as f64 * dx; Some((x, f(x))) }).collect()
+        };
+        // a step function: 5 up to x = 2, then 3
+        let step = |x: f64| if x <= 2.0 { 5.0 + 0.01 * x } else { 3.0 + 0.01 * x };
+        assert_eq!(gaps(curve(&step, 0.0, 0.5, 10), &step), 1);
         // a parabola: steep at the end, but every step is close to its neighbours
-        let par: Vec<Option<(f64, f64)>> = (0..20).map(|i| { let x = i as f64; Some((x, x * x)) }).collect();
-        assert_eq!(break_jumps(par).iter().filter(|p| p.is_none()).count(), 0);
+        let par = |x: f64| x * x;
+        assert_eq!(gaps(curve(&par, 0.0, 1.0, 20), &par), 0);
+        // a small jump on a curve with a large range (2x + 1 below 2, x^2 - 1 above: 5 -> 3, then up to 24)
+        let pw = |x: f64| if x < 2.0 { 2.0 * x + 1.0 } else { x * x - 1.0 };
+        assert_eq!(gaps(curve(&pw, 0.75, 0.1125, 41), &pw), 1);
+        // a kink (|x|), a smooth peak and a steep but continuous sigmoid (a titration's equivalence point) are no jumps
+        let kink = |x: f64| x.abs();
+        assert_eq!(gaps(curve(&kink, -1.0, 0.1, 21), &kink), 0);
+        let peak = |x: f64| (-x * x).exp();
+        assert_eq!(gaps(curve(&peak, -2.0, 0.1, 41), &peak), 0);
+        let sig = |x: f64| 7.0 + 5.0 * (8.0 * (x - 1.03)).tanh();
+        assert_eq!(gaps(curve(&sig, 0.0, 0.1, 21), &sig), 0);
     }
 
     #[test]
