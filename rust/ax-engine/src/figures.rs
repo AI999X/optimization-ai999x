@@ -796,6 +796,12 @@ fn knobs(specs: &[InSpec], given: &[(String, Input)]) -> Vec<Knob> {
                 if t.len() > 400 || assignment_spans(&t).is_some() || formula_vars(&t).is_some() {
                     continue;
                 }
+                // the digits of a number written in a base ("1011" in base 2, "ff" in base 16) are not a decimal
+                // number to sweep: 1002..1010 are no base-2 numbers (discrete math review, 2026-11-13)
+                let ml = format!("{} {}", meaning, sp.unit).to_lowercase();
+                if ["digit", "base", "binary", "octal", "hexadecimal", "radix", "bit string", "bits"].iter().any(|w| ml.contains(w)) {
+                    continue;
+                }
                 let nums = text_numbers(&t);
                 for &(s, e, n) in &nums {
                     // a number written more than once is marked where it is varied: "the number 2 in 2x^2 - 3x + 1"
@@ -1222,6 +1228,18 @@ fn figures_from(p: &Pack, key: &str, given: &[(String, Input)], target: Option<&
                     None => vec![],
                 }
             };
+            // varying entry i of an input list whose answer is a list of the same length: entry i of the answer is the
+            // one that follows it, marked first (y[5] varied while derivative[1] was marked, flat; linear algebra
+            // review, 2026-11-13)
+            if let (Some(i), Some(Track::E(s, _))) = (k.idx, k.tracks.first().cloned()) {
+                let n = b.outs.iter().find(|o| o.sym == s).and_then(|o| numlist(&o.val)).map(|l| l.len()).unwrap_or(0);
+                if n == k.base.len() && i < n {
+                    let mut t = vec![Track::E(s.clone(), i)];
+                    t.extend(k.tracks.iter().filter(|x| !matches!(x, Track::E(ss, j) if *ss == s && *j == i)).cloned());
+                    t.truncate(4);
+                    k.tracks = t;
+                }
+            }
             k.cat = (0..cat_cands.len()).find(|j| changed[*j]).and_then(|j| cat_cands[j].clone())
                 .or_else(|| b.cat.clone());
             ranked.push((score, k));
@@ -2101,7 +2119,13 @@ fn fig_graph(b: &Base) -> Option<(String, String, String)> {
             }
         }
     }
-    let body = graph_chart(&nodes, &edges, pos.as_deref(), &marked, &given_nodes, per_node.as_ref(), &b.header);
+    // a directed graph (its direction is what the answer depends on: a topological order, strong components) gets
+    // arrowheads (discrete math review, 2026-11-13)
+    let words: String = b.specs.iter().map(|s| s.meaning.to_lowercase()).chain(b.outs.iter().map(|o| o.meaning.to_lowercase()))
+        .chain(std::iter::once(b.header.to_lowercase())).collect::<Vec<_>>().join(" ");
+    let directed = !words.contains("undirected")
+        && ["directed", "topolog", "strongly connected", "digraph", " dag", "arcs", "u -> v", "u→v", "from u to v"].iter().any(|w| words.contains(w));
+    let body = graph_chart(&nodes, &edges, pos.as_deref(), &marked, &given_nodes, per_node.as_ref(), &b.header, directed);
     let title = if from_output { format!("The computed {} as a graph", gname) } else {
         format!("The network of {} ({} nodes, {} edges)", gname, nodes.len(), edges.len())
     };
@@ -2222,6 +2246,18 @@ fn fig_points(b: &Base) -> Option<(String, String, String)> {
             }
         }
     }
+    // only arrows that ARE vectors or points in the plane (a vector, a force, a velocity, a position): two numbers of
+    // another kind (quadrature nodes beside weights, b beside x of a linear system, coordinates in another basis beside
+    // the vector) are not drawn as arrows on one plane (linear algebra review, 2026-11-13)
+    let words_of = |s: &str, ans: bool| -> String {
+        let m = if ans { b.outs.iter().find(|o| o.sym == s).map(|o| o.meaning.clone()) }
+                else { b.specs.iter().find(|x| x.sym == s).map(|x| x.meaning.clone()) };
+        format!("{s} {}", m.unwrap_or_default()).to_lowercase()
+    };
+    let geometric = |w: &str| ["vector", "point", "position", "velocity", "force", "displacement", "direction", "gradient",
+                               "momentum", "acceleration", "field", "arrow", "projection", "normal"].iter().any(|k| w.contains(k))
+        && !["coordinates in", "basis b", "weights", "nodes", "right-hand side", "solution of", "iterate"].iter().any(|k| w.contains(k));
+    vecs2.retain(|(s, _, ans)| geometric(&words_of(s, *ans)));
     // one plane, one unit: the vectors of the first answer vector's unit
     let unit_of = |s: &str, ans: bool| -> String {
         if ans { b.outs.iter().find(|o| o.sym == s).map(|o| o.unit.clone()).unwrap_or_default() } else {
@@ -3262,7 +3298,14 @@ pub(crate) fn line_chart_xy(series: &[(String, Vec<Option<(f64, f64)>>)], bands:
     let ya = if ys.is_empty() { None } else {
         let (mut lo, mut hi) = minmax(&ys);
         let log = !lin_y && lo > 0.0 && hi / lo > 1e3;
-        if !log && ys.len() >= 10 {
+        // whole-number counts (roots found, a gcd, a number of solutions) start at 0: a count of 0 must be visible
+        // (only counts near zero: whole numbers between 1000 and 1010 keep their own range)
+        if !log && lo > 0.0 && (hi <= 50.0 || lo <= 0.5 * hi) && ys.iter().all(|y| *y >= 0.0 && y.fract() == 0.0) {
+            lo = 0.0;
+        }
+        // a sweep over whole numbers (a gcd as n steps) has no pole: every value is shown, none clipped (the gcd's
+        // spikes of 46 and 23 were cut at an axis ending at 3; discrete math review, 2026-11-13)
+        if !log && !int_x && ys.len() >= 10 {
             // a curve that shoots off near a pole: the axis follows the bulk of the values (and the marked one);
             // the rest is clipped at the frame
             let mut s = ys.clone();
@@ -3687,8 +3730,9 @@ pub(crate) fn complex_chart(paths: &[(String, Vec<(f64, f64)>)], mine: &[(String
     out
 }
 
+#[allow(clippy::too_many_arguments)]
 fn graph_chart(nodes: &[String], edges: &[(String, String, Option<f64>)], pos: Option<&[(f64, f64)]>, marked: &[String],
-               ringed: &[String], per_node: Option<&(String, Vec<String>)>, header: &str) -> String {
+               ringed: &[String], per_node: Option<&(String, Vec<String>)>, header: &str, directed: bool) -> String {
     let n = nodes.len();
     let xy: Vec<(f64, f64)> = match pos {
         Some(p) => {
@@ -3708,9 +3752,22 @@ fn graph_chart(nodes: &[String], edges: &[(String, String, Option<f64>)], pos: O
     let at = |s: &str| nodes.iter().position(|x| x == s).map(|i| xy[i]).unwrap_or((0.0, 0.0));
     let mut out = String::new();
     header_text(&mut out, header);
+    let r = if n > 16 { 9.0 } else { 13.0 };
     for (u, v, w) in edges {
         let (a, b) = (at(u), at(v));
         out.push_str(&format!("<line class=\"axp-k\" x1=\"{:.1}\" y1=\"{:.1}\" x2=\"{:.1}\" y2=\"{:.1}\"/>", a.0, a.1, b.0, b.1));
+        if directed {
+            // an arrowhead touching the target node's circle
+            let (dx, dy) = (b.0 - a.0, b.1 - a.1);
+            let l = (dx * dx + dy * dy).sqrt();
+            if l > 2.0 * r + 8.0 {
+                let (ux, uy) = (dx / l, dy / l);
+                let (tx, ty) = (b.0 - ux * (r + 1.5), b.1 - uy * (r + 1.5));
+                let (bx, by) = (tx - ux * 9.0, ty - uy * 9.0);
+                out.push_str(&format!("<path class=\"axp-kd\" d=\"M{tx:.1},{ty:.1} L{:.1},{:.1} L{:.1},{:.1} Z\"/>",
+                                      bx - uy * 4.5, by + ux * 4.5, bx + uy * 4.5, by - ux * 4.5));
+            }
+        }
         if let Some(w) = w {
             if edges.len() <= 30 {
                 out.push_str(&format!("<text class=\"axp-vt\" x=\"{:.1}\" y=\"{:.1}\" text-anchor=\"middle\">{}</text>",

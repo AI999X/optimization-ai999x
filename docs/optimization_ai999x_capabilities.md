@@ -422,7 +422,7 @@ $$
 
 ![f_opt (optimal value f(x*)) against a (coefficient of x^2) from 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/quadratic-optimum-curve)
 
-*f_opt (optimal value f(x*)) against a (coefficient of x^2) from 0.2 to 20 on a logarithmic axis. One curve for each value of c (constant term): 3, 6. Other inputs as in the worked example: b = -8. 41 points per curve computed by optimization-ai999x; marked: the worked example, a = 2, f_opt = -5.*
+*f_opt (optimal value f(x*)) against a (coefficient of x^2) from 0.2 to 20 on a logarithmic axis. One curve for each value of c (constant term): 3, 6. Other inputs as in the worked example: b = -8.0. 41 points per curve computed by optimization-ai999x; marked: the worked example, a = 2, f_opt = -5.*
 
 ```python
 optimization_ai999x.solve('quadratic_optimum', a=2, b=-8, c=3)
@@ -470,7 +470,7 @@ $$
 
 ![quantity (break-even quantity (units)) against p (selling price per unit) from 12](https://www.ai999x.com/?ax_fig=optimization-ai999x/break-even-point-curve)
 
-*quantity (break-even quantity (units)) against p (selling price per unit) from 12.5 to 37.5. One curve for each value of F_ (fixed cost (currency)): 5000, 2500, 10000. Other inputs as in the worked example: v = 15. 27 points per curve computed by optimization-ai999x; marked: the worked example, p = 25, quantity = 500.*
+*quantity (break-even quantity (units)) against p (selling price per unit) from 12.5 to 37.5. One curve for each value of F_ (fixed cost (currency)): 5000, 2500, 10000. Other inputs as in the worked example: v = 15.0. 27 points per curve computed by optimization-ai999x; marked: the worked example, p = 25, quantity = 500.*
 
 ```python
 optimization_ai999x.solve('break_even_point', F_=5000, p=25, v=15)
@@ -520,7 +520,7 @@ $$
 
 ![quantity (profit-maximising quantity) against b (demand slope (price drop per unit)) from 1 to 3](https://www.ai999x.com/?ax_fig=optimization-ai999x/profit-max-linear-demand-curve)
 
-*quantity (profit-maximising quantity) against b (demand slope (price drop per unit)) from 1 to 3. One curve for each value of a (demand intercept (price at zero quantity)): 100, 50, 200. Other inputs as in the worked example: cv = 20, F_ = 300. 31 points per curve computed by optimization-ai999x; marked: the worked example, b = 2, quantity = 20.*
+*quantity (profit-maximising quantity) against b (demand slope (price drop per unit)) from 1 to 3. One curve for each value of a (demand intercept (price at zero quantity)): 100, 50, 200. Other inputs as in the worked example: cv = 20.0, F_ = 300.0. 31 points per curve computed by optimization-ai999x; marked: the worked example, b = 2, quantity = 20.*
 
 ```python
 optimization_ai999x.solve('profit_max_linear_demand', a=100, b=2, cv=20, F_=300)
@@ -707,9 +707,9 @@ $$
 - **Assumes:** $V > 0$; closed top and bottom
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
-![min_area (least total surface area) against V (volume (cube of the length unit)) from 3](https://www.ai999x.com/?ax_fig=optimization-ai999x/can-min-surface-curve)
+![min_area (least total surface area) against V (volume (cube of the length unit)) from 250 to 750](https://www.ai999x.com/?ax_fig=optimization-ai999x/can-min-surface-curve)
 
-*min_area (least total surface area) against V (volume (cube of the length unit)) from 3.14159 to 9.42478. 31 points computed by optimization-ai999x; marked: the worked example, V = 6.28319, min_area = 18.8496.*
+*min_area (least total surface area) against V (volume (cube of the length unit)) from 250 to 750. 31 points computed by optimization-ai999x; marked: the worked example, V = 500, min_area = 348.734.*
 
 ```python
 optimization_ai999x.solve('can_min_surface', V=6.283185307179586)
@@ -752,7 +752,7 @@ $$
 
 ![Q (economic order quantity) against H (holding cost per unit per period) from 1](https://www.ai999x.com/?ax_fig=optimization-ai999x/eoq-curve)
 
-*Q (economic order quantity) against H (holding cost per unit per period) from 1.5 to 4.5. One curve for each value of D (demand per period (units, e.g. per year)): 1200, 600, 2400. Other inputs as in the worked example: S = 50. 31 points per curve computed by optimization-ai999x; marked: the worked example, H = 3, Q = 200.*
+*Q (economic order quantity) against H (holding cost per unit per period) from 1.5 to 4.5. One curve for each value of D (demand per period (units, e.g. per year)): 1200, 600, 2400. Other inputs as in the worked example: S = 50.0. 31 points per curve computed by optimization-ai999x; marked: the worked example, H = 3, Q = 200.*
 
 ```python
 optimization_ai999x.solve('eoq', D=1200, S=50, H=3)
@@ -802,7 +802,7 @@ $$
 
 ![Q (optimal order quantity) against H (holding cost per unit per period) from 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/eoq-planned-shortages-curve)
 
-*Q (optimal order quantity) against H (holding cost per unit per period) from 0.3 to 30 on a logarithmic axis. One curve for each value of D (demand per period): 1200, 600, 2400. Other inputs as in the worked example: S = 50, B = 6. 41 points per curve computed by optimization-ai999x; marked: the worked example, H = 3, Q = 244.949.*
+*Q (optimal order quantity) against H (holding cost per unit per period) from 0.3 to 30 on a logarithmic axis. One curve for each value of D (demand per period): 1200, 600, 2400. Other inputs as in the worked example: S = 50.0, B = 6.0. 41 points per curve computed by optimization-ai999x; marked: the worked example, H = 3, Q = 244.949.*
 
 ```python
 optimization_ai999x.solve('eoq_planned_shortages', D=1200, S=50, H=3, B=6)
@@ -845,7 +845,7 @@ $$
 
 ![Q (economic production quantity) against P (production rate per period (> D)) from 1000 to 3000](https://www.ai999x.com/?ax_fig=optimization-ai999x/epq-production-lot-curve)
 
-*Q (economic production quantity) against P (production rate per period (> D)) from 1000 to 3000. One curve for each value of S (setup cost per run): 100, 50, 200. Other inputs as in the worked example: D = 1000, H = 4. 30 points per curve computed by optimization-ai999x; marked: the worked example, P = 2000, Q = 316.228.*
+*Q (economic production quantity) against P (production rate per period (> D)) from 1000 to 3000. One curve for each value of S (setup cost per run): 100, 50, 200. Other inputs as in the worked example: D = 1000.0, H = 4.0. 30 points per curve computed by optimization-ai999x; marked: the worked example, P = 2000, Q = 316.228.*
 
 ```python
 optimization_ai999x.solve('epq_production_lot', D=1000, P=2000, S=100, H=4)
@@ -889,7 +889,7 @@ $$
 
 ![total_cost (minimum total cost per period (purchase + ordering + holding)) against D (demand per period) from 2500 to 7500](https://www.ai999x.com/?ax_fig=optimization-ai999x/eoq-quantity-discount-curve)
 
-*total_cost (minimum total cost per period (purchase + ordering + holding)) against D (demand per period) from 2500 to 7500. One curve for each value of i_rate (holding cost as a fraction of the unit price per period (0.2 = 20%)): 0.2, 0.74. Other inputs as in the worked example: S = 49, breaks = 0, 1000, 2000, prices = 5, 4.8, 4.75. 31 points per curve computed by optimization-ai999x; marked: the worked example, D = 5000, total_cost = 24725.*
+*total_cost (minimum total cost per period (purchase + ordering + holding)) against D (demand per period) from 2500 to 7500. One curve for each value of i_rate (holding cost as a fraction of the unit price per period (0.2 = 20%)): 0.2, 0.74. Other inputs as in the worked example: S = 49.0, breaks = 0, 1000, 2000, prices = 5, 4.8, 4.75. 31 points per curve computed by optimization-ai999x; marked: the worked example, D = 5000, total_cost = 24725.*
 
 ```python
 optimization_ai999x.solve('eoq_quantity_discount', D=5000, S=49, i_rate=0.2, breaks='0, 1000, 2000', prices='5, 4.8, 4.75')
@@ -932,7 +932,7 @@ $$
 
 ![reorder_point (reorder point) against SL (cycle service level (probability of no stockout per cycle, e](https://www.ai999x.com/?ax_fig=optimization-ai999x/reorder-point-curve)
 
-*reorder_point (reorder point) against SL (cycle service level (probability of no stockout per cycle, e.g. 0.95)) from 0.475 to 0.999. One curve for each value of L (lead time in periods): 9, 4.5, 18. Other inputs as in the worked example: d = 40, sigma = 8. 29 points per curve computed by optimization-ai999x; marked: the worked example, SL = 0.95, reorder_point = 399.476.*
+*reorder_point (reorder point) against SL (cycle service level (probability of no stockout per cycle, e.g. 0.95)) from 0.475 to 0.999. One curve for each value of L (lead time in periods): 9, 4.5, 18. Other inputs as in the worked example: d = 40.0, sigma = 8.0. 29 points per curve computed by optimization-ai999x; marked: the worked example, SL = 0.95, reorder_point = 399.476.*
 
 ```python
 optimization_ai999x.solve('reorder_point', d=40, L=9, sigma=8, SL=0.95)
@@ -981,7 +981,7 @@ $$
 
 ![order_up_to_level (order-up-to level S) against d (average demand per period) from 10 to 30](https://www.ai999x.com/?ax_fig=optimization-ai999x/order-up-to-level-curve)
 
-*order_up_to_level (order-up-to level S) against d (average demand per period) from 10 to 30. One curve for each value of R (review period (periods)): 7, 3.5, 14. Other inputs as in the worked example: sigma = 4, L = 2, SL = 0.95. 31 points per curve computed by optimization-ai999x; marked: the worked example, d = 20, order_up_to_level = 199.738.*
+*order_up_to_level (order-up-to level S) against d (average demand per period) from 10 to 30. One curve for each value of R (review period (periods)): 7, 3.5, 14. Other inputs as in the worked example: sigma = 4.0, L = 2.0, SL = 0.95. 31 points per curve computed by optimization-ai999x; marked: the worked example, d = 20, order_up_to_level = 199.738.*
 
 ```python
 optimization_ai999x.solve('order_up_to_level', d=20, sigma=4, R=7, L=2, SL=0.95)
@@ -1025,7 +1025,7 @@ $$
 
 ![Q (optimal order quantity) against p (selling price per unit) from 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/newsvendor-normal-curve)
 
-*Q (optimal order quantity) against p (selling price per unit) from 0.2 to 20 on a logarithmic axis. One curve for each value of mu (mean demand): 100, 50, 200. Other inputs as in the worked example: c = 0.5, sigma = 20, s = 0.2. 33 points per curve computed by optimization-ai999x; marked: the worked example, p = 2, Q = 119.348.*
+*Q (optimal order quantity) against p (selling price per unit) from 0.2 to 20 on a logarithmic axis. One curve for each value of mu (mean demand): 100, 50, 200. Other inputs as in the worked example: c = 0.5, sigma = 20.0, s = 0.2. 33 points per curve computed by optimization-ai999x; marked: the worked example, p = 2, Q = 119.348.*
 
 ```python
 optimization_ai999x.solve('newsvendor_normal', p=2, c=0.5, s=0.2, mu=100, sigma=20)
@@ -1074,7 +1074,7 @@ $$
 
 ![expected_profit (expected profit at Q) against p (selling price per unit) from 5 to 15](https://www.ai999x.com/?ax_fig=optimization-ai999x/newsvendor-uniform-curve)
 
-*expected_profit (expected profit at Q) against p (selling price per unit) from 5 to 15. One curve for each value of hi (highest possible demand b): 300, 150, 600. Other inputs as in the worked example: c = 4, lo = 100. 31 points per curve computed by optimization-ai999x; marked: the worked example, p = 10, expected_profit = 960.*
+*expected_profit (expected profit at Q) against p (selling price per unit) from 5 to 15. One curve for each value of hi (highest possible demand b): 300, 150, 600. Other inputs as in the worked example: c = 4.0, lo = 100.0. 31 points per curve computed by optimization-ai999x; marked: the worked example, p = 10, expected_profit = 960.*
 
 ```python
 optimization_ai999x.solve('newsvendor_uniform', p=10, c=4, lo=100, hi=300)
@@ -1165,7 +1165,7 @@ $$
 
 ![protection_level (units protected for full-fare demand) against p1 (full fare) from 200 to 600](https://www.ai999x.com/?ax_fig=optimization-ai999x/littlewood-protection-curve)
 
-*protection_level (units protected for full-fare demand) against p1 (full fare) from 200 to 600. One curve for each value of mu (mean full-fare demand): 60, 30, 120. Other inputs as in the worked example: p2 = 150, sigma = 20. 31 points per curve computed by optimization-ai999x; marked: the worked example, p1 = 400, protection_level = 66.3728.*
+*protection_level (units protected for full-fare demand) against p1 (full fare) from 200 to 600. One curve for each value of mu (mean full-fare demand): 60, 30, 120. Other inputs as in the worked example: p2 = 150.0, sigma = 20.0. 31 points per curve computed by optimization-ai999x; marked: the worked example, p1 = 400, protection_level = 66.3728.*
 
 ```python
 optimization_ai999x.solve('littlewood_protection', p1=400, p2=150, mu=60, sigma=20)
@@ -1263,9 +1263,9 @@ $$
 - **Assumes:** $\lambda < c$ mu (stable); unlimited queue capacity
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
-![Lq (mean number waiting) against mu (service rate of each server) from 1](https://www.ai999x.com/?ax_fig=optimization-ai999x/mmc-queue-curve)
+![Lq (mean number waiting) against lam (arrival rate) from 12 to 36](https://www.ai999x.com/?ax_fig=optimization-ai999x/mmc-queue-curve)
 
-*Lq (mean number waiting) against mu (service rate of each server) from 1.5 to 4.5. One curve for each value of c (number of servers): 2, 3, 4. Other inputs as in the worked example: lam = 2. 31 points per curve computed by optimization-ai999x; marked: the worked example, mu = 3, Lq = 0.0833333.*
+*Lq (mean number waiting) against lam (arrival rate) from 12 to 36. One curve for each value of mu (service rate of each server): 10, 20. Other inputs as in the worked example: c = 3. 23 points per curve computed by optimization-ai999x; marked: the worked example, lam = 24, Lq = 2.58876.*
 
 ```python
 optimization_ai999x.solve('mmc_queue', lam=2, mu=3, c=2)
@@ -1318,7 +1318,7 @@ $$
 
 ![L (mean number in the system) against lam (arrival rate) from 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/mmck-finite-queue-curve)
 
-*L (mean number in the system) against lam (arrival rate) from 0.2 to 20 on a logarithmic axis. One curve for each value of K (system capacity (customers in service plus waiting)): 3, 4, 5. Other inputs as in the worked example: mu = 2, c = 1. 41 points per curve computed by optimization-ai999x; marked: the worked example, lam = 2, L = 1.5.*
+*L (mean number in the system) against lam (arrival rate) from 0.2 to 20 on a logarithmic axis. One curve for each value of K (system capacity (customers in service plus waiting)): 3, 4, 5. Other inputs as in the worked example: mu = 2.0, c = 1. 41 points per curve computed by optimization-ai999x; marked: the worked example, lam = 2, L = 1.5.*
 
 ```python
 optimization_ai999x.solve('mmck_finite_queue', lam=2, mu=2, c=1, K=3)
@@ -1417,9 +1417,9 @@ $$
 - **Assumes:** $1  \leq  c  \leq  N$; exponential failure and repair times
 - **Evidence:** certified procedure (gates: conditions, control, examples, fast_enough, questions, reference, sensitivity, templates)
 
-![L (mean number of machines down) against N (number of machines) from 1 to 10](https://www.ai999x.com/?ax_fig=optimization-ai999x/machine-repair-queue-curve)
+![L (mean number of machines down) against lam (failure rate of one running machine) from 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/machine-repair-queue-curve)
 
-*L (mean number of machines down) against N (number of machines) from 1 to 10. One curve for each value of lam (failure rate of one running machine): 1, 0.5, 2. Other inputs as in the worked example: mu = 1, c = 1. 10 points per curve computed by optimization-ai999x; marked: the worked example, N = 2, L = 1.2.*
+*L (mean number of machines down) against lam (failure rate of one running machine) from 0.02 to 2 on a logarithmic axis. One curve for each value of N (number of machines): 5, 2, 10. Other inputs as in the worked example: mu = 1.0, c = 1. 41 points per curve computed by optimization-ai999x; marked: the worked example, lam = 0.2, L = 1.42434.*
 
 ```python
 optimization_ai999x.solve('machine_repair_queue', N=2, lam=1, mu=1, c=1)
@@ -1467,7 +1467,7 @@ $$
 
 ![Lq (mean number waiting) against sd (standard deviation of the service time) from 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/mg1-pollaczek-khinchine-curve)
 
-*Lq (mean number waiting) against sd (standard deviation of the service time) from 0.1 to 10 on a logarithmic axis. One curve for each value of lam (arrival rate): 0.5, 0.25. Other inputs as in the worked example: ES = 1. 41 points per curve computed by optimization-ai999x; marked: the worked example, sd = 1, Lq = 0.5.*
+*Lq (mean number waiting) against sd (standard deviation of the service time) from 0.1 to 10 on a logarithmic axis. One curve for each value of lam (arrival rate): 0.5, 0.25. Other inputs as in the worked example: ES = 1.0. 41 points per curve computed by optimization-ai999x; marked: the worked example, sd = 1, Lq = 0.5.*
 
 ```python
 optimization_ai999x.solve('mg1_pollaczek_khinchine', lam=0.5, ES=1, sd=1)
@@ -2486,7 +2486,7 @@ $$
 
 ![number of copies of each type in one optimal choice (copies_example) returned by optimization-ai999x for the worked example, one value for each values (value of each item type) (4 values, first 0, last 1, largest 1)](https://www.ai999x.com/?ax_fig=optimization-ai999x/knapsack-unbounded-series)
 
-*number of copies of each type in one optimal choice (copies_example) returned by optimization-ai999x for the worked example, one value for each values (value of each item type) (4 values, first 0, last 1, largest 1). Inputs: values = [10, 40, 50, 70], weights = [1, 3, 4, 5], capacity = 8.*
+*number of copies of each type in one optimal choice (copies_example) returned by optimization-ai999x for the worked example, one value for each values (value of each item type) (4 values, first 0, last 1, largest 1). Inputs: values = [10, 40, 50, 70], weights = [1, 3, 4, 5], capacity = 8.0.*
 
 ![max_value (maximum total value) against capacity (capacity (a whole number)) from 1 to 16](https://www.ai999x.com/?ax_fig=optimization-ai999x/knapsack-unbounded-curve)
 
@@ -2608,7 +2608,7 @@ $$
 
 ![one optimal packing: bin number of each item (bin_of_item) returned by optimization-ai999x for the worked example, one value for each position in the list (6 values, first 2, last 2, largest 2)](https://www.ai999x.com/?ax_fig=optimization-ai999x/bin-packing-series)
 
-*one optimal packing: bin number of each item (bin_of_item) returned by optimization-ai999x for the worked example, one value for each position in the list (6 values, first 2, last 2, largest 2). Inputs: sizes = [4, 8, 1, 4, 2, 1], capacity = 10.*
+*one optimal packing: bin number of each item (bin_of_item) returned by optimization-ai999x for the worked example, one value for each position in the list (6 values, first 2, last 2, largest 2). Inputs: sizes = [4, 8, 1, 4, 2, 1], capacity = 10.0.*
 
 ![min_bins (minimum number of bins) against capacity (capacity of each bin) from 5 to 15](https://www.ai999x.com/?ax_fig=optimization-ai999x/bin-packing-curve)
 
@@ -3263,11 +3263,11 @@ $$
 
 ![local minimum, local maximum or saddle point (type) over a (coefficient of x^2) from 0](https://www.ai999x.com/?ax_fig=optimization-ai999x/critical-point-two-variables-decision)
 
-*local minimum, local maximum or saddle point (type) over a (coefficient of x^2) from 0.3 to 30 and b (coefficient of xy) from 0.2 to 20 (logarithmic axes): each of the 31 × 21 cells is one run of optimization-ai999x, coloured by the verdict it returned, local minimum: 403 cells, saddle point: 248 cells. Other inputs as in the worked example: c = 1, d = -4, e = 6, f0 = 1. Marked: the worked example, a = 3, b = 2 → local minimum.*
+*local minimum, local maximum or saddle point (type) over a (coefficient of x^2) from 0.3 to 30 and b (coefficient of xy) from 0.2 to 20 (logarithmic axes): each of the 31 × 21 cells is one run of optimization-ai999x, coloured by the verdict it returned, local minimum: 403 cells, saddle point: 248 cells. Other inputs as in the worked example: c = 1.0, d = -4.0, e = 6.0, f0 = 1.0. Marked: the worked example, a = 3, b = 2 → local minimum.*
 
 ![f_value (value of f at the critical point) against a (coefficient of x^2) from 1](https://www.ai999x.com/?ax_fig=optimization-ai999x/critical-point-two-variables-curve)
 
-*f_value (value of f at the critical point) against a (coefficient of x^2) from 1.06444 to 30 on a logarithmic axis. One curve for each value of e (coefficient of y): 6, 3, 12. Other inputs as in the worked example: b = 2, c = 1, d = -4, f0 = 1. 30 points per curve computed by optimization-ai999x; marked: the worked example, a = 3, f_value = -20.5.*
+*f_value (value of f at the critical point) against a (coefficient of x^2) from 1.06444 to 30 on a logarithmic axis. One curve for each value of e (coefficient of y): 6, 3, 12. Other inputs as in the worked example: b = 2.0, c = 1.0, d = -4.0, f0 = 1.0. 30 points per curve computed by optimization-ai999x; marked: the worked example, a = 3, f_value = -20.5.*
 
 ```python
 optimization_ai999x.solve('critical_point_two_variables', a=3, b=2, c=1, d=-4, e=6, f0=1)
@@ -3315,7 +3315,7 @@ $$
 
 ![min_value (absolute minimum) against lo (left end of the interval) from -1](https://www.ai999x.com/?ax_fig=optimization-ai999x/polynomial-extrema-interval-curve)
 
-*min_value (absolute minimum) against lo (left end of the interval) from -1.5 to -0.5. Other inputs as in the worked example: coefficients = [1, -3, 0, 2], hi = 3. 31 points computed by optimization-ai999x; marked: the worked example, lo = -1, min_value = -2.*
+*min_value (absolute minimum) against lo (left end of the interval) from -1.5 to -0.5. Other inputs as in the worked example: coefficients = [1, -3, 0, 2], hi = 3.0. 31 points computed by optimization-ai999x; marked: the worked example, lo = -1, min_value = -2.*
 
 ```python
 optimization_ai999x.solve('polynomial_extrema_interval', coefficients=[1, -3, 0, 2], lo=-1, hi=3)
@@ -3357,7 +3357,7 @@ $$
 
 ![one optimal plan: quantity ordered in each period (order_quantities_example) returned by optimization-ai999x for the worked example, one value for each position in the list (4 values, first 80, last 50, largest 80)](https://www.ai999x.com/?ax_fig=optimization-ai999x/wagner-whitin-lot-sizing-series)
 
-*one optimal plan: quantity ordered in each period (order_quantities_example) returned by optimization-ai999x for the worked example, one value for each position in the list (4 values, first 80, last 50, largest 80). Inputs: demand = [20, 50, 10, 50], K = 100, h = 1.*
+*one optimal plan: quantity ordered in each period (order_quantities_example) returned by optimization-ai999x for the worked example, one value for each position in the list (4 values, first 80, last 50, largest 80). Inputs: demand = [20, 50, 10, 50], K = 100.0, h = 1.0.*
 
 ![min_cost (minimum total setup plus holding cost) against K (setup (ordering) cost per order) from 10 to 1000 on a logarithmic axis](https://www.ai999x.com/?ax_fig=optimization-ai999x/wagner-whitin-lot-sizing-curve)
 
