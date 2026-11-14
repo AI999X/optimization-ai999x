@@ -229,7 +229,10 @@ pub fn snap(x: f64, scale: f64) -> f64 {
 
 /// A number to 4 significant digits ("1.424", "6.874e-05").
 pub fn num(x: f64) -> String {
-    py_g(x, 4)
+    // a negative zero, or a value that rounds to zero at 4 digits from below, is written "0" (index and axis labels
+    // read "-0"; signal processing review, 2026-11-14)
+    let s = py_g(x, 4);
+    if s == "-0" { "0".into() } else { s }
 }
 
 /// A quantity with an SI prefix and its unit, 4 significant digits: q(0.00142402, "A") = "1.424 mA",
@@ -705,14 +708,15 @@ pub fn field(xs: &[f64], ys: &[f64], vals: &[Vec<Option<f64>>], mine: (f64, f64)
     let bx = f::X1 - bw - 6.0 - 7.4 * th.chars().count() as f64;
     for k in 0..8 {
         let op = 0.08 + 0.82 * k as f64 / 7.0;
-        out.push_str(&format!("<rect class=\"axp-hp\" x=\"{:.1}\" y=\"27\" width=\"{:.1}\" height=\"11\" fill-opacity=\"{op:.2}\"/>",
+        out.push_str(&format!("<rect class=\"axp-hp\" data-sb=\"1\" x=\"{:.1}\" y=\"27\" width=\"{:.1}\" height=\"11\" fill-opacity=\"{op:.2}\"/>",
                               bx + bw * k as f64 / 8.0, bw / 8.0 + 0.4));
     }
-    out.push_str(&format!("<rect x=\"{bx:.1}\" y=\"27\" width=\"{bw:.1}\" height=\"11\" fill=\"none\" stroke=\"#7f7c8a\" stroke-width=\"0.6\"/>"));
-    // (data-scale marks the two ends for a caller that shades by a transformed value: civil engineering's log maps)
-    out.push_str(&format!("<text class=\"axp-lt\" data-scale=\"lo\" x=\"{:.1}\" y=\"37\" text-anchor=\"end\">{}</text>",
+    out.push_str(&format!("<rect data-sb=\"1\" x=\"{bx:.1}\" y=\"27\" width=\"{bw:.1}\" height=\"11\" fill=\"none\" stroke=\"#7f7c8a\" stroke-width=\"0.6\"/>"));
+    // (data-scale marks the two ends for a caller that shades by a transformed value: civil engineering's log maps;
+    // data-sb marks every part of the bar, so relabel_scale can move it when a longer end label needs the room)
+    out.push_str(&format!("<text class=\"axp-lt\" data-sb=\"1\" data-scale=\"lo\" x=\"{:.1}\" y=\"37\" text-anchor=\"end\">{}</text>",
                           bx - 5.0, f::esc(&tl)));
-    out.push_str(&format!("<text class=\"axp-lt\" data-scale=\"hi\" x=\"{:.1}\" y=\"37\" text-anchor=\"start\">{}</text>",
+    out.push_str(&format!("<text class=\"axp-lt\" data-sb=\"1\" data-scale=\"hi\" x=\"{:.1}\" y=\"37\" text-anchor=\"start\">{}</text>",
                           bx + bw + 5.0, f::esc(&th)));
     out
 }
@@ -721,11 +725,39 @@ pub fn field(xs: &[f64], ys: &[f64], vals: &[Vec<Option<f64>>], mine: (f64, f64)
 /// the two labels marked data-scale="lo" / "hi" replaced by `lo` and `hi` (escaped here).
 pub fn relabel_scale(body: &str, lo: &str, hi: &str) -> String {
     let mut out = body.to_string();
+    let mut old_hi = 0usize;
     for (mark, text) in [("data-scale=\"lo\"", lo), ("data-scale=\"hi\"", hi)] {
         let Some(at) = out.find(mark) else { continue };
         let Some(open) = out[at..].find('>').map(|i| at + i + 1) else { continue };
         let Some(close) = out[open..].find("</text>").map(|i| open + i) else { continue };
+        if mark.contains("hi") {
+            old_hi = out[open..close].chars().count();
+        }
         out.replace_range(open..close, &f::esc(text));
+    }
+    // a longer right-hand label moves the whole bar left by its extra width (as field() sized it), so it stays whole
+    // inside the figure ('4950 (log scale)' ran past the right edge: civil engineering's crate test, 2026-11-14)
+    let extra = hi.chars().count().saturating_sub(old_hi);
+    if extra > 0 {
+        let dx = 7.4 * extra as f64;
+        let mut res = String::with_capacity(out.len());
+        let mut rest = out.as_str();
+        while let Some(at) = rest.find("data-sb=\"1\" ") {
+            let (head, tail) = rest.split_at(at);
+            res.push_str(head);
+            let Some(xs) = tail.find(" x=\"").map(|i| i + 4) else { res.push_str(tail); rest = ""; break };
+            let Some(xe) = tail[xs..].find('"').map(|i| xs + i) else { res.push_str(tail); rest = ""; break };
+            match tail[xs..xe].parse::<f64>() {
+                Ok(x) => {
+                    res.push_str(&tail[..xs]);
+                    res.push_str(&format!("{:.1}", x - dx));
+                }
+                Err(_) => res.push_str(&tail[..xe]),
+            }
+            rest = &tail[xe..];
+        }
+        res.push_str(rest);
+        out = res;
     }
     out
 }
@@ -928,6 +960,14 @@ mod tests {
         assert!(fd.contains("data-scale=\"lo\"") && fd.contains("data-scale=\"hi\""));
         let re = relabel_scale(&fd, "10", "1000 (log scale)");
         assert!(re.contains(">10</text>") && re.contains(">1000 (log scale)</text>"));
+        // the longer end label moved the bar left by its extra width: its right end stays where field() put it
+        let hi_x = |s: &str| -> f64 {
+            let at = s.find("data-scale=\"hi\" x=\"").unwrap() + "data-scale=\"hi\" x=\"".len();
+            s[at..].split('"').next().unwrap().parse().unwrap()
+        };
+        let grow = "1000 (log scale)".chars().count() - "6".chars().count();
+        assert!((hi_x(&fd) - hi_x(&re) - 7.4 * grow as f64).abs() < 0.11);
+        assert_eq!(fd.matches("data-sb=").count(), re.matches("data-sb=").count());
         let (t, _) = table(&["a".into(), "b".into()], &[vec!["1".into(), "2".into()]], Some(0), "");
         assert!(t.contains("axp-ka"));
         let (st, h) = stack(&[l.clone(), l]);
