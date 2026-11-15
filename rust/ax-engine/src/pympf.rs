@@ -1429,7 +1429,7 @@ mod tests {
         };
         for &p in &[64usize, 103, 133, 200, 336] {
             for i in 0..1500 {
-                let mag = 10f64.powf(rnd() * 9.0 - 4.0);          // 1e-4 .. 1e5
+                let mag = 10f64.powf_lm(rnd() * 9.0 - 4.0);          // 1e-4 .. 1e5
                 let x0 = if i % 2 == 0 { mag } else { -mag };
                 let x = BigFloat::from_f64(x0, 64).div(&BigFloat::from_i64(3, p), p, RM);   // not a double
                 let checks: Vec<(&str, Option<BigFloat>, BigFloat)> = vec![
@@ -1498,7 +1498,7 @@ mod tests {
                 seed ^= seed << 13;
                 seed ^= seed >> 7;
                 seed ^= seed << 17;
-                let mag = 10f64.powf(6.0 + (seed >> 11) as f64 / (1u64 << 53) as f64 * 8.0);
+                let mag = 10f64.powf_lm(6.0 + (seed >> 11) as f64 / (1u64 << 53) as f64 * 8.0);
                 let x = BigFloat::from_f64(if i % 2 == 0 { mag } else { -mag }, 64).div(&BigFloat::from_i64(7, p), p, RM);
                 for cosine in [false, true] {
                     let Some(fast) = fast_trig(&x, p, &mut cc, cosine) else { continue };

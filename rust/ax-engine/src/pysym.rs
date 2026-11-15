@@ -1022,7 +1022,7 @@ pub fn quad(f: &Py, a: f64, b: f64, points: &Py) -> R {
         let _g = crate::pympf::scope("workdps", &Py::Int(20))?;
         let pts: Vec<Py> = cuts.iter().map(|c| crate::pympf::mpf(&Py::Float(*c))).collect::<Result<_, _>>()?;
         let p = crate::pympf::prec();
-        let degree = (4.0 + (p as f64 / 30.0).log2().max(0.0)) as usize + 2;     // mpmath's guess_degree
+        let degree = (4.0 + (p as f64 / 30.0).log2_lm().max(0.0)) as usize + 2;     // mpmath's guess_degree
         let (mut v, mut err) = ts_quad_mp(f, &pts, degree)?;
         if err > 1e-15 * v.f()?.abs().max(1.0) {
             let pts2 = if matches!(points, Py::None) {
@@ -1152,8 +1152,8 @@ fn ts_quad_mp(f: &Py, pts: &[Py], max_degree: usize) -> Result<(Py, f64), PyErr>
                 } else if gap(n - 1, n - 2)? == 0.0 && gap(n - 2, n - 3)? == 0.0 {
                     0.0
                 } else {
-                    let d1 = gap(n - 1, n - 2)?.log10();
-                    let d2 = gap(n - 1, n - 3)?.log10();
+                    let d1 = gap(n - 1, n - 2)?.log10_lm();
+                    let d2 = gap(n - 1, n - 3)?.log10_lm();
                     let d4 = 0f64.min((d1 * d1 / d2).max(2.0 * d1).max(-(prec as f64)));
                     10f64.powi(if d4.is_nan() { 0 } else { d4.trunc() as i32 })
                 };
@@ -1784,7 +1784,7 @@ pub fn derivative_ad(e: &Ex, x: &str, a: f64, n: usize) -> Result<f64, Stop> {
 pub fn gauss_legendre(m: usize) -> Vec<(f64, f64)> {
     let mut out = Vec::with_capacity(m);
     for i in 0..m {
-        let mut z = (std::f64::consts::PI * (i as f64 + 0.75) / (m as f64 + 0.5)).cos();
+        let mut z = (std::f64::consts::PI * (i as f64 + 0.75) / (m as f64 + 0.5)).cos_lm();
         let mut dp = 0.0;
         for _ in 0..100 {
             let (mut p0, mut p1) = (1.0, z);
@@ -2866,7 +2866,7 @@ mod tests {
         let p = crate::pymp::call("legendre", &[Py::Int(3), Py::Float(0.5)], &[]).unwrap().f().unwrap();
         assert_eq!(p, -0.4375);
         let t = crate::pymp::call("chebyt", &[Py::Int(5), Py::Float(0.3)], &[]).unwrap().f().unwrap();
-        assert!((t - (5.0 * 0.3f64.acos()).cos()).abs() < 1e-15);
+        assert!((t - (5.0 * 0.3f64.acos_lm()).cos_lm()).abs() < 1e-15);
     }
 
     #[test]

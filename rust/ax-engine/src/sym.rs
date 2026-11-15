@@ -948,10 +948,10 @@ mod tests {
         let e = mul(pow(x(), int(3)), func(Fun::Sin, x()));
         let d = diff(&e, "x");
         let v = eval(&d, &|_| Some(2.0)).unwrap();
-        assert!((v - (12.0 * 2f64.sin() + 8.0 * 2f64.cos())).abs() < 1e-12);
+        assert!((v - (12.0 * 2f64.sin_lm() + 8.0 * 2f64.cos_lm())).abs() < 1e-12);
         // d/dx x^x = x^x (log x + 1)
         let d = diff(&pow(x(), x()), "x");
         let v = eval(&d, &|_| Some(2.0)).unwrap();
-        assert!((v - 4.0 * (2f64.ln() + 1.0)).abs() < 1e-12);
+        assert!((v - 4.0 * (2f64.ln_lm() + 1.0)).abs() < 1e-12);
     }
 }

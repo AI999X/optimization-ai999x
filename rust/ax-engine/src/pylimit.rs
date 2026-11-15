@@ -533,6 +533,7 @@ pub fn one_sided(e: &Ex, x: &str, a: &Ex, side: i32) -> Res<Lim> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::lm::Lm;
 
     fn lim_inf(s: &str) -> Lim {
         at_infinity(&crate::symparse::parse(s, &["x"]).unwrap(), "x", 1).unwrap()
@@ -549,7 +550,7 @@ mod tests {
     fn limits_at_infinity() {
         assert_eq!(val(lim_inf("(3x^2 + 2x - 1)/(4x^2 + 5)")), 0.75);
         assert_eq!(val(lim_inf("(2x^3 + 1)/(5x^3 + 3x)")), 0.4);
-        assert!((val(lim_inf("(1 + 3/x)^x")) - 3f64.exp()).abs() < 1e-15);
+        assert!((val(lim_inf("(1 + 3/x)^x")) - 3f64.exp_lm()).abs() < 1e-15);
         assert_eq!(val(lim_inf("sqrt(x^2 + 4x) - x")), 2.0);
         assert_eq!(val(lim_inf("x*sin(2/x)")), 2.0);
         assert!((val(lim_inf("(3x + 1)/sqrt(2x^2 + 1)")) - 3.0 / 2f64.sqrt()).abs() < 1e-15);

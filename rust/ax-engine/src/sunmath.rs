@@ -6,6 +6,7 @@
 //! 2.43 in 100,000 random cases each; log1p differs in 27 (the libm crate: 36), cosh 0 (the libm crate: 9,506).
 
 use crate::armmath;
+use crate::armmath::fma;
 
 fn hi(x: f64) -> u32 {
     (x.to_bits() >> 32) as u32
@@ -61,13 +62,13 @@ pub fn expm1(mut x: f64) -> f64 {
                 kk = -1;
             }
         } else {
-            kk = INVLN2.mul_add(x, if xsb == 0 { 0.5 } else { -0.5 }) as i32;
+            kk = fma(INVLN2, x, if xsb == 0 { 0.5 } else { -0.5 }) as i32;
             let t = kk as f64;
-            h = (-t).mul_add(LN2_HI, x);
+            h = fma(-t, LN2_HI, x);
             l = t * LN2_LO;
         }
-        x = if hx < 0x3FF0_A2B2 { h - l } else { (-(k_t(kk))).mul_add(LN2_LO, h) };
-        c = if hx < 0x3FF0_A2B2 { (h - x) - l } else { (-(k_t(kk))).mul_add(LN2_LO, h - x) };
+        x = if hx < 0x3FF0_A2B2 { h - l } else { fma(-k_t(kk), LN2_LO, h) };
+        c = if hx < 0x3FF0_A2B2 { (h - x) - l } else { fma(-k_t(kk), LN2_LO, h - x) };
         k = kk;
     } else if hx < 0x3c90_0000 {
         let t = HUGE + x;
@@ -78,24 +79,24 @@ pub fn expm1(mut x: f64) -> f64 {
     }
     let hfx = 0.5 * x;
     let hxs = x * hfx;
-    let r1a = hxs.mul_add(Q[1], 1.0);
+    let r1a = fma(hxs, Q[1], 1.0);
     let h2 = hxs * hxs;
-    let r2 = hxs.mul_add(Q[3], Q[2]);
+    let r2 = fma(hxs, Q[3], Q[2]);
     let h4 = h2 * h2;
-    let r3 = hxs.mul_add(Q[5], Q[4]);
-    let r1 = h4.mul_add(r3, h2.mul_add(r2, r1a));
-    let t = (-r1).mul_add(hfx, 3.0);
-    let mut e = hxs * ((r1 - t) / (-x).mul_add(t, 6.0));
+    let r3 = fma(hxs, Q[5], Q[4]);
+    let r1 = fma(h4, r3, fma(h2, r2, r1a));
+    let t = fma(-r1, hfx, 3.0);
+    let mut e = hxs * ((r1 - t) / fma(-x, t, 6.0));
     if k == 0 {
-        return x - x.mul_add(e, -hxs);
+        return x - fma(x, e, -hxs);
     }
-    e = x.mul_add(e - c, -c);
+    e = fma(x, e - c, -c);
     e -= hxs;
     if k == -1 {
-        return 0.5f64.mul_add(x - e, -0.5);
+        return fma(0.5f64, x - e, -0.5);
     }
     if k == 1 {
-        return if x < -0.25 { -2.0 * (e - (x + 0.5)) } else { 2.0f64.mul_add(x - e, 1.0) };
+        return if x < -0.25 { -2.0 * (e - (x + 0.5)) } else { fma(2.0f64, x - e, 1.0) };
     }
     if k <= -2 || k > 56 {
         let y = 1.0 - (e - x);

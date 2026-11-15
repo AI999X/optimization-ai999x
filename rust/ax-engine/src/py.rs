@@ -2419,6 +2419,11 @@ pub fn sorted(a: &Py, reverse: bool) -> R {
     Ok(Py::list(xs))
 }
 
+/// A non-finite float as Python's str() writes it: "inf", "-inf", "nan".
+pub fn fmt_nonfinite(x: f64) -> &'static str {
+    if x.is_nan() { "nan" } else if x > 0.0 { "inf" } else { "-inf" }
+}
+
 /// The value as JSON, as the Python package's answer serializes it.
 pub fn to_json(a: &Py) -> serde_json::Value {
     use serde_json::{json, Value};
@@ -2428,7 +2433,10 @@ pub fn to_json(a: &Py) -> serde_json::Value {
         Py::Int(i) => json!(i),
         // every digit, as Python's json writes an int (serde_json's arbitrary_precision keeps the text)
         Py::Big(n) => big_text(n).ok().and_then(|s| serde_json::from_str(&s).ok()).unwrap_or(Value::Null),
-        Py::Float(x) => if x.is_finite() { json!(*x + 0.0) } else { Value::Null },
+        // the sign of a zero is kept (Python's json writes -0.0; a QR factor's "-0.0" differed, 2026-11-14) and a
+        // non-finite value is the text Python's str() gives ("-inf": a magnitude of 0 in dB), not a silent null:
+        // JSON has no infinity, and a reader of the reply (the Python glue) turns the text back into the float
+        Py::Float(x) => if x.is_finite() { json!(*x) } else { json!(fmt_nonfinite(*x)) },
         // as the package's answers carry a complex value: {"re", "im"}
         Py::Complex(r, i) => json!({"re": to_json(&Py::Float(*r)), "im": to_json(&Py::Float(*i))}),
         Py::Frac(q) => to_json(&Py::Float(fr::to_f64(q))),
@@ -2617,7 +2625,7 @@ fn vector_norm(v: &mut [f64], max: f64, found_nan: bool) -> f64 {
     let scale = libm::ldexp(1.0, -max_e);
     let dl_mul = |x: f64, y: f64| {
         let z = x * y;
-        (z, x.mul_add(y, -z))
+        (z, crate::armmath::fma(x, y, -z))
     };
     let dl_fast_sum = |a: f64, b: f64| {
         let x = a + b;

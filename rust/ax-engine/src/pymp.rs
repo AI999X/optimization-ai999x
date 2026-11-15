@@ -117,7 +117,7 @@ pub fn call(name: &str, a: &[Py], kws: &[(String, Py)]) -> R {
             if n != n.trunc() || n.abs() > 1e6 {
                 return Err(unsupported("besselj of a non-integer order"));
             }
-            Ok(Py::Float(libm::jn(n as i32, x)))
+            Ok(Py::Float(besselj_int(n as i64, x).unwrap_or_else(|| libm::jn(n as i32, x))))
         }
         "diff" => crate::pysym::mp_diff(a, kws),
         "taylor" => crate::pysym::mp_taylor(a),
@@ -711,6 +711,100 @@ pub fn gammainc(z: f64, a: f64, b: f64, regularized: bool) -> Result<f64, PyErr>
     Ok(reg * crate::pymath::tgamma(z).map_err(|_| PyErr::Overflow)?)
 }
 
+/// J_n(x) for an integer order, rounded to the nearest double, as mpmath's besselj (at 30 digits, then float()):
+/// the power series sum_k (-1)^k (x/2)^(2k+n) / (k! (k+n)!) summed in fixed point at a scale that leaves at least 70
+/// correct bits after the cancellation of its terms. libm's jn kept only about 11 significant digits near a zero of J
+/// (fm_spectrum's carrier J0(2.405) differed from the package in the 12th digit, 2026-11-14). None (the caller uses
+/// libm) for a non-finite x, |x| > 200, an order above 1000, or a value too small to resolve at 4,000 bits.
+pub fn besselj_int(n: i64, x: f64) -> Option<f64> {
+    use num_bigint::BigInt;
+    use num_traits::{Signed, ToPrimitive, Zero};
+    if !x.is_finite() || x.abs() > 200.0 || n.unsigned_abs() > 1000 {
+        return None;
+    }
+    // J_{-n} = (-1)^n J_n and J_n(-x) = (-1)^n J_n(x)
+    let mut sign = 1.0f64;
+    let n = if n < 0 {
+        if n % 2 != 0 {
+            sign = -sign;
+        }
+        -n
+    } else {
+        n
+    };
+    let mut x = x;
+    if x < 0.0 {
+        x = -x;
+        if n % 2 != 0 {
+            sign = -sign;
+        }
+    }
+    if x == 0.0 {
+        return Some(if n == 0 { sign } else { 0.0 });
+    }
+    // x = m * 2^e exactly; h = x/2 = m * 2^(e-1); h^2 = m^2 * 2^(2e-2)
+    let b = x.to_bits();
+    let bexp = ((b >> 52) & 0x7ff) as i64;
+    let frac = b & ((1u64 << 52) - 1);
+    let (m, e) = if bexp == 0 { (frac, -1074i64) } else { (frac | (1u64 << 52), bexp - 1075) };
+    let m = BigInt::from(m);
+    let m2 = &m * &m;
+    let sh2 = 2 - 2 * e;                                  // > 0 for every x below 2^52
+    if sh2 <= 0 {
+        return None;
+    }
+    let mn = num_traits::pow::pow(m.clone(), n as usize);
+    let mut nfact = BigInt::from(1);
+    for i in 2..=n {
+        nfact *= i;
+    }
+    // the largest term is at most I_n(x) <= e^x: scale above it, plus the bits the answer needs
+    let mut w: i64 = 64 + 70 + (x * std::f64::consts::LOG2_E).ceil() as i64;
+    loop {
+        if w > 4000 {
+            return None;
+        }
+        let s0 = w + n * (e - 1);
+        let mut t = if s0 >= 0 { &mn << (s0 as usize) } else { &mn >> ((-s0) as usize) } / &nfact;
+        let mut s = t.clone();
+        let mut k: i64 = 0;
+        loop {
+            k += 1;
+            if k > 5000 {
+                return None;
+            }
+            t = -((&t * &m2) >> (sh2 as usize)) / BigInt::from(k * (k + n));
+            s += &t;
+            // past the largest term (each next term under a quarter of the last) and below the scale: the rest of
+            // the alternating tail is smaller than one unit
+            if t.is_zero() && (k * (k + n)) as f64 > 4.0 * (x / 2.0) * (x / 2.0) {
+                break;
+            }
+        }
+        // each step truncates by at most two units: about 2k units of error in all
+        let err_bits = (64 - ((2 * k + 8) as u64).leading_zeros()) as u64;
+        let have = s.magnitude().bits();
+        if have >= err_bits + 70 {
+            let neg = s.is_negative();
+            let mag = s.magnitude();
+            let v = if have <= 53 {
+                libm::scalbn(mag.to_u64()? as f64, -(w as i32))
+            } else {
+                let sh = have - 54;
+                let top = (mag >> sh).to_u64()?;       // 54 bits: 53 kept and the rounding bit
+                let sticky = mag.trailing_zeros().map(|z| z < sh).unwrap_or(false);
+                let mut mant = top >> 1;
+                if top & 1 == 1 && (sticky || mant & 1 == 1) {
+                    mant += 1;
+                }
+                libm::scalbn(mant as f64, (sh as i64 + 1 - w) as i32)
+            };
+            return Some(sign * if neg { -v } else { v });
+        }
+        w += (err_bits + 70 - have) as i64 + 32;
+    }
+}
+
 #[cfg(test)]
 mod tests {
     //! mpmath's values at 30 digits, rounded to doubles (printed by mpmath 1.3); required to 1e-10 relative, well
@@ -766,5 +860,25 @@ mod tests {
         close(j(0.0, 2.5), -0.048383776468198);
         close(j(3.0, 10.0), 0.058379379305186815);
         close(j(5.0, 0.5), 8.053627241357474e-06);
+    }
+
+    #[test]
+    fn besselj_is_the_nearest_double_as_mpmath() {
+        // float(mpmath.besselj(n, x)) at 30 digits (mpmath 1.3), compared bit for bit: near a zero of J0 as well
+        let j = |n: i64, x: f64| besselj_int(n, x).unwrap();
+        assert_eq!(j(0, 2.405), -9.05580007730447e-05);
+        assert_eq!(j(0, 2.404825557695773), -6.10876525973673e-17);
+        assert_eq!(j(0, 2.5), -0.048383776468198);
+        assert_eq!(j(3, 10.0), 0.058379379305186815);
+        assert_eq!(j(5, 0.5), 8.053627241357474e-06);
+        assert_eq!(j(-3, 10.0), -0.058379379305186815);
+        assert_eq!(j(1, 2.0), 0.5767248077568734);
+        assert_eq!(j(1, -2.0), -0.5767248077568734);
+        assert_eq!(j(2, 5.0), 0.046565116277752214);
+        assert_eq!(j(7, 0.001), 1.5500991579086071e-27);
+        // a large argument and order (the fm_spectrum range: beta up to 100)
+        assert_eq!(j(40, 100.0), 0.07270175482281106);
+        assert_eq!(j(0, 0.0), 1.0);
+        assert!(besselj_int(0, 250.0).is_none());
     }
 }

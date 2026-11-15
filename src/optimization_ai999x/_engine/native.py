@@ -116,12 +116,17 @@ def request(key: str, given: dict, target: str | None = None) -> dict:
 
 
 # --- answers ------------------------------------------------------------------------------------------------------
+_NONFINITE = ("inf", "-inf", "nan")
+
+
 def _value(v):
     """The engine's JSON value as the Python engine gives it: {"re", "im"} is a complex number (also inside lists)."""
     if isinstance(v, dict) and set(v) == {"re", "im"}:
         return complex(v["re"], v["im"])
     if isinstance(v, list):
         return [_value(x) for x in v]
+    if v in _NONFINITE:                                  # JSON has no infinity: the engine writes str() of the float
+        return float(v)
     return v
 
 
@@ -175,6 +180,12 @@ def to_answer(product, reply: dict, question: str, key: str | None, given: dict 
     given = given or {}
     if key in p.procedures:
         spec = p.procedures[key]
+        # a yes/no primary output is the answer's value in the Python engine (product._solve_procedure keeps any
+        # int/float, and a bool is one); the engine's reply leaves it out (2026-11-14: 59 golden answers of discrete_math,
+        # 5 of electrical_engineering differed only there)
+        # (likewise a non-finite primary output, e.g. a magnitude of 0 in dB: "-inf" in the reply, null as its value)
+        if a.value is None and isinstance(a.values.get(spec.get("primary")), (bool, int, float)):
+            a.value = a.values[spec["primary"]]
         out_kind = {o["symbol"]: o.get("kind", "number") for o in spec["outputs"]}
         meaning = {i["symbol"]: i.get("meaning", "") for i in spec["inputs"]}
         a.target = {"kind": out_kind.get(spec.get("primary"), "number"), "role": "procedure",

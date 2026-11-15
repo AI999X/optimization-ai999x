@@ -19,6 +19,7 @@
 //! Every answer comes from the engine (`solve`): the reader only fills the request. All work is bounded: question
 //! length, tokens, list size, candidates.
 
+use crate::lm::Lm;
 use crate::engine::{solve, Answer, Input};
 use crate::pack::{Pack, ProcInput, Procedure, Relation};
 use crate::units::{parse_unit, to_si, Dim};
@@ -414,7 +415,7 @@ fn build_index(p: &Pack) -> Index {
         }
     }
     let n = caps.len().max(1) as f32;
-    let idf: HashMap<String, f32> = df.iter().map(|(w, d)| (w.clone(), (1.0 + n / (*d as f32)).ln())).collect();
+    let idf: HashMap<String, f32> = df.iter().map(|(w, d)| (w.clone(), ((1.0 + n / (*d as f32)) as f64).ln_lm() as f32)).collect();
     let mut vocab: Vec<String> = idf.keys().cloned().collect();
     vocab.sort();
     let forms = p.forms.iter().filter_map(|f| prepare_form(p, f)).collect();
@@ -720,6 +721,8 @@ struct PForm {
     key: String,
     target: Option<String>,
     inputs: Vec<(String, FVal)>,
+    /// a documented NEEDS_INPUT question: the inputs it lacks, as the Python package names them
+    needs: Vec<String>,
 }
 
 const LEADS: &[&[&str]] = &[
@@ -927,7 +930,9 @@ fn prepare_form(p: &Pack, f: &Value) -> Option<PForm> {
         return None;                                      // answered through several capabilities: not one reading
     }
     if outcome != "SOLVED" {
-        return Some(PForm { toks, exact, outcome, key: String::new(), target: None, inputs: vec![] });
+        let needs = f.get("needs").and_then(|n| n.as_array()).into_iter().flatten()
+            .filter_map(|x| x.as_str().map(String::from)).collect();
+        return Some(PForm { toks, exact, outcome, key: String::new(), target: None, inputs: vec![], needs });
     }
     let ins = f.get("inputs")?.as_object()?;
     // every (token, input) that reads: kept only where the pairing is one to one
@@ -1024,14 +1029,14 @@ fn prepare_form(p: &Pack, f: &Value) -> Option<PForm> {
         }
     }
     let target = f.get("target").and_then(|t| t.as_str()).map(String::from);
-    Some(PForm { toks, exact, outcome, key, target, inputs })
+    Some(PForm { toks, exact, outcome, key, target, inputs, needs: vec![] })
 }
 
 /// The value a slot gives for the question tokens `q`, as the package's reading writes it (a formula's input as
 /// {"si": value}), to compare with the package's reading of the same question.
 fn slot_reading(p: &Pack, key: &str, sym: &str, tf: &Tf, q: &[Tok], i: usize) -> Option<Value> {
     let probe = PForm { toks: q.to_vec(), exact: vec![false; q.len()], outcome: "SOLVED".into(), key: key.into(),
-                        target: None, inputs: vec![(sym.to_string(), FVal::Slot(i, tf.clone()))] };
+                        target: None, inputs: vec![(sym.to_string(), FVal::Slot(i, tf.clone()))], needs: vec![] };
     let input = match_form(&probe, q)?.pop()?.1;
     if let Some(rel) = p.relation(key) {
         let kind = p.kinds.get(&rel.sym(sym)?.kind)?;
@@ -1755,7 +1760,7 @@ fn read_procedure(p: &Pack, ix: &Index, pr: &Procedure, toks: &[Tok]) -> Reading
     // an optional input left at its default while the question writes its distinctive words ("precedences A-B,
     // A-C" for a schedule, "an existing wall" for a fence) is a silent default: not read
     let qstems: HashSet<String> = qw.iter().map(|w| stem(w)).collect();
-    let floor = (1.0 + ix.caps.len() as f32 / DISTINCT_CAPS).ln();
+    let floor = ((1.0 + ix.caps.len() as f32 / DISTINCT_CAPS) as f64).ln_lm() as f32;
     for inp in &pr.inputs {
         match bound.remove(&inp.symbol) {
             Some(v) => r.inputs.push((inp.symbol.clone(), v)),
@@ -1903,7 +1908,7 @@ const DIRECTIONS: &[&str] = &["clockwise", "counterclockwise", "anticlockwise", 
 fn unexplained(ix: &Index, key: &str, toks: &[Tok]) -> Option<String> {
     let ci = ix.caps.iter().position(|c| c.key == key)?;
     let n = ix.caps.len() as f32;
-    let floor = (1.0 + n / DISTINCT_CAPS).ln();
+    let floor = ((1.0 + n / DISTINCT_CAPS) as f64).ln_lm() as f32;
     let span = asked_span(toks);
     let has = |w: &str| ix.caps[ci].fields.iter().any(|(_, set)| set.contains(w));
     // an abbreviation anywhere in the question that other capabilities write and this one does not ("a DPSK
@@ -2410,6 +2415,9 @@ pub fn ask_value(p: &Pack, question: &str) -> Value {
                     let mut out = reply(&v0.outcome, "This documented question is not answered by the package: see \
                                                       the capability's guide for what it computes.".into());
                     out["reading"] = json!("form");
+                    if !v0.needs.is_empty() && verbatim.iter().all(|(f, _)| f.needs == v0.needs) {
+                        out["needs"] = json!(v0.needs);
+                    }
                     return out;
                 }
                 if one && !v0.key.is_empty() {
@@ -2430,6 +2438,10 @@ pub fn ask_value(p: &Pack, question: &str) -> Value {
                                     "This documented question is not answered by the package: see the capability's \
                                      guide for what it computes.".into());
                 out["reading"] = json!("form");
+                // every agreeing documented question names the same missing inputs, or none is named
+                if !f0.needs.is_empty() && hits.iter().all(|(f, _)| f.needs == f0.needs) {
+                    out["needs"] = json!(f0.needs);
+                }
                 return out;
             }
             let mut rd = Reading { key: f0.key.clone(), target: f0.target.clone(), inputs: i0.clone(), ..Default::default() };

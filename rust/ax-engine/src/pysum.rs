@@ -22,6 +22,7 @@
 //!
 //! Every size is bounded before work: degrees, pole orders, shifts, exponent coefficients and the bits of rho^k.
 
+use crate::lm::{Lm, LmF64};
 use crate::py::{Py, PyErr, R};
 use crate::pysym::{Poly, Root};
 use crate::sym::{self, Ex, Fun};
@@ -213,14 +214,14 @@ fn hurwitz(s: f64, a: f64) -> f64 {
     let n = if a < 20.0 { (20.0 - a).ceil() as usize } else { 0 };
     let mut sum = 0.0;
     for i in 0..n {
-        sum += (a + i as f64).powf(-s);
+        sum += (a + i as f64).powf_lm(-s);
     }
     let b = a + n as f64;
-    sum += b.powf(1.0 - s) / (s - 1.0) + b.powf(-s) / 2.0;
+    sum += b.powf_lm(1.0 - s) / (s - 1.0) + b.powf_lm(-s) / 2.0;
     let mut rising = s;                      // s (s + 1) ... (s + 2m - 2)
     for (m1, c) in em_coefficients().into_iter().enumerate() {
         let m = m1 + 1;
-        sum += c * rising * b.powf(-s - 2.0 * m as f64 + 1.0);
+        sum += c * rising * b.powf_lm(-s - 2.0 * m as f64 + 1.0);
         rising *= (s + 2.0 * m as f64 - 1.0) * (s + 2.0 * m as f64);
     }
     sum
@@ -235,7 +236,7 @@ fn digamma(a: f64) -> f64 {
     }
     let b = a + n as f64;
     let bern = bernoulli(12);
-    s += b.ln() - 1.0 / (2.0 * b);
+    s += b.ln_lm() - 1.0 / (2.0 * b);
     for m in 1..=6usize {
         s -= qf(&bern[2 * m]) / (2.0 * m as f64 * b.powi(2 * m as i32));
     }
@@ -608,7 +609,7 @@ pub fn summation(e: &Ex, x: &Rc<str>, k: i64) -> Result<Ex, PyErr> {
                         let z = crate::pymp::call("zeta", &[Py::Float(pf)], &[])?.f()?;
                         let mut s = z;
                         for i in 1..k {
-                            s -= (i as f64).powf(-pf);
+                            s -= (i as f64).powf_lm(-pf);
                         }
                         v.q += &c * fq(s)?;
                         Sum::Finite
@@ -741,7 +742,7 @@ pub fn nsum(a: &Py, k: &Py) -> R {
             let mut s = 0.0;
             let mut j = 0usize;
             loop {
-                let term = r.powf(k + j as f64) * eval_at(part, k + j as f64)?;
+                let term = r.powf_lm(k + j as f64) * eval_at(part, k + j as f64)?;
                 s += term;
                 if (j > 70 && term.abs() < 1e-18 * s.abs().max(1e-30)) || j > 20000 {
                     break;
@@ -783,7 +784,7 @@ mod tests {
         assert!(close(val("-2/(k*(k + 2))", 1).unwrap(), -1.5));
         assert!(close(val("1/((2*k - 1)*(2*k + 1))", 1).unwrap(), 0.5));
         assert!(close(val("1/(4*k^2 - 1)", 0).unwrap(), -0.5));
-        assert!(close(val("(-1)^(k + 1)/k", 1).unwrap(), 2f64.ln()));
+        assert!(close(val("(-1)^(k + 1)/k", 1).unwrap(), 2f64.ln_lm()));
         assert!(close(val("(-1)^k/(2*k + 1)", 0).unwrap(), pi / 4.0));
         assert!(close(val("(1/2)^k", 0).unwrap(), 2.0));
         assert!(close(val("2*(1/2)^k", 2).unwrap(), 1.0));
@@ -791,7 +792,7 @@ mod tests {
         assert!(close(val("k^2/2^k", 1).unwrap(), 6.0));
         assert!(close(val("1/2^k + 1/k^2", 1).unwrap(), 1.0 + pi * pi / 6.0));
         assert!(close(val("1/k^3", 1).unwrap(), 1.2020569031595942));
-        assert!(close(val("(1/2)^k/k", 1).unwrap(), 2f64.ln()));
+        assert!(close(val("(1/2)^k/k", 1).unwrap(), 2f64.ln_lm()));
         assert!(close(val("1/(k - 1/2)^2", 0).unwrap(), 8.934802200544679));
         assert!(close(val("1/(k + 1/3)^2", 1).unwrap(), 1.095597125427094));
         assert_eq!(val("1/k", 1), Some(f64::INFINITY));

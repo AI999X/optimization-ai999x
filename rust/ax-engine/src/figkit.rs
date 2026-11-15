@@ -14,6 +14,7 @@
 //! fallback style in figures.rs serves a file opened on its own. Slugs are "<capability-slug>-<kind>", the kind being
 //! the published figure's kind ("schematic", "bode", ...): tools/figure_parity.py matches them.
 
+use crate::lm::{Lm, LmF64};
 use crate::engine::{solve, Answer, Input};
 use crate::figures::{self as f, Figure};
 use crate::num::py_g;
@@ -253,7 +254,7 @@ pub fn q(x: f64, unit: &str) -> String {
     }
     const P: [(&str, i32); 9] = [("p", -12), ("n", -9), ("µ", -6), ("m", -3), ("", 0), ("k", 3), ("M", 6), ("G", 9),
                                  ("T", 12)];
-    let e = x.abs().log10().floor() as i32;
+    let e = x.abs().log10_lm().floor() as i32;
     let mut best = P[4];
     for p in P {
         if e >= p.1 {
@@ -536,8 +537,8 @@ impl Canvas {
     pub fn field_ring(&mut self, c: P, r: f64, ccw: bool) {
         self.s.push_str(&format!("<circle class=\"axp-c\" cx=\"{:.1}\" cy=\"{:.1}\" r=\"{r:.1}\"/>", c.0, c.1));
         for th in [std::f64::consts::FRAC_PI_4 * 3.0, -std::f64::consts::FRAC_PI_4] {
-            let p = (c.0 + r * th.cos(), c.1 - r * th.sin());
-            let u = if ccw { (-th.sin(), -th.cos()) } else { (th.sin(), th.cos()) };
+            let p = (c.0 + r * th.cos_lm(), c.1 - r * th.sin_lm());
+            let u = if ccw { (-th.sin_lm(), -th.cos_lm()) } else { (th.sin_lm(), th.cos_lm()) };
             let n = (-u.1, u.0);
             let h = (p.0 + u.0 * 5.0, p.1 + u.1 * 5.0);
             let b = (h.0 - u.0 * 10.0, h.1 - u.1 * 10.0);
@@ -767,7 +768,7 @@ pub fn span(lo: f64, hi: f64, n: usize, log: bool) -> Vec<f64> {
     let n = n.max(2);
     (0..n).map(|i| {
         let t = i as f64 / (n - 1) as f64;
-        if log && lo > 0.0 && hi > 0.0 { lo * (hi / lo).powf(t) } else { lo + (hi - lo) * t }
+        if log && lo > 0.0 && hi > 0.0 { lo * (hi / lo).powf_lm(t) } else { lo + (hi - lo) * t }
     }).collect()
 }
 
@@ -1220,7 +1221,7 @@ pub fn network(nodes: &[String], edges: &[(String, String, Option<String>)], hot
             let (cxp, cyp, r) = ((f::X0 + f::X1) / 2.0 - 30.0, (f::Y0 + f::Y1) / 2.0 + 8.0, (f::Y1 - f::Y0) / 2.0 - 4.0);
             (0..n).map(|i| {
                 let a = -std::f64::consts::FRAC_PI_2 + 2.0 * std::f64::consts::PI * i as f64 / n as f64;
-                (cxp + r * 1.45 * a.cos(), cyp + r * a.sin())
+                (cxp + r * 1.45 * a.cos_lm(), cyp + r * a.sin_lm())
             }).collect()
         }
     };
@@ -1373,7 +1374,7 @@ impl DPlot {
             } else {
                 let (q1, q10) = (ax.px(1.0), ax.px(10.0));
                 let d = q10 - q1;
-                (10f64.powf((a - q1) / d), 10f64.powf((b - q1) / d))
+                (10f64.powf_lm((a - q1) / d), 10f64.powf_lm((b - q1) / d))
             }
         };
         (inv(&self.xa, f::X0, f::X1), inv(&self.ya, f::Y1, f::Y0))

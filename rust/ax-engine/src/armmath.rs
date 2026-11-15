@@ -12,11 +12,27 @@ fn d(b: u64) -> f64 {
     f64::from_bits(b)
 }
 
-/// a * b + c with one rounding, where GCC's contraction fuses it in the C library's FMA build (Rust's mul_add is a
-/// true fused multiply-add on every platform, the browser included)
+/// a * b + c with one rounding, where GCC's contraction fuses it in the C library's FMA build
 #[inline(always)]
 fn fm(a: f64, b: f64, c: f64) -> f64 {
-    a.mul_add(b, c)
+    fma(a, b, c)
+}
+
+/// a * b + c rounded once, on every platform. Rust's mul_add calls the C library's fma when the target has no FMA
+/// instruction enabled; glibc's and the browser's (compiler-builtins) are correctly rounded, but mingw-w64's
+/// (x86_64-pc-windows-gnu, the Windows wheels and programs) is a Dekker split summed in plain doubles, NOT rounded once:
+/// 2026-11-14 the Windows native wheels differed from Linux in 8 golden answers of 3 models (Haaland log10, two
+/// regressions, a Poisson fit). There the software fma of the libm crate (musl's, correctly rounded) is used.
+#[inline(always)]
+pub fn fma(a: f64, b: f64, c: f64) -> f64 {
+    #[cfg(all(target_os = "windows", target_env = "gnu", not(target_feature = "fma")))]
+    {
+        libm::fma(a, b, c)
+    }
+    #[cfg(not(all(target_os = "windows", target_env = "gnu", not(target_feature = "fma"))))]
+    {
+        a.mul_add(b, c)
+    }
 }
 
 #[inline(always)]
@@ -138,7 +154,7 @@ pub fn log(x: f64) -> f64 {
     let iz = ix.wrapping_sub(tmp & (0xfffu64 << 52));
     let (invc, logc) = (d(LOG_TAB[2 * i]), d(LOG_TAB[2 * i + 1]));
     let z = d(iz);
-    let r = z.mul_add(invc, -1.0);
+    let r = fma(z, invc, -1.0);
     let kd = k as f64;
     let w = fm(kd, ln2hi, logc);
     let hi = w + r;
@@ -161,7 +177,7 @@ fn pow_log(ix: u64) -> (f64, f64) {
     let z = d(iz);
     let kd = k as f64;
     let (invc, logc, logctail) = (d(POW_LOG_TAB[4 * i]), d(POW_LOG_TAB[4 * i + 2]), d(POW_LOG_TAB[4 * i + 3]));
-    let r = z.mul_add(invc, -1.0);
+    let r = fma(z, invc, -1.0);
     let t1 = fm(kd, ln2hi, logc);
     let t2 = t1 + r;
     let lo1 = fm(kd, ln2lo, logctail);
@@ -170,7 +186,7 @@ fn pow_log(ix: u64) -> (f64, f64) {
     let ar2 = r * ar;
     let ar3 = r * ar2;
     let hi = t2 + ar2;
-    let lo3 = ar.mul_add(r, -ar2);
+    let lo3 = fma(ar, r, -ar2);
     let lo4 = t2 - hi + ar2;
     let inner = fm(ar2, fm(r, a(6), a(5)), fm(r, a(4), a(3)));
     let poly = fm(ar2, inner, fm(r, a(2), a(1)));
@@ -320,7 +336,7 @@ pub fn pow(x: f64, y: f64) -> f64 {
     }
     let (hi, lo) = pow_log(ix);
     let ehi = y * hi;
-    let elo = fm(y, lo, y.mul_add(hi, -ehi));
+    let elo = fm(y, lo, fma(y, hi, -ehi));
     pow_exp(ehi, elo, sign_bias)
 }
 
@@ -409,7 +425,7 @@ pub fn log2(x: f64) -> f64 {
         }
         let r = x - 1.0;
         let hi = r * ih;
-        let mut lo = fm(r, il, r.mul_add(ih, -hi));
+        let mut lo = fm(r, il, fma(r, ih, -hi));
         let r2 = r * r;
         let r4 = r2 * r2;
         let q = fm(r, b(1), b(0));
@@ -441,9 +457,9 @@ pub fn log2(x: f64) -> f64 {
     let (invc, logc) = (d(LOG2_TAB[2 * i]), d(LOG2_TAB[2 * i + 1]));
     let z = d(iz);
     let kd = k as f64;
-    let r = z.mul_add(invc, -1.0);
+    let r = fma(z, invc, -1.0);
     let t1 = r * ih;
-    let t2 = fm(r, il, r.mul_add(ih, -t1));
+    let t2 = fm(r, il, fma(r, ih, -t1));
     let t3 = kd + logc;
     let hi = t3 + t1;
     let lo = t3 - hi + t1 + t2;
@@ -451,4 +467,47 @@ pub fn log2(x: f64) -> f64 {
     let r4 = r2 * r2;
     let p = fm(r4, fm(r, a(5), a(4)), fm(r2, fm(r, a(3), a(2)), fm(r, a(1), a(0))));
     fm(r2, p, lo) + hi
+}
+
+#[cfg(test)]
+mod fma_tests {
+    /// mingw-w64's x86_64 fma (libmsvcrt_common fma.o, disassembled 2026-11-14): Dekker split at 27 bits, the partial
+    /// products summed in plain doubles
+    fn mingw_fma(x: f64, y: f64, z: f64) -> f64 {
+        let r = x * y + z;
+        if r == 0.0 || !r.is_finite() {
+            return r;
+        }
+        let xh = f64::from_bits(x.to_bits() & 0xffff_ffff_f800_0000);
+        let yh = f64::from_bits(y.to_bits() & 0xffff_ffff_f800_0000);
+        let (xl, yl) = (x - xh, y - yh);
+        ((xh * yl + yh * xl) + (z + xh * yh)) + xl * yl
+    }
+
+    fn rng(s: &mut u64) -> u64 {
+        *s ^= *s << 13;
+        *s ^= *s >> 7;
+        *s ^= *s << 17;
+        *s
+    }
+
+    #[test]
+    fn the_windows_fma_is_rounded_once_as_the_hardware_fma() {
+        // the host (x86-64 Linux) answers mul_add with glibc's fma: correctly rounded. libm::fma is what
+        // x86_64-pc-windows-gnu now uses; the mingw emulation shows why it is needed.
+        let mut s = 0x9E37_79B9_7F4A_7C15u64;
+        let (mut mingw_wrong, mut libm_wrong) = (0, 0);
+        for i in 0..400_000 {
+            let x = f64::from_bits((rng(&mut s) >> 12) | 0x3FF0_0000_0000_0000) * if i % 2 == 0 { 1.0 } else { -3.0 };
+            let y = f64::from_bits((rng(&mut s) >> 12) | 0x3FE0_0000_0000_0000);
+            // c near -x*y (cancellation: the product error decides) or a plain addend
+            let z = if i % 3 == 0 { -(x * y) } else { f64::from_bits((rng(&mut s) >> 12) | 0x3FD0_0000_0000_0000) };
+            let want = x.mul_add(y, z);
+            libm_wrong += (libm::fma(x, y, z).to_bits() != want.to_bits()) as u32;
+            mingw_wrong += (mingw_fma(x, y, z).to_bits() != want.to_bits()) as u32;
+            assert_eq!(super::fma(x, y, z).to_bits(), want.to_bits());
+        }
+        assert_eq!(libm_wrong, 0);
+        assert!(mingw_wrong > 0, "the mingw emulation was expected to differ somewhere");
+    }
 }

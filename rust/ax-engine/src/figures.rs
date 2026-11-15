@@ -13,6 +13,7 @@
 //! The SVG uses the website's figure classes (axp-*: its own colours in light and dark), with a fallback style for a
 //! file opened on its own (the page removes <style> and applies its theme).
 
+use crate::lm::{Lm, LmF64};
 use crate::engine::{solve, Answer, Input};
 use crate::num::{py_g, py_repr_f64};
 use crate::pack::{Pack, ProcInput, Val};
@@ -1125,7 +1126,7 @@ fn knob_points(k: &Knob, n: usize) -> Vec<f64> {
         let step = ((count as f64) / n as f64).ceil().max(1.0) as usize;
         (0..count).step_by(step).map(|i| lo + i as f64).collect()
     } else if k.logwide && lo > 0.0 {
-        (0..n).map(|i| lo * (hi / lo).powf(i as f64 / (n - 1).max(1) as f64)).collect()
+        (0..n).map(|i| lo * (hi / lo).powf_lm(i as f64 / (n - 1).max(1) as f64)).collect()
     } else {
         (0..n).map(|i| lo + (hi - lo) * i as f64 / (n - 1) as f64).collect()
     };
@@ -3898,14 +3899,14 @@ impl Ax {
         Ax { lo, hi, log, a, b }
     }
     pub(crate) fn px(&self, v: f64) -> f64 {
-        let f = if self.log { (v.log10() - self.lo.log10()) / (self.hi.log10() - self.lo.log10()) } else {
+        let f = if self.log { (v.log10_lm() - self.lo.log10_lm()) / (self.hi.log10_lm() - self.lo.log10_lm()) } else {
             (v - self.lo) / (self.hi - self.lo)
         };
         self.a + f * (self.b - self.a)
     }
     fn ticks(&self) -> Vec<f64> {
         if self.log {
-            let (e0, e1) = (self.lo.log10().ceil() as i32, self.hi.log10().floor() as i32);
+            let (e0, e1) = (self.lo.log10_lm().ceil() as i32, self.hi.log10_lm().floor() as i32);
             let n = (e1 - e0 + 1).max(1);
             let step = ((n as f64) / 6.0).ceil().max(1.0) as i32;
             let mut v: Vec<f64> = (e0..=e1).step_by(step as usize).map(|e| 10f64.powi(e)).collect();
@@ -3924,7 +3925,7 @@ fn nice_ticks(lo: f64, hi: f64, n: usize) -> Vec<f64> {
         return vec![lo];
     }
     let raw = span / n as f64;
-    let mag = 10f64.powf(raw.log10().floor());
+    let mag = 10f64.powf_lm(raw.log10_lm().floor());
     let norm = raw / mag;
     let step = mag * if norm < 1.5 { 1.0 } else if norm < 3.0 { 2.0 } else if norm < 7.0 { 5.0 } else { 10.0 };
     let mut v = vec![];
@@ -4534,7 +4535,7 @@ fn graph_chart(nodes: &[String], edges: &[(String, String, Option<f64>)], pos: O
             let (cxp, cyp, r) = ((X0 + X1) / 2.0, (Y0 + Y1) / 2.0 + 4.0, (Y1 - Y0) / 2.0 - 8.0);
             (0..n).map(|i| {
                 let a = -std::f64::consts::FRAC_PI_2 + 2.0 * std::f64::consts::PI * i as f64 / n as f64;
-                (cxp + r * 1.25 * a.cos(), cyp + r * a.sin())
+                (cxp + r * 1.25 * a.cos_lm(), cyp + r * a.sin_lm())
             }).collect()
         }
     };
@@ -4608,20 +4609,20 @@ mod tests {
     fn a_narrow_peak_is_zoomed_a_step_or_a_broad_curve_is_not() {
         let xs: Vec<f64> = (0..31).map(|i| 12.5 + 2.5 * i as f64).collect();
         // a two-sided p-value around a hypothesised mean of 50 with a standard error of 1
-        let peak: Vec<(f64, f64)> = xs.iter().map(|x| (*x, (-(x - 50.0f64).powi(2) / 2.0).exp())).collect();
+        let peak: Vec<(f64, f64)> = xs.iter().map(|x| (*x, (-(x - 50.0f64).powi(2) / 2.0).exp_lm())).collect();
         let (l, r) = narrow_feature(&peak, 50.0).expect("a spike is zoomed");
         assert!(l < 50.0 && r > 50.0 && r - l <= 10.0, "{l} {r}");
         // a steep S-curve keeps its plateaus; a broad parabola and a straight line are left alone
-        let step: Vec<(f64, f64)> = xs.iter().map(|x| (*x, 1.0 / (1.0 + (-(x - 50.0) * 3.0).exp()))).collect();
+        let step: Vec<(f64, f64)> = xs.iter().map(|x| (*x, 1.0 / (1.0 + (-(x - 50.0) * 3.0).exp_lm()))).collect();
         assert!(narrow_feature(&step, 50.0).is_none());
         let broad: Vec<(f64, f64)> = xs.iter().map(|x| (*x, -(x - 50.0).powi(2))).collect();
         assert!(narrow_feature(&broad, 50.0).is_none());
         let line: Vec<(f64, f64)> = xs.iter().map(|x| (*x, 2.0 * x)).collect();
         assert!(narrow_feature(&line, 50.0).is_none());
         // a fast cosine sampled every 2.5 is a zigzag; a slow one is not
-        let fast: Vec<(f64, f64)> = xs.iter().map(|x| (*x, (x * 1.3).cos())).collect();
+        let fast: Vec<(f64, f64)> = xs.iter().map(|x| (*x, (x * 1.3).cos_lm())).collect();
         assert!(aliased(&fast));
-        let slow: Vec<(f64, f64)> = xs.iter().map(|x| (*x, (x * 0.05).cos())).collect();
+        let slow: Vec<(f64, f64)> = xs.iter().map(|x| (*x, (x * 0.05).cos_lm())).collect();
         assert!(!aliased(&slow));
         assert!(!aliased(&line));
     }
@@ -4822,9 +4823,9 @@ mod tests {
         // a kink (|x|), a smooth peak and a steep but continuous sigmoid (a titration's equivalence point) are no jumps
         let kink = |x: f64| x.abs();
         assert_eq!(gaps(curve(&kink, -1.0, 0.1, 21), &kink), 0);
-        let peak = |x: f64| (-x * x).exp();
+        let peak = |x: f64| (-x * x).exp_lm();
         assert_eq!(gaps(curve(&peak, -2.0, 0.1, 41), &peak), 0);
-        let sig = |x: f64| 7.0 + 5.0 * (8.0 * (x - 1.03)).tanh();
+        let sig = |x: f64| 7.0 + 5.0 * (8.0 * (x - 1.03)).tanh_lm();
         assert_eq!(gaps(curve(&sig, 0.0, 0.1, 21), &sig), 0);
     }
 
