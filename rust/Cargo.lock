@@ -20,7 +20,7 @@ checksum = "366ffbaa4442f4684d91e2cd7c5ea7c4ed8add41959a31447066e279e432b618"
 
 [[package]]
 name = "actuarial-science-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -34,7 +34,7 @@ checksum = "320119579fcad9c21884f5c4861d16174d0e06250625266f50fe6898340abefa"
 
 [[package]]
 name = "aerospace-engineering-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -65,7 +65,7 @@ dependencies = [
 
 [[package]]
 name = "ai999x-desktop"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "actuarial-science-ai999x",
  "aerospace-engineering-ai999x",
@@ -239,7 +239,7 @@ dependencies = [
 
 [[package]]
 name = "astronomy-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -259,7 +259,7 @@ checksum = "f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53"
 
 [[package]]
 name = "ax-engine"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "astro-float",
  "fancy-regex 0.14.0",
@@ -274,7 +274,7 @@ dependencies = [
 
 [[package]]
 name = "ax-lang"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "candle-core",
@@ -287,7 +287,7 @@ dependencies = [
 
 [[package]]
 name = "ax-python"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "actuarial-science-ai999x",
  "aerospace-engineering-ai999x",
@@ -346,7 +346,7 @@ checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
 
 [[package]]
 name = "bayesian-statistics-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -354,7 +354,7 @@ dependencies = [
 
 [[package]]
 name = "biomedical-science-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -407,14 +407,14 @@ dependencies = [
 
 [[package]]
 name = "build-machine-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "serde_json",
 ]
 
 [[package]]
 name = "build-space-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "serde_json",
 ]
@@ -465,7 +465,7 @@ checksum = "fc652a48c352aef3ea3aed32080501cf3ef6ed5da78602a020c991775b0aff04"
 
 [[package]]
 name = "calculus-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -602,7 +602,7 @@ dependencies = [
 
 [[package]]
 name = "cell-molecular-biology-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -631,7 +631,7 @@ dependencies = [
 
 [[package]]
 name = "chemical-engineering-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -639,7 +639,7 @@ dependencies = [
 
 [[package]]
 name = "chemistry-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -647,7 +647,7 @@ dependencies = [
 
 [[package]]
 name = "civil-engineering-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -655,7 +655,7 @@ dependencies = [
 
 [[package]]
 name = "classical-physics-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -713,7 +713,7 @@ dependencies = [
 
 [[package]]
 name = "computational-biology-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -730,7 +730,7 @@ dependencies = [
 
 [[package]]
 name = "control-systems-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -877,7 +877,7 @@ dependencies = [
 
 [[package]]
 name = "data-science-ml-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -922,7 +922,7 @@ dependencies = [
 
 [[package]]
 name = "differential-equations-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -930,7 +930,7 @@ dependencies = [
 
 [[package]]
 name = "discrete-math-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -1011,7 +1011,7 @@ checksum = "e1d926b4d407d372f141f93bb444696142c29d32962ccbd3531117cf3aa0bfa9"
 
 [[package]]
 name = "earth-science-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -1029,7 +1029,7 @@ dependencies = [
 
 [[package]]
 name = "economics-finance-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -1153,7 +1153,7 @@ checksum = "0e9c71c2167ca323c882b99918929403426e2373ea17242ff5653e0d5e1058be"
 
 [[package]]
 name = "electrical-engineering-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -1161,7 +1161,7 @@ dependencies = [
 
 [[package]]
 name = "electronics-engineering-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -1178,7 +1178,7 @@ dependencies = [
 
 [[package]]
 name = "energy-systems-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -1198,7 +1198,7 @@ dependencies = [
 
 [[package]]
 name = "environmental-engineering-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "ax-lang",
@@ -1549,7 +1549,7 @@ dependencies = [
 
 [[package]]
 name = "geometry-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -1557,7 +1557,7 @@ dependencies = [
 
 [[package]]
 name = "geospatial-analytics-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -1809,7 +1809,7 @@ checksum = "dfa686283ad6dd069f105e5ab091b04c62850d3e4cf5d67debad1933f55023df"
 
 [[package]]
 name = "human-physiology-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -1967,7 +1967,7 @@ dependencies = [
 
 [[package]]
 name = "industrial-engineering-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -2146,7 +2146,7 @@ dependencies = [
 
 [[package]]
 name = "linear-algebra-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -2218,7 +2218,7 @@ dependencies = [
 
 [[package]]
 name = "materials-science-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -2226,7 +2226,7 @@ dependencies = [
 
 [[package]]
 name = "math-foundations-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -2234,7 +2234,7 @@ dependencies = [
 
 [[package]]
 name = "mechanical-engineering-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -2417,7 +2417,7 @@ dependencies = [
 
 [[package]]
 name = "nuclear-engineering-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -2815,7 +2815,7 @@ dependencies = [
 
 [[package]]
 name = "optimization-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -2991,7 +2991,7 @@ dependencies = [
 
 [[package]]
 name = "power-electronics-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -3067,7 +3067,7 @@ checksum = "d55d956fa96f5ec02be2e13af0e20391a5aa83d6a074e3ad368959d0fab299ea"
 
 [[package]]
 name = "quantum-physics-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -3492,7 +3492,7 @@ checksum = "f8fadd59c855ef2080decdef8ff161eb6661b86933c9d82e5ba29dc602a55aba"
 
 [[package]]
 name = "signal-processing-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -3663,7 +3663,7 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
 name = "statistics-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -3785,7 +3785,7 @@ dependencies = [
 
 [[package]]
 name = "thermofluids-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -3847,7 +3847,7 @@ dependencies = [
 
 [[package]]
 name = "time-series-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
@@ -4022,7 +4022,7 @@ dependencies = [
 
 [[package]]
 name = "transportation-ai999x"
-version = "1.6.3"
+version = "1.6.4"
 dependencies = [
  "ax-engine",
  "serde_json",
