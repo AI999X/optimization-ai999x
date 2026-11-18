@@ -6,10 +6,13 @@
 //!
 //!   figures_json(pack, request) -> [{"slug", "title", "svg", "caption"}]      (request as for solve_json)
 //!
-//! Bounded: at most MAX_SOLVES solves per request (and, natively, MAX_MS of wall time), a work allowance counted in
-//! the runtime's operations (meter.rs: deterministic; a solve past its share is stopped and left out), at most
+//! Bounded: at most DEFAULT_SOLVES solves per request (a caller may ask for up to MAX_SOLVES), a work allowance counted
+//! in the runtime's operations (meter.rs: deterministic; a solve past its share is stopped and left out), at most
 //! MAX_FIGS figures, at most 41 points per sweep (a scan of whole numbers: at most 800 tried), 11 x 11 cells per grid,
 //! 64 rows per truth table; lists, matrices and graphs beyond a drawable size are not drawn.
+//! Deterministic (2026-11-16): which figures are drawn and how finely never depends on the machine's speed: no measured
+//! time sizes the work, and natively the wall clock is only a hang guard (HANG_MS), far above any normal request, so the
+//! browser, the desktop app, the command line and the Python package draw the same figures.
 //! The SVG uses the website's figure classes (axp-*: its own colours in light and dark), with a fallback style for a
 //! file opened on its own (the page removes <style> and applies its theme).
 
@@ -20,10 +23,11 @@ use crate::pack::{Pack, ProcInput, Val};
 use serde_json::{json, Value};
 
 const MAX_SOLVES: usize = 400;
-/// the browser's default solves, and natively a request's with "clock": false (the Python package)
-const DEFAULT_WASM_SOLVES: usize = 120;
+/// the default solves of every caller (browser, desktop, command line, Python package)
+const DEFAULT_SOLVES: usize = 120;
+/// natively, a hang guard only: no normal request comes near it (the figures are cut by counted work)
 #[cfg(not(target_arch = "wasm32"))]
-const MAX_MS: u128 = 250;
+const HANG_MS: u128 = 10_000;
 const MAX_FIGS: usize = 4;
 const SWEEP_N: usize = 41;
 const SWEEP_N2: usize = 29;
@@ -62,13 +66,12 @@ pub fn figures_json(p: &Pack, request: &str) -> String {
                 }
                 _ => {}
             }
-            // "budget": how many solves the caller can afford (the page measures one solve and sends what fits);
-            // "ms": that solve's time, which sizes the work allowed (ALLOW_MS of work at the measured rate)
+            // "budget": how many solves the caller asks for (default DEFAULT_SOLVES). A measured time ("ms", sent by
+            // pages before 2026-11-16) is ignored: the figures must not depend on the machine's speed
             let budget = case["budget"].as_u64().map(|b| b as usize);
-            let ms = case["ms"].as_f64().filter(|m| m.is_finite() && *m > 0.0);
+            let ms: Option<f64> = None;
             let recalled = recall(&case);
-            // "clock": false (natively): no wall-clock limit and the browser's default budget, so the figures are the
-            // browser module's, the same on every machine and every run (the Python package; docs/PYTHON_ON_RUST.md)
+            // "clock" (read for compatibility): only the hang guard depends on it; the figures are the same either way
             let clock = case["clock"].as_bool().unwrap_or(true);
             figures_from(p, case["key"].as_str().unwrap_or(""), &given, case["target"].as_str(), budget, ms, recalled,
                          clock)
@@ -170,32 +173,18 @@ impl<'a> Ctx<'a> {
             return false;
         }
         #[cfg(not(target_arch = "wasm32"))]
-        if self.clock {
-            if self.t0.elapsed().as_micros() >= MAX_MS * 1000 {
-                return false;
-            }
+        if self.clock && self.t0.elapsed().as_micros() >= HANG_MS * 1000 {
+            return false;
         }
         true
     }
     /// How many more solves are expected to fit: the solves left, the work left at the average cost of the solves so
-    /// far (the visitor's before any), and natively the time left at the average cost so far.
+    /// far (the visitor's before any). Never the time: the hang guard stops solving, it does not size a figure.
     fn room(&self) -> usize {
         let mut by_count = self.count_cap().saturating_sub(self.solves);
         if self.w1.is_some() {
             let avg = if self.extra > 0 { (self.wextra / self.extra as u64).max(1) } else { self.w1() };
             by_count = by_count.min((self.work_left() / avg) as usize);
-        }
-        #[cfg(not(target_arch = "wasm32"))]
-        if self.clock {
-            let spent = self.t0.elapsed().as_micros();
-            let limit = MAX_MS * 1000;
-            if spent >= limit {
-                return 0;
-            }
-            if self.solves > 0 {
-                let avg = (spent / self.solves as u128).max(1);
-                return by_count.min(((limit - spent) / avg) as usize);
-            }
         }
         by_count
     }
@@ -1305,23 +1294,19 @@ struct Base<'a> {
 }
 
 /// Every figure for the capability `key` and these inputs (none when the inputs are not solved). `budget`: the most
-/// solves to spend (default: MAX_SOLVES natively, where the time limit also applies; DEFAULT_WASM_SOLVES in a browser,
-/// which has no clock here).
+/// solves to spend (default DEFAULT_SOLVES everywhere: the same figures on every machine).
 pub fn figures(p: &Pack, key: &str, given: &[(String, Input)], target: Option<&str>, budget: Option<usize>) -> Vec<Figure> {
     figures_from(p, key, given, target, budget, None, None, true)
 }
 
-/// `figures`, with the time the visitor's solve took (`ms`, which sizes the work allowed) and that solve's answer and
-/// work when at hand (then not solved again). `clock` false (natively): as in the browser, no wall-clock limit and the
-/// browser's default budget, so the result does not depend on the machine's speed.
+/// `figures`, with that solve's answer and work when at hand (then not solved again). `ms` is always None since
+/// 2026-11-16 (kept for the work formula); `clock` false (natively) also drops the hang guard.
 #[allow(clippy::too_many_arguments)]
 fn figures_from(p: &Pack, key: &str, given: &[(String, Input)], target: Option<&str>, budget: Option<usize>,
                 ms: Option<f64>, known: Option<(Answer, u64)>, clock: bool) -> Vec<Figure> {
     #[cfg(target_arch = "wasm32")]
-    let default = { let _ = clock; DEFAULT_WASM_SOLVES };
-    #[cfg(not(target_arch = "wasm32"))]
-    let default = if clock { MAX_SOLVES } else { DEFAULT_WASM_SOLVES };
-    let budget = budget.unwrap_or(default).clamp(1, MAX_SOLVES);
+    let _ = clock;
+    let budget = budget.unwrap_or(DEFAULT_SOLVES).clamp(1, MAX_SOLVES);
     let mut cx = Ctx::new(p, key, target, budget, ms);
     #[cfg(not(target_arch = "wasm32"))]
     {

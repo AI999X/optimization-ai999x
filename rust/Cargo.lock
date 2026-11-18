@@ -65,7 +65,7 @@ dependencies = [
 
 [[package]]
 name = "ai999x-desktop"
-version = "1.6.4"
+version = "1.6.5"
 dependencies = [
  "actuarial-science-ai999x",
  "aerospace-engineering-ai999x",
