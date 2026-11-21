@@ -662,7 +662,9 @@ fn unit_after(toks: &[Tok], i: usize) -> Option<(String, usize, crate::units::Un
         if t.k == K::List || (t.k == K::Punct && !"/^*()\u{00b0}%-".contains(t.orig.as_str())) {
             break;
         }
-        if k == 1 && t.k != K::Word && t.orig != "\u{00b0}" && t.orig != "%" {
+        // "0.1 1/h": a reciprocal unit starts with the number 1 written right before "/" (2026-11-21)
+        let one_over = t.orig == "1" && toks.get(i + 2).map(|x| x.orig == "/" && !x.gap).unwrap_or(false);
+        if k == 1 && t.k != K::Word && t.orig != "\u{00b0}" && t.orig != "%" && !one_over {
             break;
         }
         text.push_str(&t.orig);
@@ -674,6 +676,76 @@ fn unit_after(toks: &[Tok], i: usize) -> Option<(String, usize, crate::units::Un
         }
     }
     best
+}
+
+/// spelled unit words the reader does not take as a unit after a number: whole years and days are counts in many
+/// capabilities ("for 3 years"), a degree may be an angle or a temperature, a percent is read as "%" elsewhere
+const NOT_UNIT_WORDS: &[&str] = &["year", "years", "days", "degree", "degrees", "turn", "turns", "percent", "pct",
+                                  "celsius", "sec", "secs"];
+
+/// The unit spelled out after the number at token i ("6 hours", "0.1 per hour", "3 meters per second", "100 kg per
+/// hour"; 2026-11-21): the longest run of words, each a unit word (units.rs `unit_word`) or a unit as written, with
+/// at least one spelled word, that reads as a unit of a physical dimension. None when there is none.
+fn unit_words_after(toks: &[Tok], i: usize) -> Option<(String, usize, crate::units::Unit)> {
+    let mut best = None;
+    let mut parts: Vec<&str> = vec![];
+    let mut spelled = false;
+    for k in 1..=MAX_UNIT_TOKENS {
+        let Some(t) = toks.get(i + k) else { break };
+        if t.k != K::Word {
+            break;
+        }
+        let word = crate::units::unit_word(&t.low).filter(|_| !NOT_UNIT_WORDS.contains(&t.low.as_str()));
+        if word.is_none() && parse_unit(&t.orig).is_err() {
+            break;
+        }
+        spelled |= word.is_some();
+        parts.push(if word.is_some() { t.low.as_str() } else { t.orig.as_str() });
+        if !spelled {
+            continue;
+        }
+        let Some(mut text) = crate::units::words_to_unit(&parts) else { continue };
+        if text.ends_with('/') {
+            continue;
+        }
+        if text.starts_with('/') {
+            text.insert(0, '1');
+        }
+        if let Ok(u) = parse_unit(&text) {
+            if !dim_one(&u.dim) && u.offset == 0.0 {
+                best = Some((text, k, u));
+            }
+        }
+    }
+    best
+}
+
+/// The unit after the number at token i, as written or spelled out (the longer reading), and whether it is spelled.
+fn unit_any(toks: &[Tok], i: usize) -> Option<(String, usize, crate::units::Unit, bool)> {
+    let written = unit_after(toks, i);
+    let spelled = unit_words_after(toks, i);
+    match (written, spelled) {
+        (Some(w), Some(s)) if s.1 > w.1 => Some((s.0, s.1, s.2, true)),
+        (Some(w), _) => Some((w.0, w.1, w.2, false)),
+        (None, Some(s)) => Some((s.0, s.1, s.2, true)),
+        (None, None) => None,
+    }
+}
+
+/// The tokens that are the unit of a number before them (the "1" and "h" of "0.1 1/h", the "per hour" of "0.1 per
+/// hour"): never a value or a word of the question's meaning.
+fn unit_mask(toks: &[Tok]) -> Vec<bool> {
+    let mut mask = vec![false; toks.len()];
+    for i in 0..toks.len() {
+        if toks[i].k == K::Num && !mask[i] && !(i > 0 && toks[i - 1].orig == "^") {
+            if let Some((_, n, _, _)) = unit_any(toks, i) {
+                for m in mask.iter_mut().skip(i + 1).take(n) {
+                    *m = true;
+                }
+            }
+        }
+    }
+    mask
 }
 
 /// How many tokens after the number at i are its unit or percent sign (not words that describe it).
@@ -1382,12 +1454,21 @@ fn asked_full(toks: &[Tok]) -> (Vec<String>, Vec<String>) {
 /// a comma or the start of the sentence, at most 6) and after it (at most 3, up to the next value, "and" or a comma).
 /// The word right after a number ("10 elements") and the two right before ("a mean of 96.2") weigh most.
 fn context(toks: &[Tok], i: usize, skip_unit: usize) -> Vec<(String, f32)> {
+    context_masked(toks, i, skip_unit, &[])
+}
+
+/// `context` without the tokens marked in `mask` (passed over, not counted).
+fn context_masked(toks: &[Tok], i: usize, skip_unit: usize, mask: &[bool]) -> Vec<(String, f32)> {
+    let masked = |j: usize| mask.get(j).copied().unwrap_or(false);
     let mut out = vec![];
     let mut d = 0;
     let mut j = i;
     while j > 0 && d < 6 {
         j -= 1;
         let t = &toks[j];
+        if masked(j) {
+            continue;
+        }
         if t.k == K::Num || t.k == K::List || (t.k == K::Punct && ".?!;,".contains(t.orig.as_str()))
             || t.low == "and" {
             break;
@@ -1407,6 +1488,10 @@ fn context(toks: &[Tok], i: usize, skip_unit: usize) -> Vec<(String, f32)> {
     let mut j = i + 1 + skip_unit;
     while j < toks.len() && d < 3 {
         let t = &toks[j];
+        if masked(j) {
+            j += 1;
+            continue;
+        }
         if t.k == K::Num || t.k == K::List || (t.k == K::Punct && ".?!;,".contains(t.orig.as_str()))
             || t.low == "and" {
             break;
@@ -1496,6 +1581,38 @@ fn is_number_input(i: &ProcInput) -> bool {
     matches!(i.ty.as_str(), "" | "number" | "integer")
 }
 
+/// An input given in decibels (its meaning says "in dB", "dBm", "decibels").
+fn in_decibels(meaning: &str) -> bool {
+    tokenize(meaning).iter().any(|t| t.k == K::Word && (t.low == "db" || t.low.starts_with("dbm") || t.low == "dbw"
+                                                         || t.low.starts_with("decibel")))
+}
+
+/// The number inputs not yet given, in the order read_procedure places numbers into them.
+fn slots_of<'a>(pr: &'a Procedure, bound: &HashMap<String, Input>) -> Vec<&'a ProcInput> {
+    pr.inputs.iter().filter(|i| is_number_input(i) && !bound.contains_key(&i.symbol)).collect()
+}
+
+/// The tokens of the asked quantity's own words ("What is the SOLAR DECLINATION on day 172?"), as asked_phrase reads
+/// them (empty when the question asks for nothing by name).
+fn asked_range(toks: &[Tok]) -> Vec<bool> {
+    let mut mask = vec![false; toks.len()];
+    let phrase = asked_phrase(toks);
+    if phrase.is_empty() {
+        return mask;
+    }
+    let span = asked_span(toks);
+    let mut k = 0;
+    for j in span {
+        if k < phrase.len() && toks[j].k == K::Word && toks[j].low.replace('\'', "") == phrase[k] {
+            mask[j] = true;
+            k += 1;
+        } else if k > 0 {
+            break;
+        }
+    }
+    mask
+}
+
 fn read_procedure(p: &Pack, ix: &Index, pr: &Procedure, toks: &[Tok]) -> Reading {
     let mut r = Reading { key: pr.key.clone(), ..Default::default() };
     let mut used = vec![false; toks.len()];
@@ -1508,12 +1625,16 @@ fn read_procedure(p: &Pack, ix: &Index, pr: &Procedure, toks: &[Tok]) -> Reading
                 let v = &toks[i + 2];
                 let kind_dim = p.kinds.get(&inp.kind).map(|k| k.dim).filter(|d| !dim_one(d));
                 let unit = unit_after(toks, i + 2);
+                let any = unit_any(toks, i + 2);
+                // a pure number whose meaning declares its unit ("time constant in seconds") takes a value written
+                // with a unit of that dimension; the engine converts it (engine.rs declared_value)
+                let declared = if kind_dim.is_none() { crate::units::declared_unit(&inp.meaning) } else { None };
                 let ends = |k: usize| toks.get(k).map(|t| matches!(t.orig.as_str(), "," | ";" | "." | "?" | "!")
                                                          || t.low == "and").unwrap_or(true);
                 let val = match v.k {
-                    K::Num if is_number_input(inp) => match (kind_dim, &unit) {
+                    K::Num if is_number_input(inp) => match (kind_dim, &any) {
                         // a quantity: its unit must be written and be of its dimension
-                        (Some(d), Some((u, n, un))) if un.dim == d => {
+                        (Some(d), Some((u, n, un, _))) if un.dim == d => {
                             for e in used.iter_mut().skip(i + 3).take(*n) {
                                 *e = true;
                             }
@@ -1523,7 +1644,14 @@ fn read_procedure(p: &Pack, ix: &Index, pr: &Procedure, toks: &[Tok]) -> Reading
                             r.doubt.push(format!("{} needs a unit of its kind", inp.symbol));
                             None
                         }
-                        (None, Some((_, _, un))) if !dim_one(&un.dim) => {
+                        (None, Some((u, n, un, _)))
+                            if un.offset == 0.0 && declared.as_ref().is_some_and(|(_, du)| du.dim == un.dim) => {
+                            for e in used.iter_mut().skip(i + 3).take(*n) {
+                                *e = true;
+                            }
+                            Some(Input::Text(format!("{} {}", v.orig, u)))
+                        }
+                        (None, _) if unit.as_ref().is_some_and(|(_, _, un)| !dim_one(&un.dim)) => {
                             r.doubt.push(format!("{} is a pure number, but a unit is written after it", inp.symbol));
                             None
                         }
@@ -1655,29 +1783,43 @@ fn read_procedure(p: &Pack, ix: &Index, pr: &Procedure, toks: &[Tok]) -> Reading
         }
     }
     // 3. numbers, each to the input its words name
+    let mask = unit_mask(toks);
     let nums: Vec<usize> = (0..toks.len())
-        .filter(|&i| toks[i].k == K::Num && !used[i] && !(i > 0 && toks[i - 1].orig == "^")).collect();
+        .filter(|&i| toks[i].k == K::Num && !used[i] && !mask[i] && !(i > 0 && toks[i - 1].orig == "^")).collect();
+    // the unit each pure-number slot's meaning declares ("time constant in seconds")
+    let declared: Vec<Option<Dim>> = slots_of(pr, &bound).iter()
+        .map(|i| crate::units::declared_unit(&i.meaning).map(|d| d.1.dim)).collect();
     let slots: Vec<&ProcInput> = pr.inputs.iter().filter(|i| is_number_input(i) && !bound.contains_key(&i.symbol)).collect();
     let names: Vec<HashSet<String>> = slots.iter().map(|i| name_words(i)).collect();
     let mut scores = vec![vec![0.0f32; slots.len()]; nums.len()];
     for (a, &ti) in nums.iter().enumerate() {
         let unit = unit_after(toks, ti);
+        let any = unit_any(toks, ti);
         let pct = toks.get(ti + 1).map(|x| x.orig == "%").unwrap_or(false);
         let ctx = context(toks, ti, skip_after(toks, ti));
+        let ctx_any = context(toks, ti, any.as_ref().map(|u| u.1).unwrap_or(0).max(skip_after(toks, ti)));
         for (b, inp) in slots.iter().enumerate() {
             let kind = p.kinds.get(&inp.kind);
             let kinded = kind.map(|k| !dim_one(&k.dim)).unwrap_or(false);
-            if kinded && unit.as_ref().map(|u| Some(&u.2.dim) != kind.map(|k| &k.dim)).unwrap_or(true) {
+            if kinded && any.as_ref().map(|u| Some(&u.2.dim) != kind.map(|k| &k.dim)).unwrap_or(true) {
                 continue;
             }
-            // a pure number is never a value written with a physical unit ("8.7e-4 mol" is not a count)
-            if !kinded && unit.as_ref().map(|u| !dim_one(&u.2.dim)).unwrap_or(false) {
+            let by_declared = !kinded && declared[b].is_some()
+                && any.as_ref().is_some_and(|u| Some(u.2.dim) == declared[b] && u.2.offset == 0.0);
+            // a pure number is never a value written with a physical unit ("8.7e-4 mol" is not a count), unless its
+            // meaning declares that unit's dimension
+            if !kinded && !by_declared && unit.as_ref().map(|u| !dim_one(&u.2.dim)).unwrap_or(false) {
                 continue;
             }
             if inp.ty == "integer" && (toks[ti].val.fract() != 0.0 || pct) {
                 continue;
             }
-            scores[a][b] = ctx_score(&ctx, &names[b], &ix.idf);
+            // an input in decibels takes only a number written with its decibels ("an SNR of 30 dB"): a bare number
+            // ("an SNR of 1100") may be the linear ratio (2026-11-21)
+            if in_decibels(&inp.meaning) && !toks.get(ti + 1).is_some_and(|t| t.low.starts_with("db") || t.low.starts_with("decibel")) {
+                continue;
+            }
+            scores[a][b] = ctx_score(if kinded || by_declared { &ctx_any } else { &ctx }, &names[b], &ix.idf);
         }
     }
     let (mut pairs, mut left, free) = assign(&scores, NUMBER_MARGIN);
@@ -1702,16 +1844,45 @@ fn read_procedure(p: &Pack, ix: &Index, pr: &Procedure, toks: &[Tok]) -> Reading
             left.clear();
         }
     }
+    // a number left unplaced whose unit's dimension is that of exactly one free input, and of no other number left
+    // ("What is the thermal voltage at 300 K?": T is the only temperature): the unit says which input it is
+    // (2026-11-21). A pure number is never placed so.
+    let slot_dim = |b: usize| -> Option<Dim> {
+        let k = p.kinds.get(&slots[b].kind).map(|k| k.dim).filter(|d| !dim_one(d));
+        k.or(declared[b])
+    };
+    let taken: HashSet<usize> = pairs.iter().map(|x| x.1).collect();
+    let left_dims: Vec<Option<Dim>> = left.iter().map(|&a| unit_any(toks, nums[a]).map(|u| u.2.dim)
+        .filter(|d| !dim_one(d))).collect();
+    let mut placed: Vec<usize> = vec![];
+    for (li, &a) in left.iter().enumerate() {
+        let Some(d) = left_dims[li] else { continue };
+        if left_dims.iter().filter(|x| **x == Some(d)).count() != 1 {
+            continue;
+        }
+        let fits: Vec<usize> = (0..slots.len()).filter(|&b| !taken.contains(&b) && slot_dim(b) == Some(d)).collect();
+        if let [b] = fits.as_slice() {
+            if slots[*b].ty == "integer" {
+                continue;
+            }
+            pairs.push((a, *b));
+            placed.push(a);
+        }
+    }
+    left.retain(|a| !placed.contains(a));
     // a number its words describe as one of the results ("a hypothesised STANDARD DEVIATION of 19" given to a test
-    // of a mean, whose result is a standard deviation) is not that input
+    // of a mean, whose result is a standard deviation) is not that input; the words of the asked quantity itself
+    // ("What is the SOLAR DECLINATION on day 172?") do not describe the number
     let outs: Vec<HashSet<String>> = pr.outputs.iter().map(|o| {
         let mut ws: HashSet<String> = words(&o.meaning).into_iter().collect();
         ws.extend(o.symbol.to_lowercase().split('_').filter(|x| !x.is_empty()).map(stem));
         ws
     }).collect();
+    let asked_toks = asked_range(toks);
     for &(a, b) in &pairs {
         let ti = nums[a];
-        let ctx = context(toks, ti, skip_after(toks, ti));
+        let ctx = context_masked(toks, ti, unit_any(toks, ti).map(|u| u.1).unwrap_or(0).max(skip_after(toks, ti)),
+                                 &asked_toks);
         let own = ctx_score(&ctx, &names[b], &ix.idf);
         if outs.iter().any(|o| ctx_score(&ctx, o, &ix.idf) > own) {
             r.doubt.push(format!("the words before {} describe a result, not {}", toks[ti].orig, slots[b].symbol));
@@ -1723,8 +1894,10 @@ fn read_procedure(p: &Pack, ix: &Index, pr: &Procedure, toks: &[Tok]) -> Reading
         let t = &toks[ti];
         let pct = toks.get(ti + 1).map(|x| x.orig == "%").unwrap_or(false);
         let kinded = p.kinds.get(&inp.kind).map(|k| !dim_one(&k.dim)).unwrap_or(false);
-        let val = if kinded {
-            let (u, _, _) = unit_after(toks, ti).unwrap();
+        let any = unit_any(toks, ti);
+        let by_declared = !kinded && declared[b].is_some() && any.as_ref().is_some_and(|u| Some(u.2.dim) == declared[b]);
+        let val = if kinded || by_declared {
+            let (u, _, _, _) = any.unwrap();
             Input::Text(format!("{} {}", t.orig, u))
         } else if pct && !inp.meaning.to_lowercase().contains("percent") {
             Input::Float(t.val / 100.0)
@@ -1863,6 +2036,12 @@ fn read_procedure(p: &Pack, ix: &Index, pr: &Procedure, toks: &[Tok]) -> Reading
             continue;
         }
         if w.chars().count() <= 2 {
+            // an abbreviation the capability's name writes in the same letters ("IV" of "One-compartment IV bolus")
+            let in_name = tokenize(&pr.name).iter().any(|n| n.k == K::Word && n.low == *whole && n.orig.chars().count() >= 2
+                && toks.iter().any(|q| q.k == K::Word && q.orig == n.orig));
+            if in_name {
+                continue;
+            }
             r.doubt.push(format!("the asked quantity is written as the symbol '{w}'"));
             break;
         }
@@ -1910,6 +2089,7 @@ fn unexplained(ix: &Index, key: &str, toks: &[Tok]) -> Option<String> {
     let n = ix.caps.len() as f32;
     let floor = ((1.0 + n / DISTINCT_CAPS) as f64).ln_lm() as f32;
     let span = asked_span(toks);
+    let units = unit_mask(toks);
     let has = |w: &str| ix.caps[ci].fields.iter().any(|(_, set)| set.contains(w));
     // an abbreviation anywhere in the question that other capabilities write and this one does not ("a DPSK
     // receiver" is not a QPSK one)
@@ -1921,7 +2101,10 @@ fn unexplained(ix: &Index, key: &str, toks: &[Tok]) -> Option<String> {
             return Some(w);
         }
     }
-    for t in toks[span].iter() {
+    for (j, t) in toks.iter().enumerate().take(span.end).skip(span.start) {
+        if units[j] {
+            continue;                                     // the unit of a stated value ("0.1 1/h", "6 hours")
+        }
         // an arithmetic mark in the asked part: a combination of results ("s / mean"), not one result
         if t.k == K::Punct && "/+*|".contains(t.orig.as_str()) {
             return Some(t.orig.clone());
@@ -2046,7 +2229,22 @@ fn asked_output(pr: &Procedure, toks: &[Tok]) -> Option<String> {
             return Some(top[0].2.to_string());
         }
         let exact: Vec<&str> = top.iter().filter(|x| x.1 == 0).map(|x| x.2).collect();
-        return if exact.len() == 1 { Some(exact[0].to_string()) } else { None };
+        if exact.len() == 1 {
+            return Some(exact[0].to_string());
+        }
+        // the same quantity in different units ("cardiac output in L/min", "cardiac output in mL/min"; "ejection
+        // fraction (fraction)", "ejection fraction in %"): the capability's primary result when it is one of them
+        // (2026-11-21)
+        // (2026-11-21). Not when the question names a unit right after the asked words ("the peak current IN
+        // milliamperes"): which output that is, is not decided here
+        let base = |sym: &str| pr.outputs.iter().find(|o| o.symbol == sym).map(|o| meaning_base(&o.meaning));
+        let b0 = base(top[0].2);
+        let am = asked_range(toks);
+        let unit_named = am.iter().rposition(|&x| x).and_then(|j| toks.get(j + 1)).is_some_and(|t| t.low == "in");
+        if !unit_named && b0.is_some() && top.iter().all(|x| base(x.2) == b0) && top.iter().any(|x| x.2 == pr.primary) {
+            return Some(pr.primary.clone());
+        }
+        return None;
     }
     let span = asked_span(toks);
     let asked: HashSet<String> = toks[span].iter().filter(|t| is_word(t))
@@ -2061,6 +2259,22 @@ fn asked_output(pr: &Procedure, toks: &[Tok]) -> Option<String> {
         [(a, s), (b, _), ..] if *a > 0 && a > b => Some(s.to_string()),
         [(a, s)] if *a > 0 => Some(s.to_string()),
         _ => None,
+    }
+}
+
+/// An output's meaning without the unit it is given in: "cardiac output in L/min" and "cardiac output (L/min)" are
+/// "cardiac output" (a trailing parenthesis, then a trailing " in " and at most three words).
+fn meaning_base(meaning: &str) -> String {
+    let mut m = meaning.trim().to_lowercase();
+    if m.ends_with(')') {
+        if let Some(k) = m.rfind('(') {
+            m.truncate(k);
+        }
+    }
+    let m = m.trim().to_string();
+    match m.rfind(" in ") {
+        Some(k) if m[k + 4..].split_whitespace().count() <= 3 => m[..k].trim().to_string(),
+        _ => m,
     }
 }
 
@@ -2343,8 +2557,66 @@ fn alt_list(p: &Pack, keys: &[String]) -> Vec<Value> {
     keys.iter().map(|k| json!({"capability": k, "name": cap_name(p, k).0})).collect()
 }
 
-/// Read a question in words and answer it, or say exactly why not. See the module comment.
+/// A documented question of a capability (its first template, else its first documented question that the package
+/// answers), to offer with a refusal.
+fn template_of(p: &Pack, key: &str) -> Option<String> {
+    if let Some(pr) = p.procedure(key) {
+        if let Some(t) = pr.templates.first() {
+            return Some(t.clone());
+        }
+    }
+    p.forms.iter().find(|f| f.get("key").and_then(|k| k.as_str()) == Some(key)
+                            && f.get("outcome").and_then(|o| o.as_str()) == Some("SOLVED"))
+        .and_then(|f| f.get("q").and_then(|q| q.as_str()).map(String::from))
+        .or_else(|| p.relation(key).and_then(|r| r.examples.first().cloned()))
+}
+
+/// Read a question in words and answer it, or say exactly why not. See the module comment. A question that is not
+/// read (NEEDS_INPUT, UNRECOGNIZED_FORMAT, OUT_OF_SCOPE) comes back with a supported way to ask it: the documented
+/// template of the capability it looks like (or of the first alternative) in "try", also named in the message
+/// (2026-11-21; the Python package's own reader does the same).
 pub fn ask_value(p: &Pack, question: &str) -> Value {
+    let mut out = ask_read(p, question);
+    let outcome = out["outcome"].as_str().unwrap_or("").to_string();
+    if matches!(outcome.as_str(), "NEEDS_INPUT" | "UNRECOGNIZED_FORMAT" | "OUT_OF_SCOPE") && out.get("try").is_none() {
+        // the capability it looks like, else the first alternative, else the capability its words match best
+        let key = out["capability"].as_str().map(String::from)
+            .or_else(|| out["alternatives"].as_array().and_then(|a| a.first())
+                .and_then(|a| a["capability"].as_str()).map(String::from))
+            .or_else(|| closest_capability(p, question));
+        if let Some(t) = key.as_deref().and_then(|k| template_of(p, k)) {
+            if t.trim() != question.trim() {
+                let msg = out["message"].as_str().unwrap_or("").to_string();
+                out["message"] = json!(format!("{msg} A supported way to ask: \"{t}\""));
+                out["try"] = json!(t);
+            }
+        }
+        // the other readings' templates too ("Two streams are blended ..." looks like a separator, and blending is
+        // one of the other readings): {capability, try} for at most three
+        let also: Vec<Value> = out["alternatives"].as_array().into_iter().flatten()
+            .filter_map(|a| a["capability"].as_str())
+            .filter(|k| Some(*k) != key.as_deref())
+            .filter_map(|k| template_of(p, k).map(|t| json!({"capability": k, "try": t})))
+            .take(3).collect();
+        if !also.is_empty() {
+            out["try_also"] = json!(also);
+        }
+    }
+    out
+}
+
+/// The capability whose words a question matches best (the reader's own ranking), if any.
+fn closest_capability(p: &Pack, question: &str) -> Option<String> {
+    let ix = index(p);
+    let all = tokenize(question);
+    let q = &all[core(&all)];
+    let mut seen = HashSet::new();
+    let qwords: Vec<Vec<(String, f32)>> = q.iter().filter(|t| is_word(t)).map(|t| stem(&t.low.replace('\'', "")))
+        .filter(|w| !stopword(w) && seen.insert(w.clone())).take(60).map(|w| vec![(w, 1.0f32)]).collect();
+    rank(&ix, &qwords).first().map(|(ci, _)| ix.caps[*ci].key.clone())
+}
+
+fn ask_read(p: &Pack, question: &str) -> Value {
     if question.chars().count() > MAX_QUESTION {
         return reply("INVALID_INPUT", format!("The question is longer than {MAX_QUESTION} characters."));
     }
@@ -2789,7 +3061,10 @@ mod tests {
         assert_eq!(target("cruise", "Find the flight time.").as_deref(), Some("t"));
         // no meaning is the asked phrase itself: not read, even when one has fewer extra words (a point's capital
         // letter is a word: "reaction at A" is not "the reaction")
-        assert_eq!(target("tie", "Find the peak current."), None);
+        // one quantity in two units (the same meaning but for "in <unit>"): the primary result (2026-11-21), unless the
+        // question names a unit after it
+        assert_eq!(target("tie", "Find the peak current.").as_deref(), Some("a"));
+        assert_eq!(target("tie", "Find the peak current in milliamperes."), None);
         assert_eq!(target("ber", "What is the bit error rate?"), None);
         assert_eq!(target("beam", "Determine the reaction at the fixed end A."), None);
         assert_eq!(target("beam", "Find the hogging moment at A."), Some("MA".into()));

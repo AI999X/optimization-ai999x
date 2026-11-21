@@ -139,6 +139,14 @@ fn atom_table(name: &str) -> Option<(f64, [i64; 8], bool)> {
         "d" => (86400.0, b(2, 1), false),
         "b" => (1e-28, b(1, 2), false),
         "Gy" | "Sv" => (1.0, [0, 2, -2, 0, 0, 0, 0, 0], true),
+        // astronomy (2026-11-21: "0.768 arcsec", "10 pc", "4.24 ly" were refused although the inputs' hints list them):
+        // the astronomical unit and the light-year are exact by definition (IAU 2012, Julian year); the parsec is
+        // 648000/pi au and takes prefixes (kpc, Mpc, Gpc)
+        "au" | "AU" => (149597870700.0, b(1, 1), false),
+        "ly" => (9460730472580800.0, b(1, 1), false),
+        "pc" => (149597870700.0 * 648000.0 / PI, b(1, 1), true),
+        // the hectare (2026-11-21, with the hecto prefix), as runtime/quantity.py
+        "ha" => (1e4, b(1, 2), false),
         _ => return None,
     })
 }
@@ -154,6 +162,9 @@ fn prefix(c: char) -> Option<f64> {
         'n' => 1e-9,
         'p' => 1e-12,
         'f' => 1e-15,
+        // hecto (2026-11-21: "700 hPa" was refused); an atom is looked up first, so "h" stays the hour, "hr" the hour
+        // and "hp" the horsepower. deca ("da") is two letters: see `atom`
+        'h' => 1e2,
         _ => return None,
     })
 }
@@ -168,10 +179,19 @@ fn atom(name: &str) -> Result<Unit, UnitError> {
     let pi_frac = match name {
         "deg" | "°" => Some(1.0 / 180.0),
         "rev" => Some(2.0),
+        // arc minutes, arc seconds and milliarcseconds (parallax): exact fractions of pi
+        "arcmin" => Some(1.0 / 10800.0),
+        "arcsec" => Some(1.0 / 648000.0),
+        "mas" => Some(1.0 / 648000000.0),
         _ => None,
     };
     if let Some(k) = pi_frac {
         return Ok(Unit { factor: PI * k, dim: Dim::of([0, 0, 0, 0, 0, 0, 0, 1]), offset: 0.0 });
+    }
+    if let Some(rest) = name.strip_prefix("da") {
+        if let Some((f, d, true)) = atom_table(rest) {
+            return Ok(Unit { factor: f * 10.0, dim: Dim::of(d), offset: 0.0 });
+        }
     }
     let mut chars = name.chars();
     if let Some(c) = chars.next() {
@@ -381,6 +401,211 @@ pub fn to_si(value: f64, unit: &Unit, difference: bool) -> f64 {
     value * unit.factor + if difference { 0.0 } else { unit.offset }
 }
 
+/// A spelled unit word (lower case) as runtime/quantity.py `_WORDS` spells it ("hours" -> "h", "per" -> "/"); the
+/// table is generated from quantity.py and must stay equal to it (tests/test_unit_words_parity.py).
+pub fn unit_word(w: &str) -> Option<&'static str> {
+    Some(match w {
+        "second" => "s",
+        "seconds" => "s",
+        "sec" => "s",
+        "secs" => "s",
+        "millisecond" => "ms",
+        "milliseconds" => "ms",
+        "minute" => "min",
+        "minutes" => "min",
+        "hour" => "h",
+        "hours" => "h",
+        "days" => "day",
+        "meter" => "m",
+        "meters" => "m",
+        "metre" => "m",
+        "metres" => "m",
+        "kilometer" => "km",
+        "kilometers" => "km",
+        "kilometre" => "km",
+        "kilometres" => "km",
+        "centimeter" => "cm",
+        "centimeters" => "cm",
+        "centimetre" => "cm",
+        "centimetres" => "cm",
+        "millimeter" => "mm",
+        "millimeters" => "mm",
+        "millimetre" => "mm",
+        "millimetres" => "mm",
+        "gram" => "g",
+        "grams" => "g",
+        "kilogram" => "kg",
+        "kilograms" => "kg",
+        "tonne" => "t",
+        "tonnes" => "t",
+        "newton" => "N",
+        "newtons" => "N",
+        "kilonewton" => "kN",
+        "kilonewtons" => "kN",
+        "joule" => "J",
+        "joules" => "J",
+        "kilojoule" => "kJ",
+        "kilojoules" => "kJ",
+        "watt" => "W",
+        "watts" => "W",
+        "kilowatt" => "kW",
+        "kilowatts" => "kW",
+        "volt" => "V",
+        "volts" => "V",
+        "amp" => "A",
+        "amps" => "A",
+        "ampere" => "A",
+        "amperes" => "A",
+        "ohms" => "ohm",
+        "hertz" => "Hz",
+        "kilohertz" => "kHz",
+        "pascal" => "Pa",
+        "pascals" => "Pa",
+        "kilopascals" => "kPa",
+        "coulomb" => "C",
+        "coulombs" => "C",
+        "kelvin" => "K",
+        "kelvins" => "K",
+        "mole" => "mol",
+        "moles" => "mol",
+        "turn" => "1",
+        "turns" => "1",
+        "tesla" => "T",
+        "teslas" => "T",
+        "farad" => "F",
+        "farads" => "F",
+        "henry" => "H",
+        "weber" => "Wb",
+        "degree" => "deg",
+        "degrees" => "deg",
+        "radian" => "rad",
+        "radians" => "rad",
+        "revolution" => "rev",
+        "revolutions" => "rev",
+        "liter" => "L",
+        "liters" => "L",
+        "litre" => "L",
+        "litres" => "L",
+        "per" => "/",
+        "squared" => "^2",
+        "cubed" => "^3",
+        "celsius" => "°C",
+        "foot" => "ft",
+        "feet" => "ft",
+        "mile" => "mi",
+        "miles" => "mi",
+        "yard" => "yd",
+        "yards" => "yd",
+        "calorie" => "cal",
+        "calories" => "cal",
+        "kilocalorie" => "kcal",
+        "kilocalories" => "kcal",
+        "horsepower" => "hp",
+        "year" => "yr",
+        "years" => "yr",
+        "milliliter" => "mL",
+        "milliliters" => "mL",
+        "millilitre" => "mL",
+        "milligram" => "mg",
+        "milligrams" => "mg",
+        "microgram" => "µg",
+        "micrograms" => "µg",
+        "nanogram" => "ng",
+        "nanograms" => "ng",
+        "micrometer" => "µm",
+        "micrometers" => "µm",
+        "micrometre" => "µm",
+        "micrometres" => "µm",
+        "micron" => "µm",
+        "microns" => "µm",
+        "nanometer" => "nm",
+        "nanometers" => "nm",
+        "nanometre" => "nm",
+        "nanometres" => "nm",
+        "microsecond" => "µs",
+        "microseconds" => "µs",
+        "nanosecond" => "ns",
+        "nanoseconds" => "ns",
+        "percent" => "%",
+        "pct" => "%",
+        "arcsecond" => "arcsec",
+        "arcseconds" => "arcsec",
+        "arcminute" => "arcmin",
+        "arcminutes" => "arcmin",
+        "milliarcsecond" => "mas",
+        "milliarcseconds" => "mas",
+        "parsec" => "pc",
+        "parsecs" => "pc",
+        "kiloparsec" => "kpc",
+        "kiloparsecs" => "kpc",
+        "megaparsec" => "Mpc",
+        "megaparsecs" => "Mpc",
+        "lightyear" => "ly",
+        "lightyears" => "ly",
+        "hectopascal" => "hPa",
+        "hectopascals" => "hPa",
+        "hectare" => "ha",
+        "hectares" => "ha",
+        _ => return None,
+    })
+}
+
+/// runtime/quantity.py `words_to_unit`: spelled unit words ("meters per second squared") as a unit spelling.
+pub fn words_to_unit(tokens: &[&str]) -> Option<String> {
+    let mut expanded: Vec<String> = vec![];
+    for tok in tokens {
+        let low = tok.to_lowercase();
+        let parts: Vec<&str> = low.split('-').collect();
+        if parts.len() > 1 && parts.iter().all(|x| unit_word(x).is_some()) {
+            expanded.extend(parts.iter().map(|x| x.to_string()));
+        } else {
+            expanded.push(tok.to_string());
+        }
+    }
+    let mut out: Vec<String> = expanded.iter()
+        .map(|t| unit_word(&t.to_lowercase()).map(String::from).unwrap_or_else(|| t.clone())).collect();
+    if let Some(i) = (0..out.len().saturating_sub(1)).find(|&i| out[i] == "/" && out[i + 1].to_lowercase() == "cent") {
+        out.splice(i..i + 2, ["%".to_string()]);
+    }
+    if let Some(i) = (0..out.len().saturating_sub(1)).find(|&i| out[i] == "deg" && (out[i + 1] == "°C" || out[i + 1] == "C")) {
+        out.splice(i..i + 2, ["°C".to_string()]);
+    }
+    let mut text = String::new();
+    for part in out {
+        if part.starts_with('^') || part == "/" || text.ends_with('/') || text.is_empty() {
+            text.push_str(&part);
+        } else {
+            text.push('*');
+            text.push_str(&part);
+        }
+    }
+    if text.is_empty() { None } else { Some(text) }
+}
+
+/// runtime/quantity.py `declared_unit`: the unit a pure-number input's meaning names at its end ("time constant in
+/// seconds" -> s, "rate in percent" -> %): the one to three words after its last " in ", a unit as written or spelled
+/// out. None when there is none (a meaning with a parenthesis there, or words that are not a unit).
+pub fn declared_unit(meaning: &str) -> Option<(String, Unit)> {
+    let idx = meaning.rfind(" in ")?;
+    let tail = meaning[idx + 4..].trim().trim_end_matches(['.', ')']).trim();
+    if tail.is_empty() || tail.contains('(') {
+        return None;
+    }
+    let toks: Vec<&str> = tail.split_whitespace().collect();
+    if toks.is_empty() || toks.len() > 3 {
+        return None;
+    }
+    let text = match parse_unit(tail) {
+        Ok(_) => tail.to_string(),
+        Err(_) => words_to_unit(&toks)?,
+    };
+    let u = parse_unit(&text).ok()?;
+    if u.offset != 0.0 || (u.dim == Dim::one() && u.factor == 1.0) {
+        return None;
+    }
+    Some((text, u))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -397,5 +622,64 @@ mod tests {
         assert!(parse_unit("°C*m").is_err());
         assert!(parse_unit("mol/m^3").is_ok());
         assert!((parse_unit("deg").unwrap().factor - PI / 180.0).abs() < 1e-18);
+    }
+}
+
+#[cfg(test)]
+mod astronomy_unit_tests {
+    use super::*;
+    #[test]
+    fn astronomy_units() {
+        let f = |u: &str| parse_unit(u).unwrap().factor;
+        assert!((f("arcsec") / (PI / 648000.0) - 1.0).abs() < 1e-15);
+        assert!((f("mas") / (PI / 648000000.0) - 1.0).abs() < 1e-15);
+        assert_eq!(f("au"), 149597870700.0);
+        assert_eq!(f("ly"), 9460730472580800.0);
+        assert!((f("pc") / 3.0856775814913673e16 - 1.0).abs() < 1e-15);
+        assert!((f("kpc") / 3.0856775814913673e19 - 1.0).abs() < 1e-15);
+        assert!((f("Mpc") / 3.0856775814913673e22 - 1.0).abs() < 1e-15);
+        assert_eq!(parse_unit("arcsec").unwrap().dim, parse_unit("rad").unwrap().dim);
+    }
+}
+
+#[cfg(test)]
+mod hecto_deca_tests {
+    use super::*;
+    #[test]
+    fn hecto_and_deca_prefixes() {
+        let f = |u: &str| parse_unit(u).unwrap().factor;
+        assert_eq!(f("hPa"), 100.0);
+        assert_eq!(parse_unit("hPa").unwrap().dim, parse_unit("Pa").unwrap().dim);
+        assert!((f("hL") - 0.1).abs() < 1e-15);
+        assert_eq!(f("daN"), 10.0);
+        assert_eq!(f("ha"), 1e4);
+        assert_eq!(parse_unit("ha").unwrap().dim, parse_unit("m^2").unwrap().dim);
+        // the hour, the horsepower and the day keep their meaning
+        assert_eq!(f("h"), 3600.0);
+        assert_eq!(f("hr"), 3600.0);
+        assert!((f("hp") - 745.69987158227022).abs() < 1e-9);
+        assert_eq!(f("day"), 86400.0);
+        assert_eq!(f("d"), 86400.0);
+        assert!((f("1/h") - 1.0 / 3600.0).abs() < 1e-18);
+        assert!((f("h^-1") - 1.0 / 3600.0).abs() < 1e-18);
+        // atoms that take no prefix stay unprefixed
+        assert!(parse_unit("hmin").is_err());
+        assert!(parse_unit("hkg").is_err());
+    }
+}
+
+#[cfg(test)]
+mod declared_unit_tests {
+    use super::*;
+    #[test]
+    fn declared_units() {
+        assert_eq!(declared_unit("time constant in seconds").unwrap().0, "s");
+        assert_eq!(declared_unit("time after the step in seconds").unwrap().0, "s");
+        assert_eq!(declared_unit("interest rate in percent").unwrap().0, "%");
+        assert!(declared_unit("heart rate in beats/min").is_none());
+        assert!(declared_unit("number of moles in the sample").is_none());
+        assert!(declared_unit("steady-state (DC) gain of the system").is_none());
+        assert_eq!(words_to_unit(&["meters", "per", "second"]).unwrap(), "m/s");
+        assert_eq!(words_to_unit(&["per", "hour"]).unwrap(), "/h");
     }
 }

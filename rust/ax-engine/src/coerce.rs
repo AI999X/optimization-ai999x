@@ -364,7 +364,7 @@ mod tests {
     fn read(v: Input) -> String {
         let spec = ProcInput { symbol: "edges".into(), kind: "number".into(), meaning: String::new(), required: true,
                                ty: "edges".into(), choices: vec![], min: None, max: None, min_length: None,
-                               max_length: None };
+                               max_length: None, default: None };
         match coerce(&spec, &v) {
             Ok(Val::Edges(es)) => format!("{:?}", es),
             Ok(other) => format!("{other:?}"),

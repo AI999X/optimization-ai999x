@@ -83,6 +83,9 @@ pub struct ProcInput {
     pub max: Option<(f64, String)>,
     pub min_length: Option<usize>,
     pub max_length: Option<usize>,
+    /// a documented default (geospatial's ellipsoid: WGS84), used when the input is not given and stated in the
+    /// answer's assumptions as "<symbol>: <value> (default)"
+    pub default: Option<String>,
 }
 
 /// A value a native procedure receives, read exactly as runtime/inputs.py `coerce` reads it.
@@ -291,6 +294,7 @@ impl Pack {
                 min: limit(i.get("min")), max: limit(i.get("max")),
                 min_length: i.get("min_length").and_then(|x| x.as_u64()).map(|x| x as usize),
                 max_length: i.get("max_length").and_then(|x| x.as_u64()).map(|x| x as usize),
+                default: i.get("default").and_then(|x| x.as_str()).map(|x| x.to_string()),
             }).collect();
             let mut outputs = Vec::new();
             for o in p["outputs"].as_array().cloned().unwrap_or_default() {

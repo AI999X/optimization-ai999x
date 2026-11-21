@@ -510,6 +510,31 @@ fn read_value(v: &Input, unit_si: &str) -> Option<(f64, String)> {
     }
 }
 
+/// product.py `_declared_value`: a pure number given with a unit, for an input whose meaning declares its unit
+/// ("time constant in seconds": "5 s" is 5, "2 min" is 120; 2026-11-21). None when the meaning declares no unit or
+/// the unit written is not of its dimension.
+fn declared_value(v: &Input, meaning: &str) -> Option<f64> {
+    if let Input::Text(t) = v {
+        if let Some(x) = t.trim().strip_suffix('%').and_then(fraction_number) {
+            return Some(if in_percent(meaning) { x } else { x / 100.0 });
+        }
+    }
+    let (_, d) = crate::units::declared_unit(meaning)?;
+    let (x, unit) = read_value(v, "")?;
+    let u = parse_unit(&unit).ok()?;
+    if u.dim != d.dim || u.offset != 0.0 {
+        return None;
+    }
+    Some(x * u.factor / d.factor)
+}
+
+/// product.py `_in_percent`: an input whose meaning says it is given in percent ("in percent", "the percentage p",
+/// "atomic percent", "the percentile") and not as a fraction ("fraction", "decimal", "18% = 0.18").
+fn in_percent(meaning: &str) -> bool {
+    let m = meaning.to_lowercase();
+    m.contains("percent") && !m.contains("fraction") && !m.contains("decimal") && !m.contains('%')
+}
+
 /// A number written as Python's float(Fraction(text)) reads it: "3", "-1.5", "2e-3", "3/4" (spaces ignored).
 fn fraction_number(text: &str) -> Option<f64> {
     let t: String = text.chars().filter(|c| !c.is_whitespace()).collect();
@@ -524,7 +549,30 @@ fn fraction_number(text: &str) -> Option<f64> {
 }
 
 /// runtime/product.py `_solve_procedure` for a procedure written as data (runtime/procedure_spec.CompiledProcedure).
+/// A procedure's input with a documented default (its pack entry's "default", e.g. geospatial's ellipsoid WGS84) that
+/// is not given takes that default, and the answer states it: "<symbol>: <value> (default)" among its assumptions
+/// (owner, 2026-11-21; the Python package does the same, runtime/product.py).
 pub fn solve_procedure(p: &Pack, key: &str, given: &[(String, Input)]) -> Answer {
+    let defaults: Vec<(String, String)> = match p.procedure(key) {
+        Some(pr) => pr.inputs.iter()
+            .filter(|i| !i.required && !given.iter().any(|(n, _)| n == &i.symbol))
+            .filter_map(|i| i.default.as_ref().map(|d| (i.symbol.clone(), d.clone())))
+            .collect(),
+        None => vec![],
+    };
+    if defaults.is_empty() {
+        return solve_procedure_given(p, key, given);
+    }
+    let mut all: Vec<(String, Input)> = given.to_vec();
+    all.extend(defaults.iter().map(|(s, d)| (s.clone(), Input::Text(d.clone()))));
+    let mut a = solve_procedure_given(p, key, &all);
+    if a.solved() {
+        a.assumptions.extend(defaults.iter().map(|(s, d)| format!("{s}: {d} (default)")));
+    }
+    a
+}
+
+fn solve_procedure_given(p: &Pack, key: &str, given: &[(String, Input)]) -> Answer {
     let Some(pr) = p.procedure(key) else {
         return Answer::refuse("INVALID_INPUT", format!("unknown capability '{key}'"));
     };
@@ -580,7 +628,7 @@ pub fn solve_procedure(p: &Pack, key: &str, given: &[(String, Input)]) -> Answer
             let x = match v {
                 Input::Int(i) => Some(*i as f64),
                 Input::Float(f) => Some(*f),
-                Input::Text(t) => fraction_number(t),
+                Input::Text(t) => fraction_number(t).or_else(|| declared_value(v, &inp.meaning)),
                 // float(True) is 1.0 in Python; float of a list or None raises
                 Input::Json(serde_json::Value::Bool(b)) => Some(if *b { 1.0 } else { 0.0 }),
                 Input::Json(_) => None,

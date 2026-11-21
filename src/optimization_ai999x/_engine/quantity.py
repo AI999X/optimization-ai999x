@@ -103,11 +103,21 @@ _ATOMS = {
     "nM": (1e-6, _dim(mol=1, m=-3), False), "pM": (1e-9, _dim(mol=1, m=-3), False),
     "d": (86400.0, _dim(s=1), False),
     "b": (1e-28, _dim(m=2), False), "Gy": (1.0, _dim(m=2, s=-2), True), "Sv": (1.0, _dim(m=2, s=-2), True),
+    # astronomy (2026-11-21: "0.768 arcsec", "10 pc", "4.24 ly" were refused): au and ly exact by definition, the
+    # parsec = 648000/pi au (takes prefixes: kpc, Mpc, Gpc); arcmin/arcsec/mas are in _PI_UNITS
+    "au": (149597870700.0, _dim(m=1), False), "AU": (149597870700.0, _dim(m=1), False),
+    "ly": (9460730472580800.0, _dim(m=1), False),
+    "pc": (149597870700.0 * 648000.0 / math.pi, _dim(m=1), True),
+    # the hectare (2026-11-21, with the hecto prefix): 1 ha = 1e4 m^2 exactly; "a" (the are) alone is not a unit here
+    "ha": (1e4, _dim(m=2), False),
 }
 _AFFINE = {"°C": (1.0, _dim(K=1), 273.15), "degC": (1.0, _dim(K=1), 273.15)}
-_PI_UNITS = {"deg": Fraction(1, 180), "°": Fraction(1, 180), "rev": Fraction(2)}
+_PI_UNITS = {"deg": Fraction(1, 180), "°": Fraction(1, 180), "rev": Fraction(2),
+             "arcmin": Fraction(1, 10800), "arcsec": Fraction(1, 648000), "mas": Fraction(1, 648000000)}
+# hecto and deca (2026-11-21: "700 hPa" was refused): an atom is looked up first, so "h" alone stays the hour, "hr"
+# the hour and "hp" the horsepower; only an atom that takes prefixes reads prefixed (hPa, hL, daN). "da" is two letters.
 _PREFIX = {"k": 1e3, "M": 1e6, "G": 1e9, "m": 1e-3, "c": 1e-2, "μ": 1e-6, "µ": 1e-6, "u": 1e-6, "n": 1e-9,
-           "p": 1e-12, "f": 1e-15}
+           "p": 1e-12, "f": 1e-15, "h": 1e2, "da": 1e1}
 
 _WORDS = {
     "second": "s", "seconds": "s", "sec": "s", "secs": "s", "millisecond": "ms", "milliseconds": "ms",
@@ -134,6 +144,10 @@ _WORDS = {
     "nanometer": "nm", "nanometers": "nm", "nanometre": "nm", "nanometres": "nm",
     "microsecond": "µs", "microseconds": "µs", "nanosecond": "ns", "nanoseconds": "ns",
     "percent": "%", "pct": "%",
+    "arcsecond": "arcsec", "arcseconds": "arcsec", "arcminute": "arcmin", "arcminutes": "arcmin",
+    "milliarcsecond": "mas", "milliarcseconds": "mas", "parsec": "pc", "parsecs": "pc", "kiloparsec": "kpc",
+    "kiloparsecs": "kpc", "megaparsec": "Mpc", "megaparsecs": "Mpc", "lightyear": "ly", "lightyears": "ly",
+    "hectopascal": "hPa", "hectopascals": "hPa", "hectare": "ha", "hectares": "ha",
 }
 _SUPER = str.maketrans({"²": "^2", "³": "^3", "·": "*", "⋅": "*", "−": "-"})
 # an exponent: ^2, ^-1, ^(1/3), ^(-1/2), ^1.5 (fractional exponents occur in empirical laws: Manning's n is s/m^(1/3))
@@ -149,9 +163,10 @@ def _atom(name: str) -> Unit:
         return Unit(f, d, off)
     if name in _PI_UNITS:
         return Unit(math.pi * float(_PI_UNITS[name]), _dim(rad=1), 0.0, _PI_UNITS[name])
-    if len(name) > 1 and name[0] in _PREFIX and name[1:] in _ATOMS and _ATOMS[name[1:]][2]:
-        f, d, _ = _ATOMS[name[1:]]
-        return Unit(f * _PREFIX[name[0]], d)
+    for n in (2, 1):                                    # the two-letter prefix "da" first
+        if len(name) > n and name[:n] in _PREFIX and name[n:] in _ATOMS and _ATOMS[name[n:]][2]:
+            f, d, _ = _ATOMS[name[n:]]
+            return Unit(f * _PREFIX[name[:n]], d)
     raise UnitError(f"unknown unit: {name}")
 
 
@@ -241,6 +256,35 @@ def words_to_unit(tokens: list[str]) -> str | None:
         else:
             text += "*" + part
     return text or None
+
+
+def declared_unit(meaning: str):
+    """The unit a pure-number input's meaning names at its end ("time constant in seconds" -> ("s", Unit), "rate in
+    percent" -> "%"): the one to three words after its last " in ", a unit as written or spelled out; else None.
+    Mirrored by rust/ax-engine/src/units.rs `declared_unit` (2026-11-21)."""
+    idx = (meaning or "").rfind(" in ")
+    if idx < 0:
+        return None
+    tail = meaning[idx + 4:].strip().rstrip(".)").strip()
+    if not tail or "(" in tail:
+        return None
+    toks = tail.split()
+    if not 1 <= len(toks) <= 3:
+        return None
+    try:
+        parse_unit(tail)
+        text = tail
+    except UnitError:
+        text = words_to_unit(toks)
+    if not text:
+        return None
+    try:
+        u = parse_unit(text)
+    except UnitError:
+        return None
+    if u.offset or (u.dim == ONE and u.factor == 1.0):
+        return None
+    return text, u
 
 
 def stated_tolerance(value) -> float:

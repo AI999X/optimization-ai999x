@@ -240,6 +240,10 @@ def ask_answer(product, reply: dict, question: str):
         extra["needs"] = list(reply["needs"])
     if reply.get("alternatives"):
         extra["candidates"] = [x.get("capability") for x in reply["alternatives"]]
+    if reply.get("try"):                                   # a documented template offered with a refusal (1.6.7)
+        extra["try"] = reply["try"]
+    if reply.get("try_also"):                              # and the other readings' templates
+        extra["try_also"] = reply["try_also"]
     ans = reply.get("answer")
     if isinstance(ans, dict):
         a = to_answer(product, ans, question, key, (reply.get("request") or {}).get("inputs") or {}, extra)

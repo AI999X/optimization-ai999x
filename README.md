@@ -10,8 +10,8 @@ Optimization covers linear and integer programming, convex and nonlinear optimis
 
 | | |
 |---|---|
-| **Desktop app** (Windows, Linux) | [Windows](https://github.com/AI999X/ai999x-desktop/releases/download/v1.6.6/ai999x-optimization-1.6.6-windows-x86_64.zip) · [Linux](https://github.com/AI999X/ai999x-desktop/releases/download/v1.6.6/ai999x-optimization-1.6.6-linux-x86_64.tar.gz) |
-| **Command line** `optimization` (Windows, Linux) | [Windows](https://github.com/AI999X/ai999x-desktop/releases/download/v1.6.6/ai999x-cli-1.6.6-windows-x86_64.zip) · [Linux](https://github.com/AI999X/ai999x-desktop/releases/download/v1.6.6/ai999x-cli-1.6.6-linux-x86_64.tar.gz) |
+| **Desktop app** (Windows, Linux) | [Windows](https://github.com/AI999X/ai999x-desktop/releases/download/v1.6.7/ai999x-optimization-1.6.7-windows-x86_64.zip) · [Linux](https://github.com/AI999X/ai999x-desktop/releases/download/v1.6.7/ai999x-optimization-1.6.7-linux-x86_64.tar.gz) |
+| **Command line** `optimization` (Windows, Linux) | [Windows](https://github.com/AI999X/ai999x-desktop/releases/download/v1.6.7/ai999x-cli-1.6.7-windows-x86_64.zip) · [Linux](https://github.com/AI999X/ai999x-desktop/releases/download/v1.6.7/ai999x-cli-1.6.7-linux-x86_64.tar.gz) |
 | **Browser** (any device) | [Try it on the model page](https://www.ai999x.com/models/optimization-ai999x/#capabilities) |
 | **Python** 3.10+ | `pip install optimization-ai999x`: on Windows and Linux (x86-64) `pip` installs the same compiled engine; on other systems (macOS, ARM) it installs a pure-Python build that gives the same answers |
 
@@ -149,95 +149,6 @@ print(a.outcome, a.values)
 # SOLVED {'min_tour_length': 80.0, 'tour_example': [1, 3, 4, 2, 1]}
 ```
 
-## Command line: 15 examples
-
-Each command below was run with `optimization` of this release; the lines under it are the answer it printed (the full answer goes on with the method, every input in SI units and the conditions it assumes).
-
-```text
-$ optimization solve polynomial_extrema_interval "coefficients=[1, -3, 0, 2]" lo=-1 hi=3
-min_value = -2
-max_value = 2
-argmin_example = -1
-argmax_example = 0
-
-$ optimization solve break_even_point F_=5000 p=25 v=15
-quantity = 500
-revenue = 12500
-contribution_margin = 10
-
-$ optimization solve mdp_discounted "R=[[1, 0], [0, 2]]" "T=[[1, 0], [0, 1], [0, 1], [1, 0]]" gamma=0.9
-value_state_1 = 10
-values = [10.0,11.0]
-policy = [1.0,2.0]
-
-$ optimization solve profit_max_linear_demand a=100 b=2 F_=300 cv=20
-quantity = 20
-price = 60
-profit = 500
-
-$ optimization solve zero_sum_2x2 "A=[[3, -1], [-2, 4]]"
-value = 1
-p_row1 = 0.6
-q_col1 = 0.5
-saddle_point = no
-
-$ optimization solve knapsack_01 "values=[60, 100, 120]" "weights=[10, 20, 30]" capacity=50
-max_value = 220
-items_example = [2,3]
-total_weight = 50
-
-$ optimization solve eoq D=1200 S=50 H=3
-Q = 200
-total_cost = 600
-orders_per_period = 6
-cycle_time = 0.1666666667
-
-$ optimization solve linear_program sense=maximize "c=[3, 5]" "A=[[1, 0], [0, 2], [3, 2]]" "b=[4, 12, 18]" "relations=<=,<=,<="
-optimal_value = 36
-x = [2.0,6.0]
-solution_unique = yes
-shadow_prices = [0.0,1.5,1.0]
-
-$ optimization solve ahp_consistency_ratio "judgments=[2, 4, 2]"
-CR = 0
-CI = 0
-lambda_max = 3
-weights = [0.5714285714285714,0.2857142857142857,0.14285714285714285]
-acceptable = yes
-
-$ optimization solve all_pairs_shortest_paths "edges=A-B 3, B-C 4, A-C 9, C-D 2" directed=false
-nodes = ["A","B","C","D"]
-distances = [[0.0,3.0,7.0,9.0],[3.0,0.0,4.0,6.0],[7.0,4.0,0.0,2.0],[9.0,6.0,2.0,0.0]]
-diameter = 9
-
-$ optimization solve equality_constrained_qp "Q=2 0; 0 2" "c=0, 0" "A=1 1" b=2
-f_min = 2
-x_star = [1.0,1.0]
-multipliers = [-2.0]
-
-$ optimization solve critical_path_method "durations=[3, 4, 2, 5]" "precedences=A-B, A-C, B-D, C-D"
-project_duration = 12
-critical_activities = ["A","B","D"]
-slack = [0.0,0.0,2.0,0.0]
-earliest_start = [0.0,3.0,3.0,7.0]
-latest_start = [0.0,3.0,5.0,7.0]
-
-$ optimization solve erlang_b A=3 c=5
-blocking_probability = 0.1100543478
-carried_traffic = 2.669836957
-lost_traffic = 0.3301630435
-
-$ optimization solve littlewood_protection p1=400 p2=150 mu=60 sigma=20
-protection_level = 66.37278728
-z = 0.318639364
-
-$ optimization solve edd_max_lateness "p=[2, 4, 1, 3]" "d=[5, 6, 3, 9]"
-sequence = [3,1,2,4]
-max_lateness = 1
-max_tardiness = 1
-tardy_jobs_in_sequence = 2
-```
-
 ## Guides
 
 - Desktop app guide: the window, every calculation, scenes and charts: [PDF](https://huggingface.co/AI999X/optimization-ai999x/blob/main/docs/optimization_ai999x_desktop_guide.pdf) · [HTML](https://huggingface.co/AI999X/optimization-ai999x/blob/main/docs/optimization_ai999x_desktop_guide.html) · [Markdown](https://huggingface.co/AI999X/optimization-ai999x/blob/main/docs/optimization_ai999x_desktop_guide.md)
@@ -246,13 +157,13 @@ tardy_jobs_in_sequence = 2
 
 Every calculation, with its formula, a worked example and its figures: **[Optimization on ai999x.com](https://www.ai999x.com/models/optimization-ai999x/)**. Install guides for the app and the command line: [https://www.ai999x.com/desktop-cli/](https://www.ai999x.com/desktop-cli/).
 
-Version 1.6.6 · License: Apache-2.0 · Author: Ibnul Jaif Farabi · Organization: AI999X · Contact: support@ai999x.com · [Support the project](https://buymeacoffee.com/ibnuljaiffarabi)
+Version 1.6.7 · License: Apache-2.0 · Author: Ibnul Jaif Farabi · Organization: AI999X · Contact: support@ai999x.com · [Support the project](https://buymeacoffee.com/ibnuljaiffarabi)
 
 *The Future Is Self-Improving.*
 
 ## Source and releases
 
-This repository holds the installable source of each release, exactly as published on [PyPI](https://pypi.org/project/optimization-ai999x/) (`pip install .` builds it). Releases are tagged `v1.6.6`; the [GitHub release](https://github.com/AI999X/optimization-ai999x/releases/tag/v1.6.6) carries the wheel, the desktop app and the command-line program for Windows and Linux, and their checksums.
+This repository holds the installable source of each release, exactly as published on [PyPI](https://pypi.org/project/optimization-ai999x/) (`pip install .` builds it). Releases are tagged `v1.6.7`; the [GitHub release](https://github.com/AI999X/optimization-ai999x/releases/tag/v1.6.7) carries the wheel, the desktop app and the command-line program for Windows and Linux, and their checksums.
 
 ## Build the program from source
 

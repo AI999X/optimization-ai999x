@@ -332,6 +332,36 @@ class Product:
                 a.message += f" A supported way to ask: \"{hint['question']}\" — or {hint['structured']}"
         return a
 
+    def _declared_value(self, v, meaning: str):
+        """A pure number given with a unit, for an input whose meaning declares its unit (quantity.declared_unit):
+        "5 s" for "time constant in seconds" is 5, "2 min" is 120; a percentage "5%" is 0.05 (5 for an input whose
+        meaning says it is in percent). None otherwise (as engine.rs declared_value)."""
+        from fractions import Fraction
+        from .quantity import UnitError, declared_unit, parse_unit
+        if not isinstance(v, str):
+            return None
+        if v.strip().endswith("%"):                     # "5%": 0.05, or 5 for an input given in percent
+            try:
+                x = float(Fraction(v.strip()[:-1].replace(" ", "")))
+            except (ValueError, ZeroDivisionError):
+                return None
+            m = (meaning or "").lower()
+            in_percent = "percent" in m and not any(w in m for w in ("fraction", "decimal", "%"))
+            return x if in_percent else x / 100.0
+        d = declared_unit(meaning)
+        if d is None:
+            return None
+        m = re.match(r"\s*([-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?)\s*(.*)$", v)
+        if not m or not m.group(2).strip():
+            return None
+        try:
+            u = parse_unit(m.group(2).strip())
+        except UnitError:
+            return None
+        if u.dim != d[1].dim or u.offset:
+            return None
+        return float(m.group(1)) * u.factor / d[1].factor
+
     def compile_problem(self, question: str):
         return compile_problem(question, self.pack())
 
@@ -581,6 +611,23 @@ class Product:
 
     # --- the procedure path: a certified algorithm with several outputs ------------------------------------------
     def _solve_procedure(self, key: str, given: dict, question: str | None = None) -> Answer:
+        """An input with a documented default (its spec's "default", e.g. geospatial's ellipsoid WGS84) that is not
+        given takes that default, and the answer states it: "<symbol>: <value> (default)" in its assumptions and in
+        uncertainty["assumed_defaults"] (owner, 2026-11-21). The Rust engine does the same (engine.rs)."""
+        spec = self.pack().procedures.get(key)
+        defaults = [(i["symbol"], i["default"]) for i in (spec or {}).get("inputs", [])
+                    if i.get("default") is not None and not i.get("required", True) and i["symbol"] not in (given or {})]
+        if not defaults:
+            return self._solve_procedure_given(key, given, question)
+        a = self._solve_procedure_given(key, {**given, **dict(defaults)}, question)
+        if a.status == "solved":
+            stated = [f"{s}: {d} (default)" for s, d in defaults]
+            a.assumptions = list(a.assumptions or []) + stated
+            if isinstance(a.uncertainty, dict):
+                a.uncertainty["assumed_defaults"] = stated
+        return a
+
+    def _solve_procedure_given(self, key: str, given: dict, question: str | None = None) -> Answer:
         from fractions import Fraction
         spec = self.pack().procedures[key]
         q = question or f"solve({key!r})"
@@ -629,7 +676,11 @@ class Product:
             try:
                 values[name] = float(Fraction(v.replace(" ", ""))) if isinstance(v, str) else float(v)
             except (ValueError, TypeError, ZeroDivisionError):
-                return refuse("INVALID_INPUT", "invalid_input", f"{name}={v!r} is not a number.")
+                # an input whose meaning declares its unit ("time constant in seconds") takes "5 s" or "2 min"
+                declared = self._declared_value(v, by_name[name].get("meaning", ""))
+                if declared is None:
+                    return refuse("INVALID_INPUT", "invalid_input", f"{name}={v!r} is not a number.")
+                values[name] = declared
             shown[name] = (values[name], "")
         needs = [i["symbol"] for i in spec["inputs"] if i.get("required") and i["symbol"] not in values]
         if needs:
