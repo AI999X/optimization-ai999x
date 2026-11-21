@@ -1,5 +1,5 @@
 {
- "package": "1.6.4",
+ "package": "1.6.6",
  "pack": "1.0.1",
  "knowledge_db": null,
  "files": {
@@ -34,6 +34,7 @@
   "proc_reader.py",
   "procedure_spec.py",
   "product.py",
+  "prose_math.py",
   "quantity.py",
   "relation.py",
   "retrieval.py",

@@ -804,13 +804,31 @@ class Product:
             spec = self.pack().procedures[key]
             unit = {i["symbol"]: self.pack().kinds[i["kind"]].unit for i in spec["inputs"]
                     if i.get("kind", "number") != "number" and i["kind"] in self.pack().kinds}
-            show = lambda n, v: repr(f"{v:g} {unit[n]}") if n in unit else (f"{v:g}" if isinstance(v, (int, float)) else repr(v))
+            # short form when it round-trips exactly; otherwise full precision (pi/2 printed as 1.5708 is a little over
+            # pi/2 and a range check rightly refuses it)
+            num = lambda v: f"{v:g}" if float(f"{v:g}") == v else repr(float(v))  # noqa: E731
+            show = lambda n, v: repr(f"{num(v)} {unit[n]}") if n in unit else (num(v) if isinstance(v, (int, float)) else repr(v))
             return f"solve({key!r}, " + ", ".join(f"{n}={show(n, v)}" for n, v in ex.items()) + ")"
+        import re
         rel = self.pack().by_key[key]
-        lhs = rel.equation.split("=")[0].strip()
-        inputs = [n for n in rel.symbols if n != lhs and not rel.symbols[n].default]
+        # the unknown: the first symbol written on the left ("v^2 = v0^2 + 2*a*x" -> v), not the left side's text
+        lhs_names = re.findall(r"[A-Za-z_][A-Za-z_0-9]*", rel.equation.split("=")[0])
+        target = next((n for n in lhs_names if n in rel.symbols), None)
+        inputs = [n for n in rel.symbols if n != target and not rel.symbols[n].default]
         unit = lambda n: self.pack().kinds[rel.symbols[n].kind].unit   # noqa: E731
-        return f"solve({key!r}, " + ", ".join(f"{n}='1 {unit(n)}'" for n in inputs) + ")"
+        # distinct values (equal ones make cases degenerate: inner radius = outer radius); the first pattern the engine
+        # accepts is shown (an efficiency must stay below 1, a rocket's final mass below its initial mass, ...)
+        n = len(inputs)
+        patterns = [[i + 1 for i in range(n)], [n + 1 - i for i in range(n)], [n + 2 - i for i in range(n)],
+                    [round((i + 1) / (n + 1), 3) for i in range(n)], [round((n - i) / (n + 1), 3) for i in range(n)]]
+        call = lambda vals: f"solve({key!r}, " + ", ".join(f"{s}='{v} {unit(s)}'" for s, v in zip(inputs, vals)) + ")"  # noqa: E731
+        for vals in patterns:
+            try:
+                if self.solve(key, **{s: f"{v} {unit(s)}" for s, v in zip(inputs, vals)}).solved:
+                    return call(vals)
+            except Exception:
+                continue
+        return call(patterns[0])
 
     def _si_value(self, v):
         """'6.371e6 m' or [6.371e6, 'm'] -> SI float; a bare number is taken as SI."""

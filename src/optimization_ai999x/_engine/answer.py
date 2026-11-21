@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 from dataclasses import asdict, dataclass, field
 
+from .prose_math import _sym_tex, expr_tex, prose_markdown
+
 
 OUTCOMES = ("SOLVED", "NEEDS_INPUT", "AMBIGUOUS", "INVALID_INPUT", "OUT_OF_SCOPE", "UNRECOGNIZED_FORMAT", "INTERNAL_ERROR")
 _CAUSE_OUTCOME = {
@@ -32,18 +34,89 @@ def _fmtv(v) -> str:
 
 
 def _tex_name(name: str) -> str:
-    """x1 -> x_{1}; a1 -> a_{1}; discriminant -> \\mathrm{discriminant}; v -> v."""
+    """x1 -> x_{1}; a1 -> a_{1}; discriminant -> \\mathrm{discriminant}; v -> v; AUC_0_t -> \\mathrm{AUC}_{0,t};
+    break_even_revenue -> \\mathrm{break\\_even\\_revenue} (several underscores used to make a double subscript,
+    which stops the whole formula block from rendering)."""
     import re
     m = re.fullmatch(r"([A-Za-z])(\d+|[a-z])", name)
     if m and len(name) <= 3:
         return f"{m.group(1)}_{{{m.group(2)}}}"
+    if "_" in name:
+        return _sym_tex(name)
     return name if len(name) == 1 else f"\\mathrm{{{name}}}"
+
+
+def _tex_e(s: str) -> str:
+    """Numbers written with an exponent, inside LaTeX: 2.55061e+10 -> 2.55061 \\times 10^{10}, 4e-06 -> 4 \\times 10^{-6}."""
+    import re
+    return re.sub(r"(\d)e([+-]?)0*(\d+)", lambda m: f"{m.group(1)} \\times 10^{{{'-' if m.group(2) == '-' else ''}"
+                  f"{m.group(3)}}}", s)
 
 
 def _fmt(x) -> str:
     if isinstance(x, bool) or not isinstance(x, (int, float)):   # a structured input echoed as written ([1 2; 3 4])
         return str(x)
     return f"{x:.6g}"
+
+
+def _tex_unit(unit: str) -> str:
+    """'Pa*m^6/mol^2' -> \\mathrm{Pa\\,m^{6}/mol^{2}}; '' -> ''."""
+    import re
+    if not unit:
+        return ""
+    u = re.sub(r"\^\(?(-?\d+(?:\.\d+)?)\)?", r"^{\1}", unit.replace("%", "\\%")).replace("*", "\\,")
+    return f"\\mathrm{{{u}}}"
+
+
+def _tex_text(s: str) -> str:
+    """A value written as text (an expression, a matrix, a formula): typeset as math when it reads as math
+    ("1 + cos(theta)" -> 1 + \\cos(\\theta)), otherwise upright text. Characters with no text-mode form in every
+    renderer (MathJax in JupyterLab, KaTeX elsewhere) are set as math symbols between the text pieces."""
+    import re
+    tex = expr_tex(s)
+    if tex is not None:
+        return tex
+    for a, b in (("{", "\\{"), ("}", "\\}"), ("_", "\\_"), ("%", "\\%"), ("#", "\\#"), ("&", "\\&"), ("$", "\\$")):
+        s = s.replace(a, b)
+    sym = {"\\": "\\backslash ", "^": "\\hat{\\ }", "~": "\\sim ", "·": "\\cdot "}
+    pieces = re.split(r"([\\^~·])", s)
+    return "".join(sym[p] if p in sym else (f"\\text{{{p}}}" if p else "") for p in pieces)
+
+
+def _brace_subs(tex: str) -> str:
+    """x_ab -> x_{a}b: a one-character subscript directly followed by a letter gets braces. Same meaning everywhere;
+    MathJax (JupyterLab) otherwise reads \\mathrm{C_xH_yO_z} as a double subscript and shows an error."""
+    import re
+    return re.sub(r"(?<!\\)_([A-Za-z0-9])(?=[A-Za-z])", r"_{\1}", tex)   # an escaped \_ is a literal underscore
+
+
+def _align_at_first_equals(row: str) -> str:
+    """'x = 1' -> 'x &= 1' for an aligned block: the first ' = ' outside any braces (a subscript such as
+    \\max_{|S| = p} keeps its own sign)."""
+    depth = 0
+    for i, c in enumerate(row):
+        depth += {"{": 1, "}": -1}.get(c, 0)
+        if depth == 0 and row.startswith(" = ", i):
+            return row[:i] + " &= " + row[i + 3:]
+    return row
+
+
+def _md_text(s: str) -> str:
+    """Prose for Markdown: characters that Markdown would turn into emphasis or math are shown as themselves."""
+    for ch in ("\\", "*", "_", "$", "`"):
+        s = s.replace(ch, "\\" + ch)
+    return s
+
+
+def _tex_given(inputs: dict) -> str:
+    """The inputs of one step as typeset math: L_{p} = 1\\ \\mathrm{m},\\; g = 9.80665\\ \\mathrm{m/s^{2}}."""
+    parts = []
+    for k, v in inputs.items():
+        val = v["value"]
+        num = _tex_e(_fmt(val)) if isinstance(val, (int, float)) and not isinstance(val, bool) else _tex_text(str(val))
+        unit = _tex_unit(v.get("unit") or "")
+        parts.append(f"{_tex_name(k)} = {num}" + (f"\\ {unit}" if unit else ""))
+    return ",\\; ".join(parts)
 
 
 @dataclass
@@ -122,12 +195,12 @@ class Answer:
             rows.append(s["equation_latex"])
             if s.get("outputs"):                       # a procedure: every output, complex ones as a + bi
                 ou = s.get("output_units") or {}
-                rows += [f"{_tex_name(k)} = " + _fmtv(v).replace("i", "\\,i")
+                rows += [f"{_tex_name(k)} = " + _tex_e(_fmtv(v).replace("i", "\\,i"))
                          + (f"\\ \\mathrm{{{ou[k].replace('*', chr(92) + ',')}}}" if ou.get(k) else "")
                          for k, v in s["outputs"].items() if not isinstance(v, str)]
                 continue
-            rows.append(s["solved_latex"] + " = " + _fmt(s["result"]) + "\\ \\mathrm{" + unit + "}")
-        return "\\begin{aligned}" + " \\\\ ".join(r.replace(" = ", " &= ", 1) for r in rows) + "\\end{aligned}"
+            rows.append(s["solved_latex"] + " = " + _tex_e(_fmt(s["result"])) + "\\ \\mathrm{" + unit + "}")
+        return "\\begin{aligned}" + " \\\\ ".join(_align_at_first_equals(_brace_subs(r)) for r in rows) + "\\end{aligned}"
 
     def _values_line(self, values: dict | None = None, units: dict | None = None) -> str:
         """Every output with its unit: 'x1 = 2, x2 = 3' or 'v = 14 m/s, s = 40 m'."""
@@ -147,13 +220,15 @@ class Answer:
         what = (self.target or {}).get("phrase", "answer")
         head = self._values_line() if self.values else f"{what} = {_fmt(self.value)} {self.unit}"
         out = [f"**{head}**", "", f"$$ {self.latex()} $$"]
-        for i, s in enumerate(self.steps, 1):
-            given = ", ".join(f"{k} = {_fmt(v['value'])} {v['unit']}".rstrip() for k, v in s["inputs"].items())
-            out += ["", f"{i}. *{s['name']}* — {s['equation']}; with {given}"]
-        if self.assumptions:
-            out += ["", "*Assumptions:* " + "; ".join(self.assumptions)]
+        for i, s in enumerate(self.steps, 1):     # each step typeset: its equation and its inputs (never plain text)
+            eq = s.get("equation_latex") or ""
+            eq = f"${_brace_subs(eq)}$" if eq else _md_text(s["equation"])
+            given = _tex_given(s.get("inputs") or {})
+            out += ["", f"{i}. *{prose_markdown(s['name'])}* — {eq}" + (f"; with ${given}$" if given else "")]
+        if self.assumptions:                     # the math inside each sentence typeset ("1.05 <= gamma <= 1.7")
+            out += ["", "*Assumptions:* " + "; ".join(prose_markdown(a) for a in self.assumptions)]
         out += ["", f"*Verification:* {self.verification.get('status')}"]
-        out += [f"*Warning:* {w}" for w in self.warnings]
+        out += [f"*Warning:* {prose_markdown(w)}" for w in self.warnings]
         return "\n".join(out)
 
     def show(self) -> "Answer":
